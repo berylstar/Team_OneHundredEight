@@ -1,7 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
+
+using Photon.Pun;
+using Photon.Realtime;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -11,7 +16,7 @@ public class PlayerInputController : MonoBehaviour
 
     [Header("Player")]
     [SerializeField] private SpriteRenderer _playerRenderer;
-    [SerializeField] private Transform footPivot;
+    [SerializeField] private Transform _footPivot;
     private Animator _animator;
     private Rigidbody2D _rigidbody;
     [SerializeField] private Camera _playerCamera;
@@ -19,17 +24,35 @@ public class PlayerInputController : MonoBehaviour
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
     [SerializeField] private SpriteRenderer _weaponRenderer;
-    
+    public event Action EventShoot = null;
+
+    [Header("Canvas")]
+    [SerializeField] private GameObject _canvas;
+    [SerializeField] TextMeshProUGUI textNickname;
+
     private Vector2 _moveInput;
     private float _rotZ;
+    private PhotonView photonView;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        photonView = GetComponent<PhotonView>();
+    }
+
+    private void Start()
+    {
+        if (photonView.IsMine)
+        {
+            InitialMyPlayer();
+        }
     }
 
     private void OnMove(InputValue value)
     {
+        if (!photonView.IsMine)
+            return;
+
         _moveInput = value.Get<Vector2>().normalized * speed;
         _moveInput.y = _rigidbody.velocity.y;
         
@@ -38,7 +61,10 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        RaycastHit2D rayHit = Physics2D.Raycast(footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Water"));
+        if (!photonView.IsMine)
+            return;
+
+        RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Water"));
 
         if (rayHit.collider == null)
             return;
@@ -48,6 +74,9 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnAim(InputValue value)
     {
+        if (!photonView.IsMine)
+            return;
+
         Vector2 worldPos = _playerCamera.ScreenToWorldPoint(value.Get<Vector2>());
         Vector2 newAim = (worldPos - (Vector2)transform.position).normalized;
 
@@ -62,6 +91,17 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
+        if (!photonView.IsMine)
+            return;
+
         Debug.Log(value.isPressed);
+        EventShoot?.Invoke();
+    }
+
+    private void InitialMyPlayer()
+    {
+        _playerCamera.gameObject.SetActive(true);
+        _canvas.SetActive(true);
+        textNickname.text = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
     }
 }
