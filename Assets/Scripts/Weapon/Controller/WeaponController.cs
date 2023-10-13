@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class WeaponController : MonoBehaviourPunCallbacks
+public class WeaponController : MonoBehaviourPun
 {
     private Camera _camera;
     public event Action<Vector2> OnRotateEvent;
@@ -58,10 +58,5 @@ public class WeaponController : MonoBehaviourPunCallbacks
         Vector2 worldMousePos = _camera.ScreenToWorldPoint(mousePos);
         Vector2 dir = worldMousePos - pos;
         InvokeRotate(dir.normalized);
-    }
-
-    public override void OnJoinedRoom()
-    {
-        Debug.Log("Joined");
     }
 }
