@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35c23ca2a3f7a2844a8fcea0a6ecaf4c, type: 3}
   m_Name: PlayerStat
   m_EditorClassIdentifier: 
-  <MaxHp>k__BackingField: 0
-  <MoveSpeed>k__BackingField: 0
-  <JumpForce>k__BackingField: 0
+  <MaxHp>k__BackingField: 100
+  <MoveSpeed>k__BackingField: 5
+  <JumpForce>k__BackingField: 10
+  <Bullet>k__BackingField: {fileID: 0}
+  <MaxMagazine>k__BackingField: 10
+  <Shootingdelay>k__BackingField: 0.1
+  <ReloadSpeed>k__BackingField: 3

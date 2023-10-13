@@ -10,16 +10,14 @@ using Photon.Realtime;
 
 public class PlayerInputController : MonoBehaviour
 {
-    [Header("Player Stats")]
-    public float jumpForce;
-    public float speed;
-
     [Header("Player")]
     [SerializeField] private SpriteRenderer _playerRenderer;
     [SerializeField] private Transform _footPivot;
+    [SerializeField] private Camera _playerCamera;
+
     private Animator _animator;
     private Rigidbody2D _rigidbody;
-    [SerializeField] private Camera _playerCamera;
+    private PlayerStatController stat;
     
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
@@ -38,6 +36,7 @@ public class PlayerInputController : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         photonView = GetComponent<PhotonView>();
+        stat = GetComponent<PlayerStatController>();
     }
 
     private void Start()
@@ -48,12 +47,13 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
+    #region InputAction
     private void OnMove(InputValue value)
     {
         if (!photonView.IsMine)
             return;
 
-        _moveInput = value.Get<Vector2>().normalized * speed;
+        _moveInput = value.Get<Vector2>().normalized * stat.MoveSpeed;
         _moveInput.y = _rigidbody.velocity.y;
         
         _rigidbody.velocity = _moveInput;
@@ -69,7 +69,7 @@ public class PlayerInputController : MonoBehaviour
         if (rayHit.collider == null)
             return;
 
-        _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        _rigidbody.AddForce(Vector2.up * stat.JumpForce, ForceMode2D.Impulse);
     }
 
     private void OnAim(InputValue value)
@@ -94,9 +94,9 @@ public class PlayerInputController : MonoBehaviour
         if (!photonView.IsMine)
             return;
 
-        Debug.Log(value.isPressed);
         EventShoot?.Invoke();
     }
+    #endregion
 
     private void InitialMyPlayer()
     {

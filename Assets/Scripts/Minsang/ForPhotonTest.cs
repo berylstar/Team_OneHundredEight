@@ -7,16 +7,17 @@ using Photon.Realtime;
 
 public class ForPhotonTest : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
+    private readonly string player = "Player";
+
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
-    public override void OnJoinedLobby() => PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 2 }, null);
+    public override void OnJoinedLobby() => PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 5 }, null);
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
     }
 }
