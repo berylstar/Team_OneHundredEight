@@ -8,7 +8,7 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerInputController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Player")]
     [SerializeField] private SpriteRenderer _playerRenderer;
@@ -18,7 +18,7 @@ public class PlayerInputController : MonoBehaviour
     // private Animator _animator;
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
-    private PlayerStatController stat;
+    private PlayerStat stat;
     
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
@@ -31,27 +31,28 @@ public class PlayerInputController : MonoBehaviour
 
     private Vector2 _moveInput;
     private float _rotZ;
-    private PhotonView photonView;
+    private PhotonView _photonView;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
-        photonView = GetComponent<PhotonView>();
-        stat = GetComponent<PlayerStatController>();
+        _photonView = GetComponent<PhotonView>();
+        stat = GetComponent<PlayerStat>();
     }
 
     private void Start()
     {
-        if (!photonView.IsMine)
+        if (!_photonView.IsMine)
         {
             _playerInput.enabled = false;
             this.enabled = false;
         }
         else
         {
-            InitialMyPlayer();
-        }        
+            _playerCamera.gameObject.SetActive(true);
+            textNickname.text = _photonView.Owner.ActorNumber.ToString();
+        }
     }
 
     #region InputAction
@@ -95,10 +96,14 @@ public class PlayerInputController : MonoBehaviour
 
     #endregion
 
-    private void InitialMyPlayer()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        _playerCamera.gameObject.SetActive(true);
-        _canvas.SetActive(true);
-        textNickname.text = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
+        if (!_photonView.IsMine)
+            return;
+
+        if (collision.CompareTag("Item"))
+        {
+            Debug.Log("ITEM");
+        }
     }
 }

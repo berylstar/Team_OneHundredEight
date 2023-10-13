@@ -4,7 +4,7 @@ using UnityEngine;
 
 using Photon.Pun;
 
-public class PlayerStatController : MonoBehaviour, IPunObservable
+public class PlayerStat : MonoBehaviour, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
