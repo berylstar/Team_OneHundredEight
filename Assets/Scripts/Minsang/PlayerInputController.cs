@@ -15,8 +15,9 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private Transform _footPivot;
     [SerializeField] private Camera _playerCamera;
 
-    private Animator _animator;
+    // private Animator _animator;
     private Rigidbody2D _rigidbody;
+    private PlayerInput _playerInput;
     private PlayerStatController stat;
     
     [Header("Weapon")]
@@ -35,24 +36,28 @@ public class PlayerInputController : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        _playerInput = GetComponent<PlayerInput>();
         photonView = GetComponent<PhotonView>();
         stat = GetComponent<PlayerStatController>();
     }
 
     private void Start()
     {
-        if (photonView.IsMine)
+        if (!photonView.IsMine)
+        {
+            _playerInput.enabled = false;
+            this.enabled = false;
+        }
+        else
         {
             InitialMyPlayer();
-        }
+        }        
     }
 
     #region InputAction
+
     private void OnMove(InputValue value)
     {
-        if (!photonView.IsMine)
-            return;
-
         _moveInput = value.Get<Vector2>().normalized * stat.MoveSpeed;
         _moveInput.y = _rigidbody.velocity.y;
         
@@ -61,9 +66,6 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        if (!photonView.IsMine)
-            return;
-
         RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Water"));
 
         if (rayHit.collider == null)
@@ -74,9 +76,6 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnAim(InputValue value)
     {
-        if (!photonView.IsMine)
-            return;
-
         Vector2 worldPos = _playerCamera.ScreenToWorldPoint(value.Get<Vector2>());
         Vector2 newAim = (worldPos - (Vector2)transform.position).normalized;
 
@@ -91,11 +90,9 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
-        if (!photonView.IsMine)
-            return;
-
         EventShoot?.Invoke();
     }
+
     #endregion
 
     private void InitialMyPlayer()
