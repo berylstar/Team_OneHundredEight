@@ -12,57 +12,25 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
     private LayerMask   _playerCollisionLayer;
 
     private float _lifeTime;
-    private float _buffDuration;
-    private bool _isTimed = true;
     private float _value;
-    public enum Type
-    {
-        HpUp,
-        HpDown,
-        SpeedUp,
-        SpeedDown,
-        ReverseKey,
-        Invinvible
-    }
-
-    //밸류는 역시 배율이 낫겠죠?
-    public static GameObject CreatePickup(Vector3 position , Pickup.Type pickupType , float buffDuration = 0f , float lifeTime = 9999f )
+    private Define.ItemType _itemType;
+ 
+    public static GameObject Create(Vector3 position , Define.ItemType pickupType , float lifeTime = 9999f)
     {
         GameObject go = PhotonNetwork.Instantiate("Pickup" , position, Quaternion.identity);
         Pickup p = go.GetComponent<Pickup>();
 
-        p.Init(pickupType, lifeTime , buffDuration);
+        //이렇게한이유는 IsMine인 녀석이 딱 한번 이걸 부를테니까 Init이 일반함수면 안될것같아서.
+        p._PV.RPC("InitRPC", RpcTarget.AllBuffered , pickupType, lifeTime);
 
         return go;
     }
 
-    public void Init(Pickup.Type pickupType , float lifeTime, float buffDuration)
+    [PunRPC]
+    public void InitRPC(Define.ItemType pickupType , float lifeTime)
     {
         _lifeTime = lifeTime;
-        _buffDuration = buffDuration;
-        
-        //TODO : 여기서 만들 아이템의 SO를 불러오면 될듯?
-        switch (pickupType)
-        {
-            case Pickup.Type.HpUp:
-                _isTimed = false;
-                break;
-            case Pickup.Type.HpDown:
-                _isTimed = false;
-                break;
-            case Pickup.Type.SpeedUp:
-                _isTimed = true;
-                break;
-            case Pickup.Type.SpeedDown:
-                _isTimed = true;
-                break;
-            case Pickup.Type.ReverseKey:
-                _isTimed = true;
-                break;
-            case Pickup.Type.Invinvible:
-                _isTimed = true;
-                break;
-        }
+        _itemType = pickupType;
     }
     private void Awake()
     {
@@ -109,13 +77,13 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
         {
             //플레이어 충돌 시
 
-            //TODO : 플레이어 스텟 증가
+            //TODO(KDM) : 플레이어 스텟 증가
 
             _PV.RPC("DestroyRPC" , RpcTarget.AllBuffered);
         }
     }
 
-    //TODO : 매니저를 통한 생성삭제로 바뀌면 수정
+    //TODO(KDM) : 매니저를 통한 생성삭제로 바뀌면 수정
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
 
