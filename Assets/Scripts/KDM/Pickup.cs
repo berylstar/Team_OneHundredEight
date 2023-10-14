@@ -15,7 +15,7 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
     private float _value;
     private Define.ItemType _itemType;
  
-    public static GameObject Create(Vector3 position , Define.ItemType pickupType , float lifeTime = 9999f)
+    public static GameObject Create(Vector3 position , Define.ItemType pickupType = Define.ItemType.Random, float lifeTime = 9999f)
     {
         GameObject go = PhotonNetwork.Instantiate("Pickup" , position, Quaternion.identity);
         Pickup p = go.GetComponent<Pickup>();
@@ -25,6 +25,7 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
 
         return go;
     }
+
 
     [PunRPC]
     public void InitRPC(Define.ItemType pickupType , float lifeTime)
@@ -76,8 +77,7 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
         if (0 != ( _playerCollisionLayer.value & ( 1 << col.gameObject.layer ) ))
         {
             //플레이어 충돌 시
-
-            //TODO(KDM) : 플레이어 스텟 증가
+            Item.Create(col.gameObject , _itemType);
 
             _PV.RPC("DestroyRPC" , RpcTarget.AllBuffered);
         }

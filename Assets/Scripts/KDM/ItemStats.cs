@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 internal class ItemStats
 {
     [field: SerializeField] public float Duration { get; set; }
-    [field: HideInInspector] public bool isTimed { get; private set; }
+    public bool isTimed { get; set; }
     public ItemStatSO statSO;
 }

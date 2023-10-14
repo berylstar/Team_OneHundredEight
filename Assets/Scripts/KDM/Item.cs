@@ -10,9 +10,6 @@ public class Item : MonoBehaviour
     //isMine인 녀석의 스텟을 변화시키면 나머지애들의 스텟이 바뀔거임.. ㅇㅈ?
     //->그렇다면 아이템은 포톤일 필요가 없는것아닐까? (isMine인 녀석만 적용되면 되는거니까..?)
 
-    //TODO(KDM) : 스텟 만들어지면 주석 해제
-    //private List<CharacterStats> _statsList = new List<CharacterStats>();
-
     //1.아이템의 SO를 따로 만들어서 CharacterStats랑 연동시킨다. (내가귀찮지만 기능세분화가 가능하다)
     //중간삽입삭제가 빈번하게 일어나긴 하지만 for문을 통해서 전체적으로 순회하고 3개를 동시에 지워야하기때문에 LinkedList는 구현에서 좀 어려움이 있을듯
     [SerializeField] private List<ItemStats> _itemStats;
@@ -20,6 +17,10 @@ public class Item : MonoBehaviour
     {
         GameObject go;
         Item item;
+        if(pickupType == Define.ItemType.Random)
+        {
+            pickupType = (Define.ItemType)Random.Range((int)Define.ItemType.Random + 1 , (int)Define.ItemType.End);
+        }
         switch (pickupType)
         {
             //TODO(KDM) : 각각 아이템들을 프리펩화 해두기
@@ -58,7 +59,14 @@ public class Item : MonoBehaviour
         for(int i = 0 ; i < _itemStats.Count ; ++i)
         {
             ItemStats stat = _itemStats[i];
-            switch(stat.statSO.BuffType)
+
+            if (stat.Duration == 0)
+                stat.isTimed = false;
+            else
+                stat.isTimed = true;
+
+
+            switch (stat.statSO.BuffType)
             {
                 case Define.BuffType.Hp:
                     //TODO(KDM) : 체력 회복 및 감소 구현(HealthSystem)

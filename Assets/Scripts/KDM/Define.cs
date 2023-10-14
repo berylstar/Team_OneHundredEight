@@ -6,12 +6,14 @@ public class Define
 {
     public enum ItemType
     {
+        Random,
         HpUp,
         HpDown,
         SpeedUp,
         SpeedDown,
         ReverseKey,
-        Invincible
+        Invincible,
+        End
     }
 
     public enum BuffType
