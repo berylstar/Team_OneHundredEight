@@ -4,7 +4,7 @@ using UnityEngine;
 
 using Photon.Pun;
 
-public class PlayerStatController : MonoBehaviour, IPunObservable
+public class PlayerStat : MonoBehaviour, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
@@ -13,7 +13,6 @@ public class PlayerStatController : MonoBehaviour, IPunObservable
     public float MoveSpeed { get; private set; }
     public float JumpForce { get; private set; }
 
-    public GameObject Bullet { get; private set; }
     public int MaxMagazine { get; private set; }
     public float Shootingdelay { get; private set; }
     public float ReloadSpeed { get; private set; }
@@ -24,7 +23,6 @@ public class PlayerStatController : MonoBehaviour, IPunObservable
         MaxHp = initialStat.MaxHp;
         MoveSpeed = initialStat.MoveSpeed;
         JumpForce = initialStat.JumpForce;
-        Bullet = initialStat.Bullet;
         MaxMagazine = initialStat.MaxMagazine;
         Shootingdelay = initialStat.Shootingdelay;
         ReloadSpeed = initialStat.ReloadSpeed;
