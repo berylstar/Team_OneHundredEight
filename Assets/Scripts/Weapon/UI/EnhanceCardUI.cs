@@ -1,17 +1,30 @@
+using System;
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using UnityEngine;
 using UnityEngine.UI;
+using Weapon;
 using Weapon.Model;
 using Text = TMPro.TextMeshProUGUI;
 
-public class EnhanceCardUI : MonoBehaviour
+public class EnhanceCardUI : MonoBehaviourPun
 {
     [SerializeField] private Text nameText;
     [SerializeField] private Text descText;
     [SerializeField] private Image iconImage;
     [SerializeField] private Image selectImage;
+    [SerializeField] Button cardButton;
 
+    private EnhancementManager _manager;
+    private int _index = -1;
     private bool _isSelected = false;
     private EnhancementData _enhancementData;
+
+
+    private void Start()
+    {
+        cardButton.onClick.AddListener(ClickCard);
+    }
 
     public void SetEnhancementData(EnhancementData data)
     {
@@ -24,17 +37,36 @@ public class EnhanceCardUI : MonoBehaviour
         nameText.text = _enhancementData.Name;
         descText.text = _enhancementData.Desc;
         iconImage.sprite = Resources.Load<Sprite>(_enhancementData.IconUrl);
-        selectImage.gameObject.SetActive(false);
+        selectImage.gameObject.SetActive(_isSelected);
     }
 
-    public void SelectEnhancement(int playerIndex)
+    private void ClickCard()
     {
         if (_isSelected)
         {
             return;
         }
 
-        selectImage.gameObject.SetActive(true);
-        //todo change select image color
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
+        _manager.SelectCard(playerIndex, _index, _enhancementData);
+    }
+
+    public void SelectEnhancement(Color selectedColor)
+    {
+        _isSelected = true;
+        selectImage.color = selectedColor;
+        UpdateUi();
+    }
+
+    public void Arrange(EnhancementManager enhancementManager, Vector2 position, int index)
+    {
+        _manager = enhancementManager;
+        _index = index;
+        AnimateArrange(position);
+    }
+
+    private void AnimateArrange(Vector2 position)
+    {
+        transform.position = position;
     }
 }
