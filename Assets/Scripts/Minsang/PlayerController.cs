@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 
@@ -18,7 +19,7 @@ public class PlayerController : MonoBehaviour
     // private Animator _animator;
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
-    private PlayerStat stat;
+    private PlayerStat _stat;
     
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
@@ -27,7 +28,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Canvas")]
     [SerializeField] private GameObject _canvas;
-    [SerializeField] TextMeshProUGUI textNickname;
+    [SerializeField] private TextMeshProUGUI _textNickname;
+    [SerializeField] private Image _hpBar ;
 
     private Vector2 _moveInput;
     private float _rotZ;
@@ -38,20 +40,20 @@ public class PlayerController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
         _photonView = GetComponent<PhotonView>();
-        stat = GetComponent<PlayerStat>();
+        _stat = GetComponent<PlayerStat>();
     }
 
     private void Start()
     {
+        _textNickname.text = _photonView.Owner.ActorNumber.ToString();
+
         if (!_photonView.IsMine)
         {
             _playerInput.enabled = false;
-            this.enabled = false;
         }
         else
         {
             _playerCamera.gameObject.SetActive(true);
-            textNickname.text = _photonView.Owner.ActorNumber.ToString();
         }
     }
 
@@ -59,7 +61,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-        _moveInput = value.Get<Vector2>().normalized * stat.MoveSpeed;
+        _moveInput = value.Get<Vector2>().normalized * _stat.MoveSpeed;
         _moveInput.y = _rigidbody.velocity.y;
         
         _rigidbody.velocity = _moveInput;
@@ -72,7 +74,7 @@ public class PlayerController : MonoBehaviour
         if (rayHit.collider == null)
             return;
 
-        _rigidbody.AddForce(Vector2.up * stat.JumpForce, ForceMode2D.Impulse);
+        _rigidbody.AddForce(Vector2.up * _stat.JumpForce, ForceMode2D.Impulse);
     }
 
     private void OnAim(InputValue value)
