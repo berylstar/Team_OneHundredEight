@@ -8,7 +8,7 @@ public class PlayerStat : MonoBehaviour, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
-    public int HP { get; private set; }
+    [field: SerializeField] public int HP { get; private set; }
     public int MaxHp { get; private set; }
     public float MoveSpeed { get; private set; }
     public float JumpForce { get; private set; }
@@ -34,21 +34,11 @@ public class PlayerStat : MonoBehaviour, IPunObservable
         {
             stream.SendNext(HP);
             stream.SendNext(MaxHp);
-            stream.SendNext(MoveSpeed);
-            stream.SendNext(JumpForce);
-            stream.SendNext(MaxMagazine);
-            stream.SendNext(Shootingdelay);
-            stream.SendNext(ReloadSpeed);
         }
         else
         {
             HP = (int)stream.ReceiveNext();
             MaxHp = (int)stream.ReceiveNext();
-            MoveSpeed = (float)stream.ReceiveNext();
-            JumpForce = (float)stream.ReceiveNext();
-            MaxMagazine = (int)stream.ReceiveNext();
-            Shootingdelay = (float)stream.ReceiveNext();
-            ReloadSpeed = (float)stream.ReceiveNext();
         }
     }
 }
