@@ -4,9 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Bullet
-  - FirstBreak
-  - SecondBreak
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -14,6 +12,8 @@ TagManager:
   - 
   - Water
   - UI
+  - Player
+  - Bullet
   - 
   - 
   - 
@@ -21,10 +21,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Item
+  - Pickup
   - 
   - 
   - 
