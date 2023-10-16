@@ -23,7 +23,7 @@ namespace Weapon.Controller
                 return;
             }
 
-            _rigidbody.velocity = Direction * AttackData.bulletSpd;
+            _rigidbody.velocity = Direction * AttackData.bulletSpeed;
         }
 
         protected void OnDisable()
