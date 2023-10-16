@@ -8,18 +8,19 @@ public class StartPanel : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject startPanel;
     [SerializeField] private GameObject nicknameSettingPanel;
+    protected GameObject parents;
 
     public void Connect()
     {
-        // Ã³À½¿¡ Photon Online Server¿¡ Á¢¼ÓÇÏ´Â °Ô °¡Àå Áß¿äÇÔ!!
-        // Photon Online Server¿¡ Á¢¼ÓÇÏ±â.
+        // ì²˜ìŒì— Photon Online Serverì— ì ‘ì†í•˜ëŠ” ê²Œ ê°€ì¥ ì¤‘ìš”í•¨!!
+        // Photon Online Serverì— ì ‘ì†í•˜ê¸°.
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster()
     {
-        // Photon Online Server¿¡ Á¢¼ÓÇÏ¸é ºÒ¸®´Â Äİ¹é ÇÔ¼ö.
-        print("¼­¹ö Á¢¼Ó ¿Ï·á.");
+        // Photon Online Serverì— ì ‘ì†í•˜ë©´ ë¶ˆë¦¬ëŠ” ì½œë°± í•¨ìˆ˜.
+        print("ì„œë²„ ì ‘ì† ì™„ë£Œ.");
         NextScene();
     }
 

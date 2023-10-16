@@ -22,9 +22,9 @@ public class LobbyPanel : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        // ∑Î ∏ÆΩ∫∆Æ ƒ›πÈ¿∫ ∑Œ∫Òø° ¡¢º”«ﬂ¿ª∂ß ¿⁄µø¿∏∑Œ »£√‚µ»¥Ÿ.
-        // ∑Œ∫Òø°º≠∏∏ »£√‚«“ ºˆ ¿÷¿Ω...
-        Debug.Log($"∑Î ∏ÆΩ∫∆Æ æ˜µ•¿Ã∆Æ ::::::: «ˆ¿Á πÊ ∞πºˆ : {roomList.Count}");
+        // Î£∏ Î¶¨Ïä§Ìä∏ ÏΩúÎ∞±ÏùÄ Î°úÎπÑÏóê Ï†ëÏÜçÌñàÏùÑÎïå ÏûêÎèôÏúºÎ°ú Ìò∏Ï∂úÎêúÎã§.
+        // Î°úÎπÑÏóêÏÑúÎßå Ìò∏Ï∂úÌï† Ïàò ÏûàÏùå...
+        Debug.Log($"Î£∏ Î¶¨Ïä§Ìä∏ ÏóÖÎç∞Ïù¥Ìä∏ ::::::: ÌòÑÏû¨ Î∞© Í∞ØÏàò : {roomList.Count}");
         if (PhotonNetwork.CountOfRooms > roomPanelCase.childCount)
         {
             for (int i = 0; i < PhotonNetwork.CountOfRooms - roomPanelCase.childCount; i++)
@@ -39,8 +39,8 @@ public class LobbyPanel : MonoBehaviourPunCallbacks
             roomPanelCase.GetChild(i).GetComponent<Room>().roomName.text = roomList[i].Name;
             roomPanelCase.GetChild(i).GetComponent<Room>().personnel.text = roomList[i].PlayerCount.ToString()+ "/"+ roomList[i].MaxPlayers.ToString();
             roomPanelCase.GetChild(i).gameObject.SetActive(true);
+            Debug.Log(roomList[i].Name + "ÏÉùÏÑ±");
         }
-        Debug.Log("asd");
     }
     public void CancelRoom()
     {

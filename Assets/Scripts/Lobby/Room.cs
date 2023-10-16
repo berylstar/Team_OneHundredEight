@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Room : LobbyPanel
+public class Room : MonoBehaviourPunCallbacks
 {
+
     public TextMeshProUGUI roomName;
     public TextMeshProUGUI personnel;
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(roomName.ToString());
+        PhotonNetwork.JoinRoom(roomName.text);
     }
+
     public override void OnJoinedRoom()
     {
-        RoomIn();
+        LobbySettingManger.I.lobbyPanel.SetActive(false);
+        LobbySettingManger.I.roomPanel.SetActive(true);
     }
 }
