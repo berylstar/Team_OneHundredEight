@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TestScene.unity
     guid: 0fa4c957b3e2949d9a106ee0749fbeea
   - enabled: 1
+    path: Assets/Scenes/KDM_Item.unity
+    guid: dffc8f0f26aa23b4aa47ac482714af33
+  - enabled: 1
     path: Assets/Scenes/MinsangScene.unity
     guid: 002ce53920390ab419183928475c781f
   m_configObjects: {}
