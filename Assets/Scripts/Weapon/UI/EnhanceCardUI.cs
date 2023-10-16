@@ -32,6 +32,7 @@ public class EnhanceCardUI : MonoBehaviourPun
         UpdateUi();
     }
 
+    [PunRPC]
     private void UpdateUi()
     {
         nameText.text = _enhancementData.Name;
@@ -48,7 +49,7 @@ public class EnhanceCardUI : MonoBehaviourPun
         }
 
         int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
-        _manager.SelectCard(playerIndex, _index, _enhancementData);
+        _manager.EnhanceWeapon(playerIndex, _index);
     }
 
     public void SelectEnhancement(Color selectedColor)

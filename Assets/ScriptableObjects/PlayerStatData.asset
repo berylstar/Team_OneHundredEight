@@ -14,8 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxHp>k__BackingField: 100
   <MoveSpeed>k__BackingField: 5
-  <JumpForce>k__BackingField: 10
-  <Bullet>k__BackingField: {fileID: 0}
-  <MaxMagazine>k__BackingField: 10
-  <Shootingdelay>k__BackingField: 0.1
-  <ReloadSpeed>k__BackingField: 3
+  <JumpForce>k__BackingField: 15
+  <WeaponIndex>k__BackingField: 0
