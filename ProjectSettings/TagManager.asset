@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Item
+  - FirstBreak
+  - SecondBreak
+  - FallingPlatform
   layers:
   - Default
   - TransparentFX
