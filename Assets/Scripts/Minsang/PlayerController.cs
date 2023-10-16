@@ -13,11 +13,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _footPivot;
     private Camera _cam;
 
-    // private Animator _animator;
-    private Rigidbody2D _rigidbody;
-    private PlayerInput _playerInput;
-    private PlayerStatHandler _stat;
-    
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
     [SerializeField] private SpriteRenderer _weaponRenderer;
@@ -28,10 +23,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _textNickname;
     [SerializeField] private Image _hpBar ;
 
-    private Vector2 _moveInput;
-    private float _rotZ;
+    // private Animator _animator;
+    private Rigidbody2D _rigidbody;
+    private PlayerInput _playerInput;
+    private PlayerStatHandler _stat;
     private PhotonView _photonView;
 
+    private Vector2 _moveInput;
+    private float _rotZ;
+    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -59,14 +59,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        _moveInput.y = _rigidbody.velocity.y;
+        _rigidbody.velocity = _moveInput;
+    }
+
     #region InputAction
 
     private void OnMove(InputValue value)
     {
         _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
-        _moveInput.y = _rigidbody.velocity.y;
-        
-        _rigidbody.velocity = _moveInput;
     }
 
     private void OnJump(InputValue value)

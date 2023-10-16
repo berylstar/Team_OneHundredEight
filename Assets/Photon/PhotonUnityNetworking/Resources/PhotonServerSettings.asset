@@ -45,6 +45,7 @@ MonoBehaviour:
   - UpdateUi
   - SelectCard
   - TestT
+  - UpdateSpriteRPC
   - EnhanceWeaponRPC
   - UpdateSpriteRPC
   DisableAutoOpenWizard: 1
