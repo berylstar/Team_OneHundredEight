@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-        _moveInput = value.Get<Vector2>().normalized * _stat.MoveSpeed;
+        _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
         _moveInput.y = _rigidbody.velocity.y;
         
         _rigidbody.velocity = _moveInput;
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         if (rayHit.collider == null)
             return;
 
-        _rigidbody.AddForce(Vector2.up * _stat.JumpForce, ForceMode2D.Impulse);
+        _rigidbody.AddForce(Vector2.up * _stat.CurrentStat.JumpForce, ForceMode2D.Impulse);
     }
 
     private void OnAim(InputValue value)

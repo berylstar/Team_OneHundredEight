@@ -38,10 +38,11 @@ namespace Weapon.Components
             {
                 CurrentAttackData = new AttackData()
                 {
-                    bulletSpd = _weapon.baseAttackData.bulletSpd,
-                    damage = _weapon.baseAttackData.damage,
-                    delay = _weapon.baseAttackData.delay,
-                    magazine = _weapon.baseAttackData.magazine
+                    bulletDamage = _weapon.baseAttackData.bulletDamage,
+                    bulletSpeed = _weapon.baseAttackData.bulletSpeed,
+                    maxMagazine = _weapon.baseAttackData.maxMagazine,
+                    shotInterval = _weapon.baseAttackData.shotInterval,
+                    reloadTime = _weapon.baseAttackData.reloadTime
                 };
             }
 

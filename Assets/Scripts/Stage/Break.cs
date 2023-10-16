@@ -5,7 +5,7 @@ using UnityEngine;
 public class Break : MonoBehaviour
 {
     private float _time;
-    private float _fadeCount;
+    // private float _fadeCount;
     private bool _isFirstBreak;
     private bool _isSecondBreak;
 
@@ -42,17 +42,25 @@ public class Break : MonoBehaviour
     {
         for (int i = 0; i < _first.Length; i++)
         {
-            StartCoroutine(FadeOut(_first[i]));
+            TimeToFalling(_first[i].GetComponent<Rigidbody2D>());
         }
     }
     private void SecondBreak()
     {
         for (int i = 0; i < _second.Length; i++)
         {
-            StartCoroutine(FadeOut(_second[i]));
+            TimeToFalling(_second[i].GetComponent<Rigidbody2D>());
         }
     }
+    private void TimeToFalling(Rigidbody2D rb)
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.mass = 10f;
+        rb.gravityScale = 0.1f;
+        Destroy(rb.gameObject, 5f);
+    }
 
+    /*
     IEnumerator FadeOut(GameObject obj)
     {
         _fadeCount = 1.0f;
@@ -66,4 +74,5 @@ public class Break : MonoBehaviour
         obj.SetActive(false);
         // yield return null;
     }
+    */
 }

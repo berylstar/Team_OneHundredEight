@@ -14,10 +14,14 @@ public class Fall : MonoBehaviour
     {
         if (collision.gameObject.tag.Equals("Player"))
         {
-            _rb.bodyType = RigidbodyType2D.Dynamic;
-            _rb.mass = 50f;
-            _rb.gravityScale = 0.02f;
-            Destroy(gameObject, 8f);
+            FallingPlatform(_rb);
         }
+    }
+    private void FallingPlatform(Rigidbody2D rb)
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.mass = 200f;
+        rb.gravityScale = 0.001f;
+        Destroy(gameObject, 30f);
     }
 }
