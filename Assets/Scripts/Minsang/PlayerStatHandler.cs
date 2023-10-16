@@ -24,40 +24,6 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
     public event Action OnDeath;
     public event Action OnInvincibilityEnd;
 
-    //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
-    public void SetInvincible(bool onoff)
-    {
-        _invincibility = onoff;
-    }
-
-    public bool ChangeHealth(float change)
-    {
-        if (change == 0 || _timeSinceLastChange < healthChangeDelay || _invincibility)
-        {
-            return false;
-        }
-
-        _timeSinceLastChange = 0f;
-        CurrentStat.HP += change;
-        CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
-
-        if (change > 0)
-        {
-            OnHeal?.Invoke();
-        }
-        else
-        {
-            OnDamage?.Invoke();
-        }
-
-        if (CurrentStat.HP <= 0.0f)
-        {
-            OnDeath?.Invoke();
-        }
-
-        return true;
-    }
-
     private void Awake()
     {
         CurrentStat = new PlayerStat();
@@ -143,5 +109,39 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
             CurrentStat.JumpForce = (float)stream.ReceiveNext();
             CurrentStat.MoveSpeed = (float)stream.ReceiveNext();
         }
+    }
+
+    //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
+    public void SetInvincible(bool onoff)
+    {
+        _invincibility = onoff;
+    }
+
+    public bool ChangeHealth(float change)
+    {
+        if (change == 0 || _timeSinceLastChange < healthChangeDelay || _invincibility)
+        {
+            return false;
+        }
+
+        _timeSinceLastChange = 0f;
+        CurrentStat.HP += change;
+        CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
+
+        if (change > 0)
+        {
+            OnHeal?.Invoke();
+        }
+        else
+        {
+            OnDamage?.Invoke();
+        }
+
+        if (CurrentStat.HP <= 0.0f)
+        {
+            OnDeath?.Invoke();
+        }
+
+        return true;
     }
 }
