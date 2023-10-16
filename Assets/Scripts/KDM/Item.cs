@@ -15,14 +15,14 @@ public class Item : MonoBehaviour
     //중간삽입삭제가 빈번하게 나니까 링크드리스트로 -> 링크드리스트는 인스펙터에서 접근이안된다
     [SerializeField] private List<ItemStats> _itemStats;
 
-    
-    public static Item Create(GameObject target , Define.ItemType pickupType)
+
+    public static Item Create(GameObject target, Define.ItemType pickupType)
     {
         GameObject go;
         Item item;
-        if(pickupType == Define.ItemType.Random)
+        if (pickupType == Define.ItemType.Random)
         {
-            pickupType = (Define.ItemType)Random.Range((int)Define.ItemType.Random + 1 , (int)Define.ItemType.End);
+            pickupType = (Define.ItemType)Random.Range((int)Define.ItemType.Random + 1, (int)Define.ItemType.End);
         }
         switch (pickupType)
         {
@@ -53,13 +53,13 @@ public class Item : MonoBehaviour
         item._target = target;
         item._targetStatHandler = target.GetComponent<PlayerStatHandler>();
         item.AllStatModifier();
-        
+
         return item;
     }
 
     private void AllStatModifier()
     {
-        for(int i = 0; i < _itemStats.Count ; i++)
+        for (int i = 0; i < _itemStats.Count; i++)
         {
             ItemStats stat = _itemStats[i];
             if (stat.Duration == 0)
@@ -71,7 +71,7 @@ public class Item : MonoBehaviour
             switch (stat.statSO.BuffType)
             {
                 case Define.BuffType.Hp:
-                    if(stat.statSO.StatsChangeType == Define.StatsChangeType.Multiple)
+                    if (stat.statSO.StatsChangeType == Define.StatsChangeType.Multiple)
                         _targetStatHandler.ChangeHealth(_targetStatHandler.CurrentStat.HP * stat.statSO.Value - _targetStatHandler.CurrentStat.HP);
                     else if (stat.statSO.StatsChangeType == Define.StatsChangeType.Add)
                         _targetStatHandler.ChangeHealth(stat.statSO.Value);
@@ -115,13 +115,13 @@ public class Item : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_itemStats.Count == 0)
+        if (_itemStats.Count == 0)
         {
             Destroy(gameObject);
             return;
         }
 
-        for (int i = _itemStats.Count - 1 ; i >= 0 ; --i)
+        for (int i = _itemStats.Count - 1; i >= 0; --i)
         {
             ItemStats stat = _itemStats[i];
 
@@ -132,7 +132,7 @@ public class Item : MonoBehaviour
             }
 
             stat.Duration -= Time.deltaTime;
-            if(stat.Duration < 0)
+            if (stat.Duration < 0)
             {
                 RemoveStat(stat);
                 _itemStats.Remove(stat);
