@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
     [SerializeField] private SpriteRenderer _weaponRenderer;
-    public event Action EventShoot = null;
 
     [Header("Canvas")]
     [SerializeField] private GameObject _canvas;
@@ -27,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
     private PlayerStatHandler _stat;
+    private PlayerAttackHandler _attack;
     private PhotonView _photonView;
 
     private Vector2 _moveInput;
@@ -36,11 +36,11 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
-        _photonView = GetComponent<PhotonView>();
         _stat = GetComponent<PlayerStatHandler>();
+        _attack = GetComponent<PlayerAttackHandler>();
+        _photonView = GetComponent<PhotonView>();
 
         _cam = Camera.main;
-        
     }
 
     private void Start()
@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
-        EventShoot?.Invoke();
+        // _attack.OnShoot?.Invoke();
     }
 
     #endregion

@@ -523,10 +523,11 @@ GameObject:
   - component: {fileID: 1312927846276564294}
   - component: {fileID: 9028829931138785199}
   - component: {fileID: 4307284343935371083}
-  - component: {fileID: 6821278655194907628}
-  - component: {fileID: 523587371998391249}
   - component: {fileID: 3015031015944910311}
   - component: {fileID: 6320573438653121117}
+  - component: {fileID: 6821278655194907628}
+  - component: {fileID: 523587371998391249}
+  - component: {fileID: 3031750160758716021}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -655,6 +656,47 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &3015031015944910311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7791325186583044144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6320573438653121117}
+  - {fileID: 523587371998391249}
+  - {fileID: 3031750160758716021}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &6320573438653121117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7791325186583044144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!114 &6821278655194907628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -687,57 +729,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialStat: {fileID: 11400000, guid: d48210786fa0beb44aa0852a3c4132d4, type: 2}
-  <Weapon>k__BackingField:
+  healthChangeDelay: 0.5
+--- !u!114 &3031750160758716021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7791325186583044144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92616a7aa72956948b8668124dda166b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _initialWeapon: {fileID: 11400000, guid: c30d537417d09fb449072dc2d42ab607, type: 2}
+  <CurrentWeapon>k__BackingField:
     weaponName: 
     tooltip: 
-    weaponSprite: 
-    baseAttackData:
-      bulletDamage: 0
-      bulletSpeed: 0
-      maxMagazine: 0
-      shotInterval: 0
-      reloadTime: 0
-  healthChangeDelay: 0.5
---- !u!114 &3015031015944910311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791325186583044144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 523587371998391249}
-  - {fileID: 6320573438653121117}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &6320573438653121117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791325186583044144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
+    spriteName: 
+  _initialAttack: {fileID: 11400000, guid: 8ea306b8bfe764b4fa3f918f063f495b, type: 2}
+  <CurrentAttack>k__BackingField:
+    bulletDamage: 0
+    bulletSpeed: 0
+    maxMagazine: 0
+    shotInterval: 0
+    reloadTime: 0
 --- !u!1 &8673564323359348097
 GameObject:
   m_ObjectHideFlags: 0
