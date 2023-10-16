@@ -23,6 +23,7 @@ namespace Weapon
             public Dictionary<int, EnhancementData> SelectedData;
         }
 
+        private int _playerIndex = 0;
         private static EnhanceTester _instance;
         private EnhancementManager _enhancementManager;
         private bool _isUpdated;
@@ -30,6 +31,7 @@ namespace Weapon
         [SerializeField] private Text stateText;
 
         private EnhancementState _state;
+        private int[] _ranking;
 
         public static EnhanceTester Instance
         {
@@ -77,46 +79,33 @@ namespace Weapon
 
         public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
 
-        public override void OnJoinedLobby() =>
-            PhotonNetwork.JoinOrCreateRoom(
-                roomName: "EnhanceTest",
+        public override void OnJoinedLobby()
+        {
+            PhotonNetwork.JoinOrCreateRoom(roomName: "EnhanceTest",
                 roomOptions: new RoomOptions { MaxPlayers = 5 },
-                null);
+                TypedLobby.Default);
+        }
 
         public override void OnJoinedRoom()
         {
             Debug.Log($"on joined room {PhotonNetwork.CurrentRoom.Name}");
             Debug.Log($"actor-number is {PhotonNetwork.LocalPlayer.ActorNumber}");
             Debug.Log($"player-number is {PhotonNetwork.LocalPlayer.GetPlayerNumber()}");
-
             if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
             {
-                _state = new EnhancementState()
-                {
-                    Headcount = PhotonNetwork.CurrentRoom.PlayerCount,
-                    Selection = new Dictionary<int, bool>(),
-                    SelectedData = new Dictionary<int, EnhancementData>()
-                };
-
-                foreach (var player in PhotonNetwork.CurrentRoom.Players)
-                {
-                    _state.Selection.Add(player.Value.ActorNumber, false);
-                    _state.SelectedData.Add(player.Value.ActorNumber, null);
-                }
-
-                int[] ranking = PhotonNetwork.CurrentRoom.Players
-                    .Select(player => player.Value.ActorNumber)
-                    .ToArray();
-
-                _enhancementManager.Init(ranking);
+                InitTestState();
             }
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
+            Debug.Log($"player enter the room:{newPlayer.ActorNumber}");
             if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
             {
-                _enhancementManager.Init(new[] { 1, 2 });
+                Debug.Log($"on joined room {PhotonNetwork.CurrentRoom.Name}");
+                Debug.Log($"actor-number is {PhotonNetwork.LocalPlayer.ActorNumber}");
+                Debug.Log($"player-number is {PhotonNetwork.LocalPlayer.GetPlayerNumber()}");
+                InitTestState();
             }
         }
 
@@ -141,6 +130,33 @@ namespace Weapon
             }
 
             stateText.text = sb.ToString();
+        }
+
+        private void InitTestState()
+        {
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            {
+                _state = new EnhancementState()
+                {
+                    Headcount = PhotonNetwork.CurrentRoom.PlayerCount,
+                    Selection = new Dictionary<int, bool>(),
+                    SelectedData = new Dictionary<int, EnhancementData>()
+                };
+
+                foreach (var player in PhotonNetwork.CurrentRoom.Players)
+                {
+                    _state.Selection.Add(player.Value.ActorNumber, false);
+                    _state.SelectedData.Add(player.Value.ActorNumber, null);
+                }
+
+                _ranking = PhotonNetwork.CurrentRoom
+                    .Players
+                    .Values
+                    .OrderBy(it => it.ActorNumber)
+                    .Select(it => it.ActorNumber)
+                    .ToArray();
+                _enhancementManager.Init(_ranking);
+            }
         }
     }
 }

@@ -86,7 +86,7 @@ namespace Weapon.UI
 
         private void CreatePlayers()
         {
-            foreach (var player in PhotonNetwork.CurrentRoom.Players)
+            foreach (var player in _enhancementManager.PlayerColors)
             {
                 EnhancePlayerUI go = Resources.Load<EnhancePlayerUI>("EnhancePlayerUi");
                 EnhancePlayerUI playerUi = Instantiate(go, playerContainer, false);
