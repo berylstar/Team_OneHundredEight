@@ -568,7 +568,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -688,6 +688,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialStat: {fileID: 11400000, guid: d48210786fa0beb44aa0852a3c4132d4, type: 2}
   <HP>k__BackingField: 0
+  <MaxHp>k__BackingField: 0
+  <MoveSpeed>k__BackingField: 0
+  <JumpForce>k__BackingField: 0
+  <Weapon>k__BackingField:
+    weaponName: 
+    bulletName: 
+    baseAttackData:
+      damage: 0
+      magazine: 0
+      delay: 0
+      bulletSpd: 0
 --- !u!114 &3015031015944910311
 MonoBehaviour:
   m_ObjectHideFlags: 0
