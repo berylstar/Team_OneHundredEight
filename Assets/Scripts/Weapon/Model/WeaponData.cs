@@ -10,6 +10,5 @@ public class WeaponData
 {
     public string weaponName;
     public string tooltip;
-    public string weaponSprite;
-    public AttackData baseAttackData;
+    public string spriteName;
 }
