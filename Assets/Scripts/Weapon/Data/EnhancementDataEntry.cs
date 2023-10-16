@@ -7,7 +7,7 @@ namespace Weapon.Data
         public string Name;
         public string IconName;
         public string Desc;
-        public float Damage;
+        public int Damage;
         public int Magazine;
         public float Delay;
         public float BulletSpd;

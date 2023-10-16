@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityEngine;
 using Weapon.Data;
 using Weapon.Model;
+using Weapon.UI;
 using Random = UnityEngine.Random;
 
 namespace Weapon
@@ -19,24 +20,28 @@ namespace Weapon
         private const string ENHANCEMENT_CSV_FILE = "enhancement_dataset";
         private Camera _camera;
 
-        [field: SerializeField] public Color[] PlayerColors { get; private set; }
-        [SerializeField] private Canvas cards;
-        [SerializeField] private EnhanceCardUI cardPrefab;
+        //todo make dictionary
+        [SerializeField] private List<Color> playerColors;
 
+        public Dictionary<int, Color> PlayerColors = new Dictionary<int, Color>();
         private List<EnhancementDataEntry> _dataEntries;
+        public List<EnhancementData> DataList { get; private set; }
+
         private List<KeyValuePair<EnhancementData, bool>> _remainEnhancements;
 
         //todo get from gameManager
         private int _headcount = 3;
+        public int Headcount => _headcount;
         private int CardCount => _headcount + 1 > MaxCardCount ? MaxCardCount : _headcount + 1;
 
+        private EnhanceUI _enhanceUI;
         private HashSet<int> _enhancedPlayerIndexSet;
-        private EnhanceCardUI[] _cards;
         private readonly Dictionary<int, bool> _canSelectEnhance = new Dictionary<int, bool>();
         private float _currentTime;
         private bool _isInit = false;
         private int _currentEnhanceOrder = -1;
         public event Action<int, EnhancementData> OnEnhancementEvent;
+        public event Action<int, Color> OnUpdateEnhanceUIEvent;
         public event Action<float> OnTimeElapsed;
         public event Action OnAllPlayerEnhanced;
 
@@ -45,13 +50,6 @@ namespace Weapon
             LoadDataSet();
             _camera = Camera.main;
             _enhancedPlayerIndexSet = new HashSet<int>();
-            _cards = new EnhanceCardUI[CardCount];
-        }
-
-        private void Start()
-        {
-            //todo remove
-            CreateCards();
         }
 
         private void Update()
@@ -65,6 +63,7 @@ namespace Weapon
             {
                 if (SetNextSelectionOrder())
                 {
+                    _currentTime = 0f;
                     EnhanceNotSelectedPlayer();
                     OnAllPlayerEnhanced?.Invoke();
                 }
@@ -82,60 +81,16 @@ namespace Weapon
         {
             //TODO Inversion of control -> dataManager
             _dataEntries = CsvReader.ReadCsvFromResources<EnhancementDataEntry>(ENHANCEMENT_CSV_FILE, 1);
+            DataList = _dataEntries.Select(it => it.ToEnhancementData()).ToList();
             _remainEnhancements = _dataEntries
                 .Select(data => new KeyValuePair<EnhancementData, bool>(data.ToEnhancementData(), false))
                 .ToList();
         }
 
-        //game manager 가 다음 라운드로 넘어간 경우 호출해야됨 그러나 씬을 넘기는 구조라면 private 으로 해도 됨
-        private void CreateCards()
-        {
-            int repeat = 0;
-            int cnt = 0;
-            bool[] isCreated = new bool[_dataEntries.Count];
-            while (repeat < 10000 && cnt < CardCount)
-            {
-                repeat++;
-                int idx = Random.Range(0, _dataEntries.Count);
-                if (isCreated[idx])
-                {
-                    continue;
-                }
-
-                cnt++;
-                isCreated[idx] = true;
-            }
-
-            cnt = 0;
-            float width = 0f;
-            for (int i = 0; i < _dataEntries.Count; i++)
-            {
-                if (isCreated[i])
-                {
-                    EnhanceCardUI card = Instantiate(cardPrefab, cards.transform, false);
-                    _cards[cnt] = card;
-
-                    card.SetEnhancementData(_dataEntries[i].ToEnhancementData());
-                    ArrangeCard(card, cnt++);
-                }
-            }
-
-            _currentTime = SelectionLimitTime;
-        }
-
-        //todo migrate to cardsUi
-        private void ArrangeCard(EnhanceCardUI card, int index)
-        {
-            float startX = (MaxCardCount - CardCount) / (float)MaxCardCount * 0.5f;
-            float paddingX = 1 / (float)MaxCardCount;
-            Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * index, 0.5f));
-            card.Arrange(this, startPosition, index);
-        }
-
         public void EnhanceWeapon(int playerIndex, int cardIndex)
         {
             var data = _dataEntries[cardIndex].ToEnhancementData();
-            Debug.Log($"select Card-P :{playerIndex} ,C : {cardIndex} ");
+            Debug.Log($"select Card P :{playerIndex} ,C : {cardIndex} ");
 
             if (!_canSelectEnhance.ContainsKey(playerIndex))
             {
@@ -161,19 +116,27 @@ namespace Weapon
 
             _enhancedPlayerIndexSet.Add(playerIndex);
             OnEnhancementEvent?.Invoke(playerIndex, data);
-            _cards[cardIndex].SelectEnhancement(PlayerColors[playerIndex - 1]);
+            OnUpdateEnhanceUIEvent?.Invoke(cardIndex, PlayerColors[playerIndex]);
+            _enhanceUI.SetPlayerChecked(playerIndex);
             //todo 모두다 고른 경우 이벤트 호출 
         }
 
-        public void SetRanking(int[] ranking)
+        public void Init(int[] ranking)
         {
+            int colorIndex = 0;
             foreach (var playerIndex in ranking)
             {
                 _canSelectEnhance[playerIndex] = false;
+                PlayerColors[playerIndex] = playerColors[colorIndex++];
             }
 
+            _headcount = PhotonNetwork.CurrentRoom.PlayerCount;
             _canSelectEnhance[ranking[0]] = true;
             _currentEnhanceOrder = ranking[0];
+            EnhanceUI go = Resources.Load<EnhanceUI>("EnhanceUI");
+            _enhanceUI = Instantiate(go);
+            _enhanceUI.Init(this, MaxCardCount, CardCount);
+            _currentTime = SelectionLimitTime;
             _isInit = true;
         }
 
