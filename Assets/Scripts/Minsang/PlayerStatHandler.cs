@@ -29,6 +29,7 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
     {
         _invincibility = onoff;
     }
+
     public bool ChangeHealth(float change)
     {
         if (change == 0 || _timeSinceLastChange < healthChangeDelay || _invincibility)
@@ -56,37 +57,41 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
 
         return true;
     }
-    public void SetHealth(float change)
+
+    private void Awake()
     {
-        //이렇게 써도되겠지만 고민좀 해봅시다 네..
-        CurrentStat.HP = change;
+        CurrentStat = new PlayerStat();
     }
 
     private void Start()
     {
-        Weapon = GameManager.Instance.Weapons[initialStat.WeaponIndex];
-
         InitPlayerStat();
 
         GameManager.Instance.PlayerStats.Add(this);
     }
+
     public void InitPlayerStat()
     {
         CurrentStat.HP = initialStat.MaxHp;
         CurrentStat.MaxHp = initialStat.MaxHp;
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
+
+        Weapon = GameManager.Instance.Weapons[initialStat.WeaponIndex];
     }
+
     public void AddStatModifier(PlayerStat statModifier)
     {
         statModifiers.AddLast(statModifier);
         UpdateCharacterStats();
     }
+
     public void RemoveStatModifier(PlayerStat statModifier)
     {
         statModifiers.Remove(statModifier);
         UpdateCharacterStats();
     }
+
     public void UpdateCharacterStats()
     {
         SetBaseStat();
@@ -114,6 +119,7 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
     }
+
     private void UpdateStat(Func<float, float, float> operation, PlayerStat newModifier)
     {
         CurrentStat.MaxHp = (int)operation(CurrentStat.MaxHp, newModifier.MaxHp);

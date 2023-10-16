@@ -687,10 +687,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialStat: {fileID: 11400000, guid: d48210786fa0beb44aa0852a3c4132d4, type: 2}
-  <HP>k__BackingField: 0
-  <MaxHp>k__BackingField: 0
-  <MoveSpeed>k__BackingField: 0
-  <JumpForce>k__BackingField: 0
   <Weapon>k__BackingField:
     weaponName: 
     tooltip: 
@@ -701,6 +697,7 @@ MonoBehaviour:
       maxMagazine: 0
       shotInterval: 0
       reloadTime: 0
+  healthChangeDelay: 0.5
 --- !u!114 &3015031015944910311
 MonoBehaviour:
   m_ObjectHideFlags: 0
