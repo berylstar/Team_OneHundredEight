@@ -8,14 +8,11 @@ public class PlayerStat : MonoBehaviour, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
-    public int HP { get; private set; }
+    [field: SerializeField] public int HP { get; private set; } // 인스펙터에서 확인용. 추후 제거
     public int MaxHp { get; private set; }
     public float MoveSpeed { get; private set; }
     public float JumpForce { get; private set; }
-
-    public int MaxMagazine { get; private set; }
-    public float Shootingdelay { get; private set; }
-    public float ReloadSpeed { get; private set; }
+    public WeaponData Weapon { get; private set; }
 
     private void Start()
     {
@@ -23,9 +20,7 @@ public class PlayerStat : MonoBehaviour, IPunObservable
         MaxHp = initialStat.MaxHp;
         MoveSpeed = initialStat.MoveSpeed;
         JumpForce = initialStat.JumpForce;
-        MaxMagazine = initialStat.MaxMagazine;
-        Shootingdelay = initialStat.Shootingdelay;
-        ReloadSpeed = initialStat.ReloadSpeed;
+        // Weapon = NetworkManager.Instance.WeaponDatas[initialStat.WeaponIndex];
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -34,21 +29,11 @@ public class PlayerStat : MonoBehaviour, IPunObservable
         {
             stream.SendNext(HP);
             stream.SendNext(MaxHp);
-            stream.SendNext(MoveSpeed);
-            stream.SendNext(JumpForce);
-            stream.SendNext(MaxMagazine);
-            stream.SendNext(Shootingdelay);
-            stream.SendNext(ReloadSpeed);
         }
         else
         {
             HP = (int)stream.ReceiveNext();
             MaxHp = (int)stream.ReceiveNext();
-            MoveSpeed = (float)stream.ReceiveNext();
-            JumpForce = (float)stream.ReceiveNext();
-            MaxMagazine = (int)stream.ReceiveNext();
-            Shootingdelay = (float)stream.ReceiveNext();
-            ReloadSpeed = (float)stream.ReceiveNext();
         }
     }
 }
