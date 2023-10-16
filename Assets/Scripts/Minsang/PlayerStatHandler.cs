@@ -24,69 +24,40 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
     public event Action OnDeath;
     public event Action OnInvincibilityEnd;
 
-    //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
-    public void SetInvincible(bool onoff)
+    private void Awake()
     {
-        _invincibility = onoff;
-    }
-    public bool ChangeHealth(float change)
-    {
-        if (change == 0 || _timeSinceLastChange < healthChangeDelay || _invincibility)
-        {
-            return false;
-        }
-
-        _timeSinceLastChange = 0f;
-        CurrentStat.HP += change;
-        CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
-
-        if (change > 0)
-        {
-            OnHeal?.Invoke();
-        }
-        else
-        {
-            OnDamage?.Invoke();
-        }
-
-        if (CurrentStat.HP <= 0.0f)
-        {
-            OnDeath?.Invoke();
-        }
-
-        return true;
-    }
-    public void SetHealth(float change)
-    {
-        //이렇게 써도되겠지만 고민좀 해봅시다 네..
-        CurrentStat.HP = change;
+        CurrentStat = new PlayerStat();
     }
 
     private void Start()
     {
-        Weapon = GameManager.Instance.Weapons[initialStat.WeaponIndex];
-
         InitPlayerStat();
 
         GameManager.Instance.PlayerStats.Add(this);
     }
+
     public void InitPlayerStat()
     {
         CurrentStat.HP = initialStat.MaxHp;
         CurrentStat.MaxHp = initialStat.MaxHp;
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
+
+        Weapon = GameManager.Instance.Weapons[initialStat.WeaponIndex];
     }
+
     public void AddStatModifier(PlayerStat statModifier)
     {
         statModifiers.AddLast(statModifier);
         UpdateCharacterStats();
     }
+
     public void RemoveStatModifier(PlayerStat statModifier)
     {
         statModifiers.Remove(statModifier);
         UpdateCharacterStats();
     }
+
     public void UpdateCharacterStats()
     {
         SetBaseStat();
@@ -114,6 +85,7 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
     }
+
     private void UpdateStat(Func<float, float, float> operation, PlayerStat newModifier)
     {
         CurrentStat.MaxHp = (int)operation(CurrentStat.MaxHp, newModifier.MaxHp);
@@ -137,5 +109,39 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
             CurrentStat.JumpForce = (float)stream.ReceiveNext();
             CurrentStat.MoveSpeed = (float)stream.ReceiveNext();
         }
+    }
+
+    //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
+    public void SetInvincible(bool onoff)
+    {
+        _invincibility = onoff;
+    }
+
+    public bool ChangeHealth(float change)
+    {
+        if (change == 0 || _timeSinceLastChange < healthChangeDelay || _invincibility)
+        {
+            return false;
+        }
+
+        _timeSinceLastChange = 0f;
+        CurrentStat.HP += change;
+        CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
+
+        if (change > 0)
+        {
+            OnHeal?.Invoke();
+        }
+        else
+        {
+            OnDamage?.Invoke();
+        }
+
+        if (CurrentStat.HP <= 0.0f)
+        {
+            OnDeath?.Invoke();
+        }
+
+        return true;
     }
 }

@@ -24,6 +24,9 @@ public class ForPhotonTest : MonoBehaviourPunCallbacks
     [PunRPC]
     private void TestT()
     {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
         PhotonNetwork.LoadLevel("MinsangScene");
     }
 }
