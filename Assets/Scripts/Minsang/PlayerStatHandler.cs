@@ -4,15 +4,15 @@ using UnityEngine;
 
 using Photon.Pun;
 
-public class PlayerStat : MonoBehaviour, IPunObservable
+public class PlayerStatHandler : MonoBehaviour, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
     [field: SerializeField] public int HP { get; private set; } // 인스펙터에서 확인용. 추후 제거
-    public int MaxHp { get; private set; }
-    public float MoveSpeed { get; private set; }
-    public float JumpForce { get; private set; }
-    public WeaponData Weapon { get; private set; }
+    [field: SerializeField] public int MaxHp { get; private set; }
+    [field: SerializeField] public float MoveSpeed { get; private set; }
+    [field: SerializeField] public float JumpForce { get; private set; }
+    [field: SerializeField] public WeaponData Weapon { get; private set; }
 
     private void Start()
     {
