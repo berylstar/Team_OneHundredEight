@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MinsangSceneLobby.unity
-    guid: 1e8a6caab6e48834dbb462f51f35081f
+    path: Assets/Scenes/KDM_Item.unity
+    guid: dffc8f0f26aa23b4aa47ac482714af33
   - enabled: 1
     path: Assets/Scenes/MinsangScene.unity
     guid: 002ce53920390ab419183928475c781f
