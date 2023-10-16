@@ -693,12 +693,14 @@ MonoBehaviour:
   <JumpForce>k__BackingField: 0
   <Weapon>k__BackingField:
     weaponName: 
-    bulletName: 
+    tooltip: 
+    weaponSprite: 
     baseAttackData:
-      damage: 0
-      magazine: 0
-      delay: 0
-      bulletSpd: 0
+      bulletDamage: 0
+      bulletSpeed: 0
+      maxMagazine: 0
+      shotInterval: 0
+      reloadTime: 0
 --- !u!114 &3015031015944910311
 MonoBehaviour:
   m_ObjectHideFlags: 0

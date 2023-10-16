@@ -20,7 +20,9 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
         MaxHp = initialStat.MaxHp;
         MoveSpeed = initialStat.MoveSpeed;
         JumpForce = initialStat.JumpForce;
-        // Weapon = NetworkManager.Instance.WeaponDatas[initialStat.WeaponIndex];
+        Weapon = GameManager.Instance.Weapons[initialStat.WeaponIndex];
+
+        GameManager.Instance.PlayerStats.Add(this);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

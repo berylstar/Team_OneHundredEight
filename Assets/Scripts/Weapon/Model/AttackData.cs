@@ -6,10 +6,10 @@ namespace Weapon.Model
     [Serializable]
     public class AttackData
     {
-        public int damage;
-        public int magazine;
-        public float delay;
-        public float bulletSpd;
+        public int bulletDamage;
+        public float bulletSpeed;
+        public int maxMagazine;
+        public float shotInterval;
         public float reloadTime;
 
 
@@ -17,10 +17,10 @@ namespace Weapon.Model
         {
             return new AttackData()
             {
-                damage = a.damage + b.damage,
-                magazine = a.magazine + b.magazine,
-                delay = a.delay + b.delay,
-                bulletSpd = a.bulletSpd + b.bulletSpd,
+                bulletDamage = a.bulletDamage + b.bulletDamage,
+                bulletSpeed = a.bulletSpeed + b.bulletSpeed,
+                maxMagazine = a.maxMagazine + b.maxMagazine,
+                shotInterval = a.shotInterval + b.shotInterval,
                 reloadTime = a.reloadTime + b.reloadTime
             };
         }
