@@ -6,6 +6,7 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     [SerializeField] private GameObject _target;
+    private PlayerStatHandler _targetStatHandler;
     //여기서 타겟은 뭘까? -> isMine인 녀석
     //isMine인 녀석의 스텟을 변화시키면 나머지애들의 스텟이 바뀔거임.. ㅇㅈ?
     //->그렇다면 아이템은 포톤일 필요가 없는것아닐까? (isMine인 녀석만 적용되면 되는거니까..?)
@@ -13,6 +14,8 @@ public class Item : MonoBehaviour
     //1.아이템의 SO를 따로 만들어서 CharacterStats랑 연동시킨다. (내가귀찮지만 기능세분화가 가능하다)
     //중간삽입삭제가 빈번하게 나니까 링크드리스트로 -> 링크드리스트는 인스펙터에서 접근이안된다
     [SerializeField] private List<ItemStats> _itemStats;
+
+    
     public static Item Create(GameObject target , Define.ItemType pickupType)
     {
         GameObject go;
@@ -48,7 +51,7 @@ public class Item : MonoBehaviour
         item = go.GetComponent<Item>();
 
         item._target = target;
-
+        item._targetStatHandler = target.GetComponent<PlayerStatHandler>();
         item.AllStatModifier();
         
         return item;
@@ -68,13 +71,21 @@ public class Item : MonoBehaviour
             switch (stat.statSO.BuffType)
             {
                 case Define.BuffType.Hp:
-                    //TODO(KDM) : 체력 회복 및 감소 구현(HealthSystem)
+                    if(stat.statSO.StatsChangeType == Define.StatsChangeType.Multiple)
+                        _targetStatHandler.ChangeHealth(_targetStatHandler.CurrentStat.HP * stat.statSO.Value - _targetStatHandler.CurrentStat.HP);
+                    else if (stat.statSO.StatsChangeType == Define.StatsChangeType.Add)
+                        _targetStatHandler.ChangeHealth(stat.statSO.Value);
+                    else
+                        _targetStatHandler.ChangeHealth(stat.statSO.Value - _targetStatHandler.CurrentStat.HP);
                     break;
                 case Define.BuffType.Speed:
-                    //TODO(KDM) : 스텟 적용 구현(CharacterStatsHandler)
+                    stat.ApplyStat = new PlayerStat();
+                    stat.ApplyStat.MoveSpeed = stat.statSO.Value;
+                    stat.ApplyStat.statsChangeType = stat.statSO.StatsChangeType;
+                    _targetStatHandler.AddStatModifier(stat.ApplyStat);
                     break;
                 case Define.BuffType.Invincible:
-                    //TODO(KDM) : 무적 구현(HealthSystem)
+                    _targetStatHandler.SetInvincible(true);
                     break;
                 case Define.BuffType.ReverseKey:
                     //TODO(KDM) : 키반전 구현(PlayerInput쪽이려나?)
@@ -88,13 +99,13 @@ public class Item : MonoBehaviour
         switch (stat.statSO.BuffType)
         {
             case Define.BuffType.Hp:
-                //TODO(KDM) : 감소,증가 된 체력 복구 구현(HealthSystem)
+                //TODO(KDM) : 감소,증가 된 체력 복구 구현(HealthSystem) 이거는 안쓰는게 맞을 것 같은데.. 뭔말알? 나중에 필요하면 구현
                 break;
             case Define.BuffType.Speed:
-                //TODO(KDM) : 스텟 적용 해제 구현(CharacterStatsHandler)
+                _targetStatHandler.RemoveStatModifier(stat.ApplyStat);
                 break;
             case Define.BuffType.Invincible:
-                //TODO(KDM) : 무적 해제 구현(HealthSystem)
+                _targetStatHandler.SetInvincible(false);
                 break;
             case Define.BuffType.ReverseKey:
                 //TODO(KDM) : 키반전 해제 구현(PlayerInput쪽이려나?)
