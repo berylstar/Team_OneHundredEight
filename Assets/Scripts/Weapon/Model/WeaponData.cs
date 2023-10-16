@@ -9,6 +9,7 @@ using Weapon.Model;
 public class WeaponData
 {
     public string weaponName;
+    public string tooltip;
     public string bulletName;
     public AttackData baseAttackData;
 }

@@ -42,6 +42,8 @@ MonoBehaviour:
   - DestroyRPC
   - InitRPC
   - RPCFlipX
+  - UpdateUi
+  - SelectCard
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
