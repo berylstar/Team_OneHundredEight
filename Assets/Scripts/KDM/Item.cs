@@ -6,12 +6,12 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     [SerializeField] private GameObject _target;
-    //¿©±â¼­ Å¸°ÙÀº ¹»±î? -> isMineÀÎ ³à¼®
-    //isMineÀÎ ³à¼®ÀÇ ½ºÅİÀ» º¯È­½ÃÅ°¸é ³ª¸ÓÁö¾ÖµéÀÇ ½ºÅİÀÌ ¹Ù²ğ°ÅÀÓ.. ¤·¤¸?
-    //->±×·¸´Ù¸é ¾ÆÀÌÅÛÀº Æ÷ÅæÀÏ ÇÊ¿ä°¡ ¾ø´Â°Í¾Æ´Ò±î? (isMineÀÎ ³à¼®¸¸ Àû¿ëµÇ¸é µÇ´Â°Å´Ï±î..?)
+    //ì—¬ê¸°ì„œ íƒ€ê²Ÿì€ ë­˜ê¹Œ? -> isMineì¸ ë…€ì„
+    //isMineì¸ ë…€ì„ì˜ ìŠ¤í…Ÿì„ ë³€í™”ì‹œí‚¤ë©´ ë‚˜ë¨¸ì§€ì• ë“¤ì˜ ìŠ¤í…Ÿì´ ë°”ë€”ê±°ì„.. ã…‡ã…ˆ?
+    //->ê·¸ë ‡ë‹¤ë©´ ì•„ì´í…œì€ í¬í†¤ì¼ í•„ìš”ê°€ ì—†ëŠ”ê²ƒì•„ë‹ê¹Œ? (isMineì¸ ë…€ì„ë§Œ ì ìš©ë˜ë©´ ë˜ëŠ”ê±°ë‹ˆê¹Œ..?)
 
-    //1.¾ÆÀÌÅÛÀÇ SO¸¦ µû·Î ¸¸µé¾î¼­ CharacterStats¶û ¿¬µ¿½ÃÅ²´Ù. (³»°¡±ÍÂúÁö¸¸ ±â´É¼¼ºĞÈ­°¡ °¡´ÉÇÏ´Ù)
-    //Áß°£»ğÀÔ»èÁ¦°¡ ºó¹øÇÏ°Ô ÀÏ¾î³ª±ä ÇÏÁö¸¸ for¹®À» ÅëÇØ¼­ ÀüÃ¼ÀûÀ¸·Î ¼øÈ¸ÇÏ°í 3°³¸¦ µ¿½Ã¿¡ Áö¿ö¾ßÇÏ±â¶§¹®¿¡ LinkedList´Â ±¸Çö¿¡¼­ Á» ¾î·Á¿òÀÌ ÀÖÀ»µí
+    //1.ì•„ì´í…œì˜ SOë¥¼ ë”°ë¡œ ë§Œë“¤ì–´ì„œ CharacterStatsë‘ ì—°ë™ì‹œí‚¨ë‹¤. (ë‚´ê°€ê·€ì°®ì§€ë§Œ ê¸°ëŠ¥ì„¸ë¶„í™”ê°€ ê°€ëŠ¥í•˜ë‹¤)
+    //ì¤‘ê°„ì‚½ì…ì‚­ì œê°€ ë¹ˆë²ˆí•˜ê²Œ ë‚˜ë‹ˆê¹Œ ë§í¬ë“œë¦¬ìŠ¤íŠ¸ë¡œ -> ë§í¬ë“œë¦¬ìŠ¤íŠ¸ëŠ” ì¸ìŠ¤í™í„°ì—ì„œ ì ‘ê·¼ì´ì•ˆëœë‹¤
     [SerializeField] private List<ItemStats> _itemStats;
     public static Item Create(GameObject target , Define.ItemType pickupType)
     {
@@ -23,7 +23,7 @@ public class Item : MonoBehaviour
         }
         switch (pickupType)
         {
-            //TODO(KDM) : °¢°¢ ¾ÆÀÌÅÛµéÀ» ÇÁ¸®ÆéÈ­ ÇØµÎ±â
+            //TODO(KDM) : ê°ê° ì•„ì´í…œë“¤ì„ í”„ë¦¬í©í™” í•´ë‘ê¸°
             case Define.ItemType.HpDown:
                 go = Object.Instantiate(Resources.Load<GameObject>("Item"));
                 break;
@@ -56,10 +56,9 @@ public class Item : MonoBehaviour
 
     private void AllStatModifier()
     {
-        for(int i = 0 ; i < _itemStats.Count ; ++i)
+        for(int i = 0; i < _itemStats.Count ; i++)
         {
             ItemStats stat = _itemStats[i];
-
             if (stat.Duration == 0)
                 stat.isTimed = false;
             else
@@ -69,16 +68,16 @@ public class Item : MonoBehaviour
             switch (stat.statSO.BuffType)
             {
                 case Define.BuffType.Hp:
-                    //TODO(KDM) : Ã¼·Â È¸º¹ ¹× °¨¼Ò ±¸Çö(HealthSystem)
+                    //TODO(KDM) : ì²´ë ¥ íšŒë³µ ë° ê°ì†Œ êµ¬í˜„(HealthSystem)
                     break;
                 case Define.BuffType.Speed:
-                    //TODO(KDM) : ½ºÅİ Àû¿ë ±¸Çö(CharacterStatsHandler)
+                    //TODO(KDM) : ìŠ¤í…Ÿ ì ìš© êµ¬í˜„(CharacterStatsHandler)
                     break;
                 case Define.BuffType.Invincible:
-                    //TODO(KDM) : ¹«Àû ±¸Çö(HealthSystem)
+                    //TODO(KDM) : ë¬´ì  êµ¬í˜„(HealthSystem)
                     break;
                 case Define.BuffType.ReverseKey:
-                    //TODO(KDM) : Å°¹İÀü ±¸Çö(PlayerInputÂÊÀÌ·Á³ª?)
+                    //TODO(KDM) : í‚¤ë°˜ì „ êµ¬í˜„(PlayerInputìª½ì´ë ¤ë‚˜?)
                     break;
             }
         }
@@ -89,25 +88,33 @@ public class Item : MonoBehaviour
         switch (stat.statSO.BuffType)
         {
             case Define.BuffType.Hp:
-                //TODO(KDM) : °¨¼Ò,Áõ°¡ µÈ Ã¼·Â º¹±¸ ±¸Çö(HealthSystem)
+                //TODO(KDM) : ê°ì†Œ,ì¦ê°€ ëœ ì²´ë ¥ ë³µêµ¬ êµ¬í˜„(HealthSystem)
                 break;
             case Define.BuffType.Speed:
-                //TODO(KDM) : ½ºÅİ Àû¿ë ÇØÁ¦ ±¸Çö(CharacterStatsHandler)
+                //TODO(KDM) : ìŠ¤í…Ÿ ì ìš© í•´ì œ êµ¬í˜„(CharacterStatsHandler)
                 break;
             case Define.BuffType.Invincible:
-                //TODO(KDM) : ¹«Àû ÇØÁ¦ ±¸Çö(HealthSystem)
+                //TODO(KDM) : ë¬´ì  í•´ì œ êµ¬í˜„(HealthSystem)
                 break;
             case Define.BuffType.ReverseKey:
-                //TODO(KDM) : Å°¹İÀü ÇØÁ¦ ±¸Çö(PlayerInputÂÊÀÌ·Á³ª?)
+                //TODO(KDM) : í‚¤ë°˜ì „ í•´ì œ êµ¬í˜„(PlayerInputìª½ì´ë ¤ë‚˜?)
                 break;
         }
     }
     // Update is called once per frame
     void Update()
     {
-        foreach(ItemStats stat in _itemStats)
+        if(_itemStats.Count == 0)
         {
-            if(stat.isTimed == false)
+            Destroy(gameObject);
+            return;
+        }
+
+        for (int i = _itemStats.Count - 1 ; i >= 0 ; --i)
+        {
+            ItemStats stat = _itemStats[i];
+
+            if (stat.isTimed == false)
             {
                 _itemStats.Remove(stat);
                 continue;
@@ -120,9 +127,6 @@ public class Item : MonoBehaviour
                 _itemStats.Remove(stat);
             }
         }
-
-        if (_itemStats.Count == 0)
-            Destroy(gameObject);
     }
 
 }
