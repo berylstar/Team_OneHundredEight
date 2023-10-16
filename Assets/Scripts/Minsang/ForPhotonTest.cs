@@ -11,6 +11,9 @@ public class ForPhotonTest : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        //PhotonNetwork.SendRate = 60;
+        //PhotonNetwork.SerializationRate = 30;
+
         PhotonNetwork.ConnectUsingSettings();
     }
 

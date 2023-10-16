@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1443448acf1a0424ca3c8e2f36de4af4, type: 3}
+  m_Name: WeaponData
+  m_EditorClassIdentifier: 
+  <AttackDatas>k__BackingField:
+  - <Name>k__BackingField: pistol
+    <Tooltip>k__BackingField: "\uAD8C\uCD1D"
+    <WeaponSprite>k__BackingField: {fileID: 0}
+    <MaxMagazine>k__BackingField: 10
+    <ShotInterval>k__BackingField: 0.5
+    <ReloadSpeed>k__BackingField: 2
+    <Damage>k__BackingField: 5

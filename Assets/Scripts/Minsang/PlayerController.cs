@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using Cinemachine;
 
 using Photon.Pun;
 using Photon.Realtime;
@@ -14,7 +15,7 @@ public class PlayerController : MonoBehaviour
     [Header("Player")]
     [SerializeField] private SpriteRenderer _playerRenderer;
     [SerializeField] private Transform _footPivot;
-    [SerializeField] private Camera _playerCamera;
+    private Camera _cam;
 
     // private Animator _animator;
     private Rigidbody2D _rigidbody;
@@ -41,6 +42,9 @@ public class PlayerController : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         _photonView = GetComponent<PhotonView>();
         _stat = GetComponent<PlayerStat>();
+
+        _cam = Camera.main;
+        
     }
 
     private void Start()
@@ -53,7 +57,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            _playerCamera.gameObject.SetActive(true);
+            var cvc = _cam.transform.GetChild(0).GetComponent<CinemachineVirtualCamera>();
+            cvc.Follow = transform;
+            cvc.LookAt = transform;
         }
     }
 
@@ -79,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnAim(InputValue value)
     {
-        Vector2 worldPos = _playerCamera.ScreenToWorldPoint(value.Get<Vector2>());
+        Vector2 worldPos = _cam.ScreenToWorldPoint(value.Get<Vector2>());
         Vector2 newAim = (worldPos - (Vector2)transform.position).normalized;
 
         if (newAim.magnitude >= 0.5f)
