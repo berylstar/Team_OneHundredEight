@@ -6,7 +6,7 @@ using System;
 
 using Photon.Pun;
 
-public class PlayerStatHandler : MonoBehaviour, IPunObservable
+public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
@@ -19,17 +19,65 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
     private float _timeSinceLastChange = float.MaxValue;
     private bool _invincibility = false;
 
+    private bool _isReady = false;
+
     public event Action OnDamage;
     public event Action OnHeal;
     public event Action OnDeath;
     public event Action OnInvincibilityEnd;
 
-    private void Awake()
-    {
-        CurrentStat = new PlayerStat();
-    }
+    public Coroutine co;
 
-    private void Start()
+    //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
+    public void SetInvincible(bool onoff)
+    {
+        StopCoroutine(co);
+        _invincibility = onoff;
+    }
+    public bool ChangeHealth(float change)
+    {
+        if (change == 0  || _invincibility)
+        {
+            return false;
+        }
+
+        _timeSinceLastChange = 0f;
+        CurrentStat.HP += change;
+        CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
+        
+        StopCoroutine(co);
+        co = StartCoroutine(COInvincible(healthChangeDelay));
+        
+        if (change > 0)
+        {
+            OnHeal?.Invoke();
+        }
+        else
+        {
+            OnDamage?.Invoke();
+        }
+
+        if (CurrentStat.HP <= 0.0f)
+        {
+            OnDeath?.Invoke();
+        }
+
+        return true;
+    }
+    public IEnumerator COInvincible(float Time)
+    {
+        _invincibility = true;
+        yield return new WaitForSeconds(Time);
+        _invincibility = false;
+    }
+    public void SetHealth(float change)
+    {
+        //이렇게 써도되겠지만 고민좀 해봅시다 네..
+        CurrentStat.HP = change;
+    }
+    
+    
+    public void InitPlayerStat(PlayerStatSO initialStat)
     {
         InitPlayerStat();
 
@@ -38,14 +86,28 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
 
     public void InitPlayerStat()
     {
+        if(!TryGetComponent<PhotonView>(out var pv) || !pv.IsMine)
+        {
+            return;
+        }
+
+        CurrentStat = new PlayerStat();
+        this.initialStat = initialStat;
         CurrentStat.HP = initialStat.MaxHp;
         CurrentStat.MaxHp = initialStat.MaxHp;
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
 
         Weapon = GameManager.Instance.Weapons[initialStat.WeaponIndex];
+
+        pv.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
     }
 
+    [PunRPC]
+    public void ReadyRPC()
+    {
+        _isReady = true;
+    }
     public void AddStatModifier(PlayerStat statModifier)
     {
         statModifiers.AddLast(statModifier);
@@ -88,60 +150,25 @@ public class PlayerStatHandler : MonoBehaviour, IPunObservable
 
     private void UpdateStat(Func<float, float, float> operation, PlayerStat newModifier)
     {
-        CurrentStat.MaxHp = (int)operation(CurrentStat.MaxHp, newModifier.MaxHp);
+        CurrentStat.MaxHp = operation(CurrentStat.MaxHp, newModifier.MaxHp);
         CurrentStat.JumpForce = operation(CurrentStat.JumpForce, newModifier.JumpForce);
         CurrentStat.MoveSpeed = operation(CurrentStat.MoveSpeed, newModifier.MoveSpeed);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        if (!_isReady)
+            return;
+
         if (stream.IsWriting)
         {
             stream.SendNext(CurrentStat.HP);
             stream.SendNext(CurrentStat.MaxHp);
-            stream.SendNext(CurrentStat.JumpForce);
-            stream.SendNext(CurrentStat.MoveSpeed);
         }
         else
         {
             CurrentStat.HP = (float)stream.ReceiveNext();
             CurrentStat.MaxHp = (float)stream.ReceiveNext();
-            CurrentStat.JumpForce = (float)stream.ReceiveNext();
-            CurrentStat.MoveSpeed = (float)stream.ReceiveNext();
         }
-    }
-
-    //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
-    public void SetInvincible(bool onoff)
-    {
-        _invincibility = onoff;
-    }
-
-    public bool ChangeHealth(float change)
-    {
-        if (change == 0 || _timeSinceLastChange < healthChangeDelay || _invincibility)
-        {
-            return false;
-        }
-
-        _timeSinceLastChange = 0f;
-        CurrentStat.HP += change;
-        CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
-
-        if (change > 0)
-        {
-            OnHeal?.Invoke();
-        }
-        else
-        {
-            OnDamage?.Invoke();
-        }
-
-        if (CurrentStat.HP <= 0.0f)
-        {
-            OnDeath?.Invoke();
-        }
-
-        return true;
     }
 }
