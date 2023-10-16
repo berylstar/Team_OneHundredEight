@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     // private Animator _animator;
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
-    private PlayerStat _stat;
+    private PlayerStatHandler _stat;
     
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
         _photonView = GetComponent<PhotonView>();
-        _stat = GetComponent<PlayerStat>();
+        _stat = GetComponent<PlayerStatHandler>();
 
         _cam = Camera.main;
         
