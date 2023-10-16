@@ -53,6 +53,12 @@ namespace Weapon
             _enhancedPlayerIndexSet = new HashSet<int>();
         }
 
+        private void Start()
+        {
+            OnAllPlayerEnhanced += LoadNextRound;
+        }
+
+
         private void Update()
         {
             if (!_isInit)
@@ -67,6 +73,8 @@ namespace Weapon
                     _currentTime = 0f;
                     EnhanceNotSelectedPlayer();
                     OnAllPlayerEnhanced?.Invoke();
+                    _enhanceUI.gameObject.SetActive(false);
+                    _isInit = false;
                 }
             }
             else
@@ -122,7 +130,7 @@ namespace Weapon
             {
                 _currentTime = 0f;
             }
-            
+
             _enhancedPlayerIndexSet.Add(playerIndex);
             OnEnhancementEvent?.Invoke(playerIndex, data);
             OnUpdateEnhanceUIEvent?.Invoke(cardIndex, PlayerColors[playerIndex]);
@@ -138,7 +146,7 @@ namespace Weapon
                 _canSelectEnhance[playerIndex] = false;
                 PlayerColors[playerIndex] = playerColors[colorIndex++];
             }
-            
+
             _headcount = PhotonNetwork.CurrentRoom.PlayerCount;
             _canSelectEnhance[ranking[0]] = true;
             _currentEnhanceOrder = ranking[0];
@@ -179,6 +187,11 @@ namespace Weapon
             }
 
             return isEnd;
+        }
+
+        private void LoadNextRound()
+        {
+            //todo 
         }
     }
 }

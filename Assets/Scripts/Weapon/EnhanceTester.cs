@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using Weapon.Components;
 using Weapon.Model;
 using Weapon.UI;
 using Text = TMPro.TextMeshProUGUI;
@@ -29,6 +30,9 @@ namespace Weapon
         private bool _isUpdated;
         public event Action<int, EnhancementData> OnEnhancementEvent;
         [SerializeField] private Text stateText;
+
+        private Dictionary<int, List<EnhancementData>> _enhancementDataSet =
+            new Dictionary<int, List<EnhancementData>>();
 
         private EnhancementState _state;
         private int[] _ranking;
@@ -56,12 +60,14 @@ namespace Weapon
         private void Awake()
         {
             _enhancementManager = FindObjectOfType<EnhancementManager>();
+            DontDestroyOnLoad(this);
         }
 
         private void Start()
         {
             PhotonNetwork.ConnectUsingSettings();
             _enhancementManager.OnEnhancementEvent += OnEnhance;
+            _enhancementManager.OnAllPlayerEnhanced += OnEnhancementEnd;
         }
 
 
@@ -91,7 +97,7 @@ namespace Weapon
             Debug.Log($"on joined room {PhotonNetwork.CurrentRoom.Name}");
             Debug.Log($"actor-number is {PhotonNetwork.LocalPlayer.ActorNumber}");
             Debug.Log($"player-number is {PhotonNetwork.LocalPlayer.GetPlayerNumber()}");
-            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 1)
             {
                 InitTestState();
             }
@@ -100,7 +106,7 @@ namespace Weapon
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             Debug.Log($"player enter the room:{newPlayer.ActorNumber}");
-            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 1)
             {
                 Debug.Log($"on joined room {PhotonNetwork.CurrentRoom.Name}");
                 Debug.Log($"actor-number is {PhotonNetwork.LocalPlayer.ActorNumber}");
@@ -113,6 +119,13 @@ namespace Weapon
         {
             _state.Selection[player] = true;
             _state.SelectedData[player] = data;
+            if (!_enhancementDataSet.TryGetValue(player, out List<EnhancementData> dataSet))
+            {
+                dataSet = new List<EnhancementData>();
+                _enhancementDataSet.Add(player, dataSet);
+            }
+
+            dataSet.Add(data);
             _isUpdated = true;
             OnEnhancementEvent?.Invoke(player, data);
         }
@@ -134,7 +147,7 @@ namespace Weapon
 
         private void InitTestState()
         {
-            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 1)
             {
                 _state = new EnhancementState()
                 {
@@ -156,6 +169,27 @@ namespace Weapon
                     .Select(it => it.ActorNumber)
                     .ToArray();
                 _enhancementManager.Init(_ranking);
+            }
+        }
+
+        private void OnEnhancementEnd()
+        {
+            GameObject player = PhotonNetwork.Instantiate(
+                "Player",
+                new Vector3(0, 0, 0),
+                Quaternion.identity);
+            GameObject raptor = PhotonNetwork.Instantiate("Raptor",
+                new Vector3(0, 0, 0),
+                Quaternion.identity);
+
+            raptor.transform.SetParent(player.transform, false);
+            AttackHandler attackHandler = raptor.GetComponentInChildren<AttackHandler>();
+            WeaponData weaponData = new WeaponData();
+            weaponData.baseAttackData = new AttackData() { bulletSpeed = 1f };
+            attackHandler.SetWeaponData(weaponData);
+            foreach (var enhancementData in _enhancementDataSet[PhotonNetwork.LocalPlayer.ActorNumber])
+            {
+                attackHandler.AddAttackModifier(enhancementData.AttackData);
             }
         }
     }
