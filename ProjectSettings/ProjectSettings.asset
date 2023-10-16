@@ -878,7 +878,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -898,11 +904,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 0e6f920c-0548-4ac3-8ce8-02195bdd7cbe
+  cloudProjectId: ceeeae0a-3cf1-4f0c-a957-837de7c27a5f
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Team_OneHundredEight
-  organizationId: berylstar
+  projectName: Team_OneHundredEight (1)
+  organizationId: kimdm1033
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

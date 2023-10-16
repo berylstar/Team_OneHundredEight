@@ -11,8 +11,7 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
     private PhotonView  _PV;
     private LayerMask   _playerCollisionLayer;
 
-    private float _lifeTime;
-    private float _value;
+    private float _lifeTime = 9999;
     private Define.ItemType _itemType;
  
     public static GameObject Create(Vector3 position , Define.ItemType pickupType = Define.ItemType.Random, float lifeTime = 9999f)
@@ -25,7 +24,6 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
 
         return go;
     }
-
 
     [PunRPC]
     public void InitRPC(Define.ItemType pickupType , float lifeTime)
