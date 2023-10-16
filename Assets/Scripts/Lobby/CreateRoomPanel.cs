@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class CreateRoomPanel : MonoBehaviourPunCallbacks
 {
+
+    [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject createRoomPanel;
     [SerializeField] private GameObject roomPanel;
 
@@ -25,6 +27,13 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.CreateRoom(roomNameInput.text, new RoomOptions { MaxPlayers = (int)personnelSlider.value });
     }
+
+    public void CancelRoom()
+    {
+        createRoomPanel.SetActive(false);
+        mainPanel.SetActive(true);
+    }
+
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         roomNameInput.text = string.Empty;

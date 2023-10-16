@@ -8,6 +8,7 @@ public class MainPanel : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject createRoomPanel;
+    [SerializeField] private GameObject LobbyPanel;
     [SerializeField] private GameObject roomPanel;
     
 
@@ -35,5 +36,16 @@ public class MainPanel : MonoBehaviourPunCallbacks
     {
         mainPanel.SetActive(false);
         createRoomPanel.SetActive(true);
+    }
+
+    public void LobbyPanelOpen()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+    public override void OnJoinedLobby()
+    {
+        print("로비 접속 완료.");
+        mainPanel.SetActive(false);
+        LobbyPanel.SetActive(true);
     }
 }
