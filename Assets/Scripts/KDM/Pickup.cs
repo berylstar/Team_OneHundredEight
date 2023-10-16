@@ -20,7 +20,7 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
         GameObject go = PhotonNetwork.Instantiate("Pickup" , position, Quaternion.identity);
         Pickup p = go.GetComponent<Pickup>();
 
-        //ÀÌ·¸°ÔÇÑÀÌÀ¯´Â IsMineÀÎ ³à¼®ÀÌ µü ÇÑ¹ø ÀÌ°É ºÎ¸¦Å×´Ï±î InitÀÌ ÀÏ¹İÇÔ¼ö¸é ¾ÈµÉ°Í°°¾Æ¼­.
+        //ì´ë ‡ê²Œí•œì´ìœ ëŠ” IsMineì¸ ë…€ì„ì´ ë”± í•œë²ˆ ì´ê±¸ ë¶€ë¥¼í…Œë‹ˆê¹Œ Initì´ ì¼ë°˜í•¨ìˆ˜ë©´ ì•ˆë ê²ƒê°™ì•„ì„œ.
         p._PV.RPC("InitRPC", RpcTarget.AllBuffered , pickupType, lifeTime);
 
         return go;
@@ -52,8 +52,6 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            //·ºÀÌ°É·Á¼­ Æ÷Áö¼Ç°°Àº°Ô È® Æ²¾îÁö¸é(10ÀÌ»ó) ÅÚÆ÷°¡ ¸ÂÁö¸¸ È¸ÀüÀÌµç Æ÷Áö¼Çº¯È¯ÀÌµç ÀÌ°Ô ¸ÂÁö¾ÊÀ»±î ½Í³× °®´Ù½áµµ ¤·¤·.
-            //È¤½Ã ¿ä»óÇÏ¸é È¸Àü°ªÀº ¹Ù·Î Àû¿ëÇÏ´Â°É·Î ¹Ù²ß½Ã´Ù. ´çÀå¿£ Å×½ºÆ®°¡ ¾î·Á¿ì´Ï±î.
             if((transform.position - _curPos).sqrMagnitude >= 100)
             {
                 transform.position = _curPos;
@@ -64,26 +62,25 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
                 transform.position = Vector3.Lerp(transform.position , _curPos , Time.deltaTime * 10);
                 transform.rotation = Quaternion.Lerp(transform.rotation , _curRotation , Time.deltaTime * 10);
             }
-
         }
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        //´À¸°ÂÊ¿¡ ¸ÂÃá È÷Æ®ÆÇÁ¤ , Æ÷ÅæÀ» ¾²´Â ³à¼®µé¸¸ È÷Æ®ÆÇÁ¤.(¾È¾²´Â°ÔÀÖ³ª?)
+        //ëŠë¦°ìª½ì— ë§ì¶˜ íˆíŠ¸íŒì • , í¬í†¤ì„ ì“°ëŠ” ë…€ì„ë“¤ë§Œ íˆíŠ¸íŒì •.(ì•ˆì“°ëŠ”ê²Œìˆë‚˜?)
         if (_PV.IsMine || !col.TryGetComponent<PhotonView>(out PhotonView pv) || !pv.IsMine)
             return;
 
         if (0 != ( _playerCollisionLayer.value & ( 1 << col.gameObject.layer ) ))
         {
-            //ÇÃ·¹ÀÌ¾î Ãæµ¹ ½Ã
+            //í”Œë ˆì´ì–´ ì¶©ëŒ ì‹œ
             Item.Create(col.gameObject , _itemType);
 
             _PV.RPC("DestroyRPC" , RpcTarget.AllBuffered);
         }
     }
 
-    //TODO(KDM) : ¸Å´ÏÀú¸¦ ÅëÇÑ »ı¼º»èÁ¦·Î ¹Ù²î¸é ¼öÁ¤
+    //TODO(KDM) : ë§¤ë‹ˆì €ë¥¼ í†µí•œ ìƒì„±ì‚­ì œë¡œ ë°”ë€Œë©´ ìˆ˜ì •
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
 
