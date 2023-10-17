@@ -18,17 +18,17 @@ public class StageManager : MonoBehaviourPun
         {
             case 0:
                 _stage = GameObject.Find("Stages").transform.Find("Map 1").gameObject;
-                _stage.SetActive(true);
+                //_stage.SetActive(true);
                 break;
 
             case 1:
                 _stage = GameObject.Find("Stages").transform.Find("Map 2").gameObject;
-                _stage.SetActive(true);
+                //_stage.SetActive(true);
                 break;
 
             case 2:
                 _stage = GameObject.Find("Stages").transform.Find("Map 3").gameObject;
-                _stage.SetActive(true);
+                //_stage.SetActive(true);
                 break;
         }
     }
