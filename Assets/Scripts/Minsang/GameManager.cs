@@ -14,15 +14,20 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] public List<WeaponData> Weapons { get; private set; }
 
     private PhotonView _photonView;
+    private ObjectPooling _pooler;
+
     [SerializeField] private GameObject panelLoading;
 
     private readonly string player = "Player";
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null) { Instance = this; }
+        else if (Instance != null) { Destroy(gameObject); }
+        DontDestroyOnLoad(gameObject);
 
         _photonView = GetComponent<PhotonView>();
+        _pooler = GetComponent<ObjectPooling>();
 
         PlayerStats = new List<PlayerStatHandler>();
     }
