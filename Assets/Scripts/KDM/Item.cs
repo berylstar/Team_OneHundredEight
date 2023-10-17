@@ -15,7 +15,7 @@ public class Item : MonoBehaviour
     //중간삽입삭제가 빈번하게 나니까 링크드리스트로 -> 링크드리스트는 인스펙터에서 접근이안된다
     [SerializeField] private List<ItemStats> _itemStats;
 
-
+    
     public static Item Create(GameObject target, Define.ItemType pickupType)
     {
         GameObject go;

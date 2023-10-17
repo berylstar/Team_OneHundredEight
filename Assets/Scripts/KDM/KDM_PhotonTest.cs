@@ -23,6 +23,7 @@ public class KDM_PhotonTest : MonoBehaviourPunCallbacks
     {
         //PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
         PhotonNetwork.Instantiate("Particles/Blood", Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate("Boom", new Vector3(3.58f, 1.5f, 0), Quaternion.identity);
         PhotonNetwork.Instantiate("Particles/Death", Vector3.zero, Quaternion.identity);
         Pickup.Create(new Vector3(0, 5, 0), Define.ItemType.Random, 10);
     }
