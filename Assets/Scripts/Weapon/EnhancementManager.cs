@@ -17,13 +17,14 @@ namespace Weapon
 
         //todo migrate to constants
         public const int MaxCardCount = 6;
-        public const float SelectionLimitTime = 3f;
+        public const float SelectionLimitTime = 10f;
 
         //todo migrate to data manager
         [SerializeField] private List<Color> playerColors;
 
         public Dictionary<int, Color> PlayerColors = new Dictionary<int, Color>();
         private List<EnhancementDataEntry> _dataEntries;
+
         public List<EnhancementData> DataList { get; private set; }
 
         private List<KeyValuePair<EnhancementData, bool>> _remainEnhancements;
@@ -36,6 +37,12 @@ namespace Weapon
 
         private EnhanceUI _enhanceUI;
         private HashSet<int> _enhancedPlayerIndexSet;
+
+        private readonly Dictionary<int, EnhancementData> _cachedEnhancements =
+            new Dictionary<int, EnhancementData>();
+
+        public IReadOnlyDictionary<int, EnhancementData> CachedEnhancements => _cachedEnhancements;
+
         private readonly Dictionary<int, bool> _canSelectEnhance = new Dictionary<int, bool>();
         private float _currentTime;
         private bool _isInit = false;
@@ -43,10 +50,14 @@ namespace Weapon
         private int _currentEnhanceOrder = -1;
         private int _selectedPlayerCount = 0;
         public event Action<int> OnPlayerSelectEnhancement;
+
+        /// key is playerIndex, value is selected enhancementData
         public event Action<int, EnhancementData> OnEnhancementEvent;
+
         public event Action<int, Color> OnUpdateEnhanceUIEvent;
         public event Action<float> OnTimeElapsed;
         public event Action OnAllPlayerEnhanced;
+
 
         private void Awake()
         {
@@ -67,8 +78,13 @@ namespace Weapon
 
         private void Start()
         {
-            //todo get ranking from gameManager
             OnAllPlayerEnhanced += LoadNextRound;
+            OnEnhancementEvent += AddPlayerEnhanceCached;
+        }
+
+        private void AddPlayerEnhanceCached(int player, EnhancementData data)
+        {
+            _cachedEnhancements[player] = data;
         }
 
 
@@ -81,18 +97,21 @@ namespace Weapon
 
             if (_isAllPlayerSelected)
             {
+                if (_currentTime > 0f)
+                {
+                    _currentTime -= Time.deltaTime;
+                    OnTimeElapsed?.Invoke(_currentTime);
+                }
+
                 return;
             }
 
             if (_currentTime <= 0f)
             {
-                if (SetNextSelectionOrder())
-                {
-                    _isAllPlayerSelected = true;
-                    _currentTime = 0f;
-                    EnhanceNotSelectedPlayer();
-                    _isInit = false;
-                }
+                //todo rpc call 
+                PhotonView pv = PhotonView.Get(this);
+                pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
+                
             }
             else
             {
@@ -193,7 +212,6 @@ namespace Weapon
             {
                 if (_enhancedPlayerIndexSet.Contains(playerSelectState.Key) == false)
                 {
-                    _enhancedPlayerIndexSet.Add(playerSelectState.Key);
                     for (int i = 0; i < _remainEnhancements.Count; i++)
                     {
                         KeyValuePair<EnhancementData, bool> enhancementState = _remainEnhancements[i];
@@ -221,7 +239,6 @@ namespace Weapon
             }
         }
 
-        /// <returns>if true : all player selection order is done</returns>
         private bool SetNextSelectionOrder()
         {
             bool isEnd = true;
@@ -242,9 +259,24 @@ namespace Weapon
             return isEnd;
         }
 
+        /// <returns>if true : all player selection order is done</returns>
+        [PunRPC]
+        private void SetNextSelectionOrderRPC()
+        {
+            if (SetNextSelectionOrder())
+            {
+                _isAllPlayerSelected = true;
+                _currentTime = 0f;
+                EnhanceNotSelectedPlayer();
+            }
+        }
+
         private void LoadNextRound()
         {
-            //todo photonNetwork new scene load
+            _currentTime = Constants.TimeToNextRound;
+            NextRoundUI nextRoundObj = Resources.Load<NextRoundUI>("UI/ReadyBattleUI");
+            NextRoundUI nextRoundUI = Instantiate(nextRoundObj);
+            nextRoundUI.Init(this);
         }
     }
 }

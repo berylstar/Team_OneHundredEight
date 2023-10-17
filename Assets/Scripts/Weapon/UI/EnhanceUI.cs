@@ -2,6 +2,7 @@ using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Weapon.Model;
 using Random = UnityEngine.Random;
 using Text = TMPro.TextMeshProUGUI;
@@ -10,39 +11,24 @@ namespace Weapon.UI
 {
     public class EnhanceUI : MonoBehaviourPun
     {
-        private enum EnhanceUiState
-        {
-            Select,
-            AllPlayerSelected
-        }
-
         [SerializeField] private Text timeText;
         [SerializeField] private RectTransform playerContainer;
+
         private Camera _camera;
 
-        private EnhanceUiState _uiState = EnhanceUiState.Select;
-        private bool _isUpdated = false;
+        private bool _isAllPlayerReady = false;
         private EnhancementManager _enhancementManager;
-        private List<EnhanceCardUI> _enhanceCards = new List<EnhanceCardUI>();
-        private List<EnhancePlayerUI> _enhancePlayers = new List<EnhancePlayerUI>();
 
-        private void Update()
+        private readonly List<EnhanceCardUI> _enhanceCards = new List<EnhanceCardUI>();
+
+        private readonly Dictionary<int, EnhancePlayerUI> _enhancePlayerUis = new Dictionary<int, EnhancePlayerUI>();
+
+        private void OnDisable()
         {
-            if (!_isUpdated)
-            {
-                return;
-            }
-
-            _isUpdated = false;
-            switch (_uiState)
-            {
-                case EnhanceUiState.Select:
-                    break;
-                case EnhanceUiState.AllPlayerSelected:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            _enhancementManager.OnTimeElapsed -= UpdateTime;
+            _enhancementManager.OnAllPlayerEnhanced -= AllPlayerEnhanced;
+            _enhancementManager.OnPlayerSelectEnhancement -= SetPlayerChecked;
+            _enhancementManager.OnUpdateEnhanceUIEvent -= UpdateEnhanceCardUI;
         }
 
         public void Init(EnhancementManager enhancementManager, int maxCardCount, int cardCount)
@@ -51,11 +37,11 @@ namespace Weapon.UI
             _enhancementManager = enhancementManager;
             _enhancementManager.OnTimeElapsed += UpdateTime;
             _enhancementManager.OnAllPlayerEnhanced += AllPlayerEnhanced;
+            _enhancementManager.OnPlayerSelectEnhancement += SetPlayerChecked;
             _enhancementManager.OnUpdateEnhanceUIEvent += UpdateEnhanceCardUI;
             CreatePlayers();
             CreateCards(enhancementManager.DataList, maxCardCount, cardCount);
         }
-
 
         private void UpdateEnhanceCardUI(int cardIndex, Color color)
         {
@@ -64,7 +50,7 @@ namespace Weapon.UI
 
         private void UpdateTime(float time)
         {
-            timeText.text = $"{time}";
+            timeText.text = $"{time:N0}";
         }
 
         private void CreateCards(List<EnhancementData> dataList, int maxCardCount, int cardCount)
@@ -86,6 +72,11 @@ namespace Weapon.UI
                 isCreated[idx] = true;
             }
 
+            if (repeat >= 10000)
+            {
+                Debug.LogError("repeat is larger or equal to 10,000... check count of card data set");
+            }
+
             cnt = 0;
             float width = 0f;
 
@@ -105,8 +96,9 @@ namespace Weapon.UI
         {
             float startX = (maxCardCount - cardCount) / (float)maxCardCount * 0.5f;
             float paddingX = 1 / (float)maxCardCount;
-            Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * index, 0.5f));
-            card.Arrange(_enhancementManager, startPosition, index);
+            Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
+            Vector3 destPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * index, 0.5f));
+            card.Arrange(_enhancementManager, startPosition, destPosition, index);
         }
 
         public void SetPlayerOrder()
@@ -120,19 +112,19 @@ namespace Weapon.UI
             {
                 EnhancePlayerUI go = Resources.Load<EnhancePlayerUI>("EnhancePlayerUi");
                 EnhancePlayerUI playerUi = Instantiate(go, playerContainer, false);
-                _enhancePlayers.Add(playerUi);
+                _enhancePlayerUis.Add(player.Key, playerUi);
                 playerUi.PlayerImage.color = _enhancementManager.PlayerColors[player.Key];
             }
         }
 
         public void SetPlayerChecked(int playerNumber)
         {
-            //todo dictionary??
+            _enhancePlayerUis[playerNumber].Check();
         }
 
         private void AllPlayerEnhanced()
         {
-            _isUpdated = true;
+            gameObject.SetActive(false);
         }
     }
 }

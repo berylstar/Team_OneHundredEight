@@ -25,8 +25,7 @@ namespace Weapon.Data
                 maxMagazine = MaxMagazine,
                 shotInterval = ShotInterval,
                 reloadTime = ReloadTime
-            },
-            Selected = -1,
+            }
         };
     }
 }

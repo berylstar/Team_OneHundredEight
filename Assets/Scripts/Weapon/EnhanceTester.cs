@@ -191,5 +191,25 @@ namespace Weapon
                 attackHandler.AddAttackModifier(enhancementData.AttackData);
             }
         }
+
+        private void TestPlayerInfoUI()
+        {
+            RoundPlayerInfoState state = new RoundPlayerInfoState(
+                name: "김대열",
+                playerIndex: 1,
+                iconUrl: "Sprite/Blood",
+                new EnhancementData() { Desc = "선택한 증강 옵션", IconUrl = "Sprite/Enhancement/TRG", Name = "증강" }
+            );
+
+            GameObject go = GameObject.Find("EnhancedPayerInfo");
+            if (go == null)
+            {
+                Debug.LogWarning("Cannot find EnhancedPayerInfo");
+                return;
+            }
+
+            RoundPlayerInfoUI infoUI = go.GetComponentInChildren<RoundPlayerInfoUI>();
+            infoUI.Init(state);
+        }
     }
 }
