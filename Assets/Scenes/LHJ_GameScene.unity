@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26dc5482ec3e7214186cf12d76aa4866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stage: {fileID: 0}
 --- !u!4 &54512349
 Transform:
   m_ObjectHideFlags: 0
@@ -592,6 +593,14 @@ PrefabInstance:
     - target: {fileID: 5647697590490770938, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: m_SynchronizeRotation
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6225506075808896652, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6369509728660819129, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6417855067670783182, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: sceneViewId
