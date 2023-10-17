@@ -1,3 +1,5 @@
+using static System.IO.Path;
+
 namespace Common
 {
     public static class Constants
@@ -10,6 +12,15 @@ namespace Common
             public const float MinAttackDelay = 0.2f;
             public const float MinReloadTime = 0.1f;
         }
-        
+
+        public static class FilePath
+        {
+            private const string EnhancementCsvFile = "enhancement_dataset";
+            private const string WeaponCsvFile = "108_dataset-weapon";
+            public static string ENHANCEMENT_CSV_FILE => $"data{DirectorySeparatorChar}{EnhancementCsvFile}";
+            public static string WEAPON_CSV_FILE => $"data{DirectorySeparatorChar}{WeaponCsvFile}";
+        }
+
+        public const float TimeToNextRound = 10f;
     }
 }

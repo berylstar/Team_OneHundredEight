@@ -1,3 +1,4 @@
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +13,18 @@ namespace Weapon
 {
     public class EnhancementManager : MonoBehaviourPunCallbacks
     {
+        private GameManager _gameManager;
+
         //todo migrate to constants
-        private const int MaxCardCount = 6;
-        private const float SelectionLimitTime = 3f;
+        public const int MaxCardCount = 6;
+        public const float SelectionLimitTime = 10f;
 
         //todo migrate to data manager
-        private const string ENHANCEMENT_CSV_FILE = "enhancement_dataset";
-        private Camera _camera;
-
-        //todo make dictionary
         [SerializeField] private List<Color> playerColors;
 
         public Dictionary<int, Color> PlayerColors = new Dictionary<int, Color>();
         private List<EnhancementDataEntry> _dataEntries;
+
         public List<EnhancementData> DataList { get; private set; }
 
         private List<KeyValuePair<EnhancementData, bool>> _remainEnhancements;
@@ -37,25 +37,54 @@ namespace Weapon
 
         private EnhanceUI _enhanceUI;
         private HashSet<int> _enhancedPlayerIndexSet;
+
+        private readonly Dictionary<int, EnhancementData> _cachedEnhancements =
+            new Dictionary<int, EnhancementData>();
+
+        public IReadOnlyDictionary<int, EnhancementData> CachedEnhancements => _cachedEnhancements;
+
         private readonly Dictionary<int, bool> _canSelectEnhance = new Dictionary<int, bool>();
         private float _currentTime;
         private bool _isInit = false;
+        private bool _isAllPlayerSelected;
         private int _currentEnhanceOrder = -1;
+        private int _selectedPlayerCount = 0;
+        public event Action<int> OnPlayerSelectEnhancement;
+
+        /// key is playerIndex, value is selected enhancementData
         public event Action<int, EnhancementData> OnEnhancementEvent;
+
         public event Action<int, Color> OnUpdateEnhanceUIEvent;
         public event Action<float> OnTimeElapsed;
         public event Action OnAllPlayerEnhanced;
 
+
         private void Awake()
         {
             LoadDataSet();
-            _camera = Camera.main;
+            _gameManager = GameManager.Instance;
             _enhancedPlayerIndexSet = new HashSet<int>();
+
+            //todo get player image from manager
+            playerColors = new List<Color>()
+            {
+                Color.blue,
+                Color.green,
+                Color.red,
+                Color.magenta,
+                Color.cyan
+            };
         }
 
         private void Start()
         {
             OnAllPlayerEnhanced += LoadNextRound;
+            OnEnhancementEvent += AddPlayerEnhanceCached;
+        }
+
+        private void AddPlayerEnhanceCached(int player, EnhancementData data)
+        {
+            _cachedEnhancements[player] = data;
         }
 
 
@@ -66,16 +95,23 @@ namespace Weapon
                 return;
             }
 
+            if (_isAllPlayerSelected)
+            {
+                if (_currentTime > 0f)
+                {
+                    _currentTime -= Time.deltaTime;
+                    OnTimeElapsed?.Invoke(_currentTime);
+                }
+
+                return;
+            }
+
             if (_currentTime <= 0f)
             {
-                if (SetNextSelectionOrder())
-                {
-                    _currentTime = 0f;
-                    EnhanceNotSelectedPlayer();
-                    OnAllPlayerEnhanced?.Invoke();
-                    _enhanceUI.gameObject.SetActive(false);
-                    _isInit = false;
-                }
+                //todo rpc call 
+                PhotonView pv = PhotonView.Get(this);
+                pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
+                
             }
             else
             {
@@ -89,8 +125,11 @@ namespace Weapon
         private void LoadDataSet()
         {
             //TODO Inversion of control -> dataManager
-            _dataEntries = CsvReader.ReadCsvFromResources<EnhancementDataEntry>(ENHANCEMENT_CSV_FILE, 1);
+            _dataEntries =
+                CsvReader.ReadCsvFromResources<EnhancementDataEntry>(Constants.FilePath.ENHANCEMENT_CSV_FILE, 1);
+
             DataList = _dataEntries.Select(it => it.ToEnhancementData()).ToList();
+
             _remainEnhancements = _dataEntries
                 .Select(data => new KeyValuePair<EnhancementData, bool>(data.ToEnhancementData(), false))
                 .ToList();
@@ -106,7 +145,7 @@ namespace Weapon
         [PunRPC]
         public void EnhanceWeaponRPC(int playerIndex, int cardIndex)
         {
-            var data = _dataEntries[cardIndex].ToEnhancementData();
+            EnhancementData data = _dataEntries[cardIndex].ToEnhancementData();
             Debug.Log($"select Card P :{playerIndex} ,C : {cardIndex} ");
 
             if (!_canSelectEnhance.ContainsKey(playerIndex))
@@ -120,7 +159,6 @@ namespace Weapon
                 return;
             }
 
-            //todo synchronize state
             if (_enhancedPlayerIndexSet.Contains(playerIndex))
             {
                 return;
@@ -131,11 +169,20 @@ namespace Weapon
                 _currentTime = 0f;
             }
 
+            //todo make event function
+            OnPlayerSelectEnhancement?.Invoke(playerIndex);
+
+            _selectedPlayerCount++;
             _enhancedPlayerIndexSet.Add(playerIndex);
             OnEnhancementEvent?.Invoke(playerIndex, data);
             OnUpdateEnhanceUIEvent?.Invoke(cardIndex, PlayerColors[playerIndex]);
-            _enhanceUI.SetPlayerChecked(playerIndex);
-            //todo 모두다 고른 경우 이벤트 호출 
+            KeyValuePair<EnhancementData, bool> currentEnhancement = _remainEnhancements[cardIndex];
+            _remainEnhancements[cardIndex] = new KeyValuePair<EnhancementData, bool>(currentEnhancement.Key, true);
+
+            if (_selectedPlayerCount == PhotonNetwork.CurrentRoom.PlayerCount)
+            {
+                OnAllPlayerEnhanced?.Invoke();
+            }
         }
 
         public void Init(int[] ranking)
@@ -151,24 +198,47 @@ namespace Weapon
             _canSelectEnhance[ranking[0]] = true;
             _currentEnhanceOrder = ranking[0];
             EnhanceUI go = Resources.Load<EnhanceUI>("EnhanceUI");
-            _enhanceUI = Instantiate(go);
-            _enhanceUI.Init(this, MaxCardCount, CardCount);
+            EnhanceUI ui = Instantiate(go);
+            ui.Init(this, MaxCardCount, CardCount);
             _currentTime = SelectionLimitTime;
             _isInit = true;
         }
 
         private void EnhanceNotSelectedPlayer()
         {
-            foreach (var keyValue in _canSelectEnhance)
+            List<KeyValuePair<int, int>> playerToEnhanceList = new List<KeyValuePair<int, int>>();
+            bool[] isCardSelected = new bool[CardCount];
+            foreach (var playerSelectState in _canSelectEnhance)
             {
-                if (_enhancedPlayerIndexSet.Contains(keyValue.Key))
+                if (_enhancedPlayerIndexSet.Contains(playerSelectState.Key) == false)
                 {
-                    _enhancedPlayerIndexSet.Add(keyValue.Key);
+                    for (int i = 0; i < _remainEnhancements.Count; i++)
+                    {
+                        KeyValuePair<EnhancementData, bool> enhancementState = _remainEnhancements[i];
+                        if (enhancementState.Value) { continue; }
+
+                        if (isCardSelected[i]) { continue; }
+
+                        KeyValuePair<int, int> playerToEnhance = new KeyValuePair<int, int>(
+                            key: playerSelectState.Key,
+                            value: i
+                        );
+
+                        isCardSelected[i] = true;
+                        playerToEnhanceList.Add(playerToEnhance);
+                        break;
+                    }
                 }
+            }
+
+            foreach (KeyValuePair<int, int> playerCard in playerToEnhanceList)
+            {
+                int playerIndex = playerCard.Key;
+                int cardIndex = playerCard.Value;
+                EnhanceWeapon(playerIndex, cardIndex);
             }
         }
 
-        /// <returns>if true : all player selection order is done</returns>
         private bool SetNextSelectionOrder()
         {
             bool isEnd = true;
@@ -189,11 +259,24 @@ namespace Weapon
             return isEnd;
         }
 
+        /// <returns>if true : all player selection order is done</returns>
+        [PunRPC]
+        private void SetNextSelectionOrderRPC()
+        {
+            if (SetNextSelectionOrder())
+            {
+                _isAllPlayerSelected = true;
+                _currentTime = 0f;
+                EnhanceNotSelectedPlayer();
+            }
+        }
+
         private void LoadNextRound()
         {
-            //todo 
+            _currentTime = Constants.TimeToNextRound;
+            NextRoundUI nextRoundObj = Resources.Load<NextRoundUI>("UI/ReadyBattleUI");
+            NextRoundUI nextRoundUI = Instantiate(nextRoundObj);
+            nextRoundUI.Init(this);
         }
     }
-    
-    
 }

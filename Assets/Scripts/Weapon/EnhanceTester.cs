@@ -174,25 +174,42 @@ namespace Weapon
 
         private void OnEnhancementEnd()
         {
-            GameObject player = PhotonNetwork.Instantiate(
-                "Player",
+            GameObject raptor = Instantiate(
+                Resources.Load<GameObject>("Raptor"),
                 new Vector3(0, 0, 0),
                 Quaternion.identity);
-            GameObject raptor = PhotonNetwork.Instantiate("Raptor",
-                new Vector3(0, 0, 0),
-                Quaternion.identity);
-
-            raptor.transform.SetParent(player.transform, false);
 
             AttackHandler attackHandler = raptor.GetComponentInChildren<AttackHandler>();
             WeaponData weaponData = new WeaponData();
             weaponData.baseAttackData = new AttackData() { bulletSpeed = 1f };
             attackHandler.SetWeaponData(weaponData);
+
+            //todo call manager to save state 
             foreach (var enhancementData in _enhancementDataSet[PhotonNetwork.LocalPlayer.ActorNumber])
             {
                 Debug.Log($"AddAttackModifier:{enhancementData.AttackData.ToString()}");
                 attackHandler.AddAttackModifier(enhancementData.AttackData);
             }
+        }
+
+        private void TestPlayerInfoUI()
+        {
+            RoundPlayerInfoState state = new RoundPlayerInfoState(
+                name: "김대열",
+                playerIndex: 1,
+                iconUrl: "Sprite/Blood",
+                new EnhancementData() { Desc = "선택한 증강 옵션", IconUrl = "Sprite/Enhancement/TRG", Name = "증강" }
+            );
+
+            GameObject go = GameObject.Find("EnhancedPayerInfo");
+            if (go == null)
+            {
+                Debug.LogWarning("Cannot find EnhancedPayerInfo");
+                return;
+            }
+
+            RoundPlayerInfoUI infoUI = go.GetComponentInChildren<RoundPlayerInfoUI>();
+            infoUI.Init(state);
         }
     }
 }
