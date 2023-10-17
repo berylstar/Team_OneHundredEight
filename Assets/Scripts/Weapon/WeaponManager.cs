@@ -15,10 +15,7 @@ namespace Weapon
         {
             _handler = GetComponent<AttackHandler>();
         }
-
-        private void Start()
-        {
-            _handler.SetWeaponData(weaponData);
-        }
+        
+        
     }
 }

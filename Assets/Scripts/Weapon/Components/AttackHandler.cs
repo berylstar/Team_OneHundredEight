@@ -1,3 +1,4 @@
+using Common;
 using System;
 using System.Collections.Generic;
 using Photon.Pun;
@@ -11,12 +12,9 @@ namespace Weapon.Components
     {
         public AttackData CurrentAttackData { get; private set; }
         private List<AttackData> _attackDataModifiers = new List<AttackData>();
+        private bool _isReady = false;
         private WeaponData _weapon;
-
-        private void Start()
-        {
-            EnhanceTester.Instance.OnEnhancementEvent += OnEnhancement;
-        }
+        public Action OnReadyEvent;
 
         private void OnEnhancement(int playerIndex, EnhancementData data)
         {
@@ -30,6 +28,7 @@ namespace Weapon.Components
         {
             _weapon = weaponData;
             UpdateStats();
+            OnReadyEvent?.Invoke();
         }
 
         private void UpdateStats()
@@ -50,12 +49,42 @@ namespace Weapon.Components
             {
                 CurrentAttackData += attackDataModifier;
             }
+
+            LimitStats();
         }
 
         public void AddAttackModifier(AttackData attackData)
         {
             _attackDataModifiers.Add(attackData);
             UpdateStats();
+        }
+
+        private void LimitStats()
+        {
+            if (CurrentAttackData.bulletDamage <= Constants.Min.MinDamage)
+            {
+                CurrentAttackData.bulletDamage = Constants.Min.MinDamage;
+            }
+
+            if (CurrentAttackData.bulletSpeed <= Constants.Min.MinBulletSpd)
+            {
+                CurrentAttackData.bulletSpeed = Constants.Min.MinBulletSpd;
+            }
+
+            if (CurrentAttackData.maxMagazine <= Constants.Min.MinMagazine)
+            {
+                CurrentAttackData.maxMagazine = Constants.Min.MinMagazine;
+            }
+
+            if (CurrentAttackData.reloadTime <= Constants.Min.MinReloadTime)
+            {
+                CurrentAttackData.reloadTime = Constants.Min.MinReloadTime;
+            }
+
+            if (CurrentAttackData.shotInterval <= Constants.Min.MinAttackDelay)
+            {
+                CurrentAttackData.shotInterval = Constants.Min.MinAttackDelay;
+            }
         }
     }
 }

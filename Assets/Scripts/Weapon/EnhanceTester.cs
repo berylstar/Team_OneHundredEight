@@ -183,12 +183,14 @@ namespace Weapon
                 Quaternion.identity);
 
             raptor.transform.SetParent(player.transform, false);
+
             AttackHandler attackHandler = raptor.GetComponentInChildren<AttackHandler>();
             WeaponData weaponData = new WeaponData();
             weaponData.baseAttackData = new AttackData() { bulletSpeed = 1f };
             attackHandler.SetWeaponData(weaponData);
             foreach (var enhancementData in _enhancementDataSet[PhotonNetwork.LocalPlayer.ActorNumber])
             {
+                Debug.Log($"AddAttackModifier:{enhancementData.AttackData.ToString()}");
                 attackHandler.AddAttackModifier(enhancementData.AttackData);
             }
         }

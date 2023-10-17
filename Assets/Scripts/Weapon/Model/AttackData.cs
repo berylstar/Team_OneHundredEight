@@ -13,6 +13,12 @@ namespace Weapon.Model
         public float reloadTime;
 
 
+        public override string ToString()
+        {
+            return
+                $"AttackData : bulletDamage:{bulletDamage}, bulletSpeed:{bulletSpeed},maxMagazine:{maxMagazine}, shotInterval : {shotInterval}, reloadTime: {reloadTime}";
+        }
+
         public static AttackData operator +(AttackData a, AttackData b)
         {
             return new AttackData()
