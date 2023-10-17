@@ -5991,9 +5991,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 616019717}
-        m_TargetAssemblyTypeName: RoomPanel, Assembly-CSharp
-        m_MethodName: LeaveRoom
+      - m_Target: {fileID: 1904575150}
+        m_TargetAssemblyTypeName: LobbyPanel, Assembly-CSharp
+        m_MethodName: RoomListReset
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

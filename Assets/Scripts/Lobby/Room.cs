@@ -20,4 +20,10 @@ public class Room : MonoBehaviourPunCallbacks
         LobbySettingManger.I.lobbyPanel.SetActive(false);
         LobbySettingManger.I.roomPanel.SetActive(true);
     }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        gameObject.SetActive(false);
+    }
 }
+

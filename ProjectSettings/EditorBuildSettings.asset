@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LobbyScene.unity
+    guid: d508b18744331e94eb67df3ddef3d8bd
+  - enabled: 1
     path: Assets/Scenes/MinsangSceneLobby.unity
     guid: 1e8a6caab6e48834dbb462f51f35081f
   - enabled: 1
