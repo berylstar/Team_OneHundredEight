@@ -26,6 +26,13 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public Coroutine co;
 
+    private void Awake()    //테스트용 
+    {
+        CurrentStat = new PlayerStat();
+
+        InitPlayerStat();
+    }
+
     //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
     public void SetInvincible(bool onoff)
     {
@@ -92,7 +99,6 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         CurrentStat = new PlayerStat();
-        this.initialStat = initialStat;
         CurrentStat.HP = initialStat.MaxHp;
         CurrentStat.MaxHp = initialStat.MaxHp;
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;

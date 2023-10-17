@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] public List<WeaponData> Weapons { get; private set; }
 
     private PhotonView _photonView;
-    private ObjectPooling _pooler;
+    public ObjectPooling Pooler { get; private set; }
 
     [SerializeField] private GameObject panelLoading;
 
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         _photonView = GetComponent<PhotonView>();
-        _pooler = GetComponent<ObjectPooling>();
+        Pooler = GetComponent<ObjectPooling>();
 
         PlayerStats = new List<PlayerStatHandler>();
     }

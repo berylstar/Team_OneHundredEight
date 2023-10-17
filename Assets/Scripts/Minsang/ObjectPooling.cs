@@ -16,6 +16,11 @@ public class ObjectPooling : MonoBehaviourPun
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
 
+    private void Start()
+    {
+        PrePoolInstantiate();
+    }
+
     public void PrePoolInstantiate()
     {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -31,12 +36,6 @@ public class ObjectPooling : MonoBehaviourPun
             poolDictionary.Add(pool.tag, objectQueue);
         }
     }
-
-    //[PunRPC]
-    //private void RPCSetActive(bool flag)
-    //{
-    //    gameObject.SetActive(flag);
-    //}
 
     public GameObject PoolInstantiate(string tag, Vector3 position, Quaternion rotation)
     {
