@@ -30,6 +30,7 @@ public class ObjectPooling : MonoBehaviourPun
             for (int i = 0; i < pool.size; i++)
             {
                 GameObject obj = PhotonNetwork.Instantiate(pool.tag, Vector3.zero, Quaternion.identity);
+                obj.transform.SetParent(transform);
                 obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);                   // 풀링할 오브젝트에 넣을 메소드
                 objectQueue.Enqueue(obj);
             }
@@ -48,7 +49,7 @@ public class ObjectPooling : MonoBehaviourPun
         poolDictionary[tag].Enqueue(obj);
 
         return obj;
-        // 이후 오브젝트에서 photonView.RPC("RPCSetActive", RpcTarget.All, true);
+        // 이후 오브젝트에서 세팅 후 photonView.RPC("RPCSetActive", RpcTarget.All, true);
     }
 
     public void PoolDestroy(GameObject obj)
