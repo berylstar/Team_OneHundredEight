@@ -16,15 +16,15 @@ namespace Weapon.Controller
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        private void OnEnable()
-        {
-            Invoke(nameof(TESTdisapear), 1f);
-        }
+        //private void OnEnable()
+        //{
+        //    Invoke(nameof(TESTdisapear), 1f);
+        //}
 
-        private void TESTdisapear()
-        {
-            GameManager.Instance.Pooler.PoolDestroy(gameObject);
-        }
+        //private void TESTdisapear()
+        //{
+        //    GameManager.Instance.Pooler.PoolDestroy(gameObject);
+        //}
 
         private void FixedUpdate()
         {

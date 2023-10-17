@@ -111,9 +111,23 @@ public class RoomPanel : MonoBehaviourPunCallbacks
     }
     public void OnStartGameButtonClicked()
     {
+        GetComponent<PhotonView>().RPC(nameof(TESTETST), RpcTarget.All);
+        //PhotonNetwork.AutomaticallySyncScene = true;
+
+        //PhotonNetwork.CurrentRoom.IsOpen = false;// 게임이 시작했기 때문에 방을 닫는것 안그러면 게임중에 로비로 다른 플레이어가 들어오는 문제가 생김
+        //PhotonNetwork.CurrentRoom.IsVisible = false;//위와 마찬가지로 방을 비공개로(확실치 않음)
+
+        //PhotonNetwork.LoadLevel("MinsangScene");
+    }
+
+    [PunRPC]
+    private void TESTETST()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
         PhotonNetwork.CurrentRoom.IsOpen = false;// 게임이 시작했기 때문에 방을 닫는것 안그러면 게임중에 로비로 다른 플레이어가 들어오는 문제가 생김
         PhotonNetwork.CurrentRoom.IsVisible = false;//위와 마찬가지로 방을 비공개로(확실치 않음)
 
-        PhotonNetwork.LoadLevel("MinsangScene");
+        PhotonNetwork.LoadLevel("NewMinsangScene");
     }
 }

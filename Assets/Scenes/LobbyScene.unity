@@ -2171,6 +2171,7 @@ GameObject:
   - component: {fileID: 616019717}
   - component: {fileID: 616019716}
   - component: {fileID: 616019715}
+  - component: {fileID: 616019718}
   m_Layer: 5
   m_Name: RoomPanel
   m_TagString: Untagged
@@ -2258,6 +2259,28 @@ MonoBehaviour:
   playerPanelCase: {fileID: 722867429}
   playerPanel: {fileID: 1726829611462025132, guid: 399d8f5cc15d0af418c0e8d226678011, type: 3}
   readyAndStartBTN: {fileID: 1703742383}
+--- !u!114 &616019718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616019713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &653944072
 GameObject:
   m_ObjectHideFlags: 0
