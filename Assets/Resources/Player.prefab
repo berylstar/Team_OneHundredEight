@@ -747,6 +747,7 @@ MonoBehaviour:
     weaponName: 
     tooltip: 
     spriteName: 
+    bulletName: 
     baseAttackData:
       statsChangeType: 0
       bulletDamage: 0
