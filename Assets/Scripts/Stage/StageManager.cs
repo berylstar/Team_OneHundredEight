@@ -1,13 +1,14 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StageManager : MonoBehaviour
+public class StageManager : MonoBehaviourPun
 {
     private int _mapindex;
 
     // private GameObject[] _maps;
-    private GameObject _stage;
+    [SerializeField] private GameObject _stage;
 
     private void Start()
     {
@@ -17,17 +18,17 @@ public class StageManager : MonoBehaviour
         {
             case 0:
                 _stage = GameObject.Find("Stages").transform.Find("Map 1").gameObject;
-                // _stage.SetActive(true);
+                //_stage.SetActive(true);
                 break;
 
             case 1:
                 _stage = GameObject.Find("Stages").transform.Find("Map 2").gameObject;
-                // _stage.SetActive(true);
+                //_stage.SetActive(true);
                 break;
 
             case 2:
                 _stage = GameObject.Find("Stages").transform.Find("Map 3").gameObject;
-                // _stage.SetActive(true);
+                //_stage.SetActive(true);
                 break;
         }
     }

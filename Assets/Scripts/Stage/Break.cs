@@ -1,16 +1,17 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Break : MonoBehaviour
+public class Break : MonoBehaviourPun
 {
     private float _time;
     // private float _fadeCount;
     private bool _isFirstBreak;
     private bool _isSecondBreak;
 
-    private GameObject[] _first;
-    private GameObject[] _second;
+    [SerializeField] private GameObject[] _first;
+    [SerializeField] private GameObject[] _second;
 
     private void Awake()
     {
@@ -25,16 +26,14 @@ public class Break : MonoBehaviour
     {
         _time += Time.deltaTime;
 
-        if (!_isFirstBreak && _time > 3.0f)
+        if (!_isFirstBreak && _time > 3f)
         {
-            Debug.Log("1");
             FirstBreak();
             _isFirstBreak = true;
         }
 
-        if (!_isSecondBreak && _time > 6.0f)
+        if (!_isSecondBreak && _time > 6f)
         {
-            Debug.Log("2");
             SecondBreak();
             _isSecondBreak = true;
         }
