@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoomPanel : MonoBehaviourPunCallbacks
 {
@@ -14,7 +15,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
     [SerializeField] private RectTransform playerPanelCase;
     [SerializeField] private GameObject playerPanel;
 
-    [SerializeField] private TextMeshProUGUI readyAndStartTxt;
+    [SerializeField] private Button readyAndStartBTN;
 
     private List<PlayerPanel> playerPanelList = new List<PlayerPanel>();
 
@@ -73,6 +74,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         playerPanelList[PhotonNetwork.CurrentRoom.PlayerCount - 1].gameObject.SetActive(true);
 
         print(newPlayer.NickName + "님이 방에 들어왔습니다.");
+        IsMaster();
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)//방에서 플레이어가 나가면 호출 되는 콜백
     {
@@ -94,14 +96,24 @@ public class RoomPanel : MonoBehaviourPunCallbacks
 
     public void IsMaster()
     {
+
+        readyAndStartBTN.gameObject.SetActive(false);
+
         if(PhotonNetwork.IsMasterClient)
         {
-            readyAndStartTxt.text = "Start!";
-        }
-        else
-        {
-            readyAndStartTxt.text = "Ready!";
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            {
+                readyAndStartBTN.GetComponentInChildren<TextMeshProUGUI>().text = "Start!";
+                readyAndStartBTN.gameObject.SetActive(true);
 
+            }
         }
+    }
+    public void OnStartGameButtonClicked()
+    {
+        PhotonNetwork.CurrentRoom.IsOpen = false;// 게임이 시작했기 때문에 방을 닫는것 안그러면 게임중에 로비로 다른 플레이어가 들어오는 문제가 생김
+        PhotonNetwork.CurrentRoom.IsVisible = false;//위와 마찬가지로 방을 비공개로(확실치 않음)
+
+        PhotonNetwork.LoadLevel("MinsangScene");
     }
 }
