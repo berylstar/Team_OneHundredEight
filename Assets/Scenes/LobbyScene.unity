@@ -2257,6 +2257,7 @@ MonoBehaviour:
   roomName: {fileID: 381718601}
   playerPanelCase: {fileID: 722867429}
   playerPanel: {fileID: 1726829611462025132, guid: 399d8f5cc15d0af418c0e8d226678011, type: 3}
+  readyAndStartTxt: {fileID: 715254567}
 --- !u!1 &653944072
 GameObject:
   m_ObjectHideFlags: 0

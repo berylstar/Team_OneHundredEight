@@ -14,6 +14,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
     [SerializeField] private RectTransform playerPanelCase;
     [SerializeField] private GameObject playerPanel;
 
+    [SerializeField] private TextMeshProUGUI readyAndStartTxt;
 
     private List<PlayerPanel> playerPanelList = new List<PlayerPanel>();
 
@@ -29,8 +30,9 @@ public class RoomPanel : MonoBehaviourPunCallbacks
 
     public override void OnEnable()
     {
+
         base.OnEnable();
-        print(PhotonNetwork.CurrentRoom.Players.Count + "¸í.");
+        print(PhotonNetwork.CurrentRoom.Players.Count + "ëª….");
         roomName.text = PhotonNetwork.CurrentRoom.Name;
 
         int index = 0;
@@ -38,19 +40,19 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         {
             playerPanelList[index].curPlayer = player;
             playerPanelList[index].gameObject.SetActive(true);
-            print(playerPanelList[index].curPlayer.NickName + "´Ô ÇÁ·ÎÇÊ Ãß°¡.");
+            print(playerPanelList[index].curPlayer.NickName + "ë‹˜ í”„ë¡œí•„ ì¶”ê°€.");
             index++;
         }
-
+        IsMaster();
         //for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         //{
         //    playerPanelList[i].curPlayer = PhotonNetwork.CurrentRoom.Players[i + 1];
         //    playerPanelList[i].gameObject.SetActive(true);
-        //    print(playerPanelList[i].curPlayer.NickName + "´Ô ÇÁ·ÎÇÊ Ãß°¡.");
+        //    print(playerPanelList[i].curPlayer.NickName + "ë‹˜ í”„ë¡œí•„ ì¶”ê°€.");
         //}
     }
 
-    public void LeaveRoom()//¹æ ³ª°¡±â
+    public void LeaveRoom()//ë°© ë‚˜ê°€ê¸°
     {
         PhotonNetwork.LeaveRoom();
 
@@ -63,16 +65,16 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         mainName.SetActive(true);
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)//¹æ¿¡ ÇÃ·¹ÀÌ¾î°¡ µé¾î¿À¸é È£Ãâ µÇ´Â ÄÝ¹é
+    public override void OnPlayerEnteredRoom(Player newPlayer)//ë°©ì— í”Œë ˆì´ì–´ê°€ ë“¤ì–´ì˜¤ë©´ í˜¸ì¶œ ë˜ëŠ” ì½œë°±
     {
         base.OnPlayerEnteredRoom(newPlayer);
 
         playerPanelList[PhotonNetwork.CurrentRoom.PlayerCount - 1].curPlayer = newPlayer;
         playerPanelList[PhotonNetwork.CurrentRoom.PlayerCount - 1].gameObject.SetActive(true);
 
-        print(newPlayer.NickName + "´ÔÀÌ ¹æ¿¡ µé¾î¿Ô½À´Ï´Ù.");
+        print(newPlayer.NickName + "ë‹˜ì´ ë°©ì— ë“¤ì–´ì™”ìŠµë‹ˆë‹¤.");
     }
-    public override void OnPlayerLeftRoom(Player otherPlayer)//¹æ¿¡¼­ ÇÃ·¹ÀÌ¾î°¡ ³ª°¡¸é È£Ãâ µÇ´Â ÄÝ¹é
+    public override void OnPlayerLeftRoom(Player otherPlayer)//ë°©ì—ì„œ í”Œë ˆì´ì–´ê°€ ë‚˜ê°€ë©´ í˜¸ì¶œ ë˜ëŠ” ì½œë°±
     {
         base.OnPlayerEnteredRoom(otherPlayer);
 
@@ -81,10 +83,25 @@ public class RoomPanel : MonoBehaviourPunCallbacks
             if (playerPanelList[i].curPlayer == otherPlayer)
             {
                 playerPanelList[i].gameObject.SetActive(false);
-                print(otherPlayer.NickName + "´ÔÀÇ Á¤º¸¸¦ Áö¿ü½À´Ï´Ù.");
+                print(otherPlayer.NickName + "ë‹˜ì˜ ì •ë³´ë¥¼ ì§€ì› ìŠµë‹ˆë‹¤.");
             }
         }
 
-        print(otherPlayer.NickName + "´ÔÀÌ ¹æ¿¡ ³ª°¡¼Ì½À´Ï´Ù.");
+        print(otherPlayer.NickName + "ë‹˜ì´ ë°©ì— ë‚˜ê°€ì…¨ìŠµë‹ˆë‹¤.");
+
+        IsMaster();
+    }
+
+    public void IsMaster()
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            readyAndStartTxt.text = "Start!";
+        }
+        else
+        {
+            readyAndStartTxt.text = "Ready!";
+
+        }
     }
 }
