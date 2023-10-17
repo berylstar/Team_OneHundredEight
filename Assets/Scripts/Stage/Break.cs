@@ -27,12 +27,14 @@ public class Break : MonoBehaviour
 
         if (!_isFirstBreak && _time > 3.0f)
         {
+            Debug.Log("1");
             FirstBreak();
             _isFirstBreak = true;
         }
 
         if (!_isSecondBreak && _time > 6.0f)
         {
+            Debug.Log("2");
             SecondBreak();
             _isSecondBreak = true;
         }
