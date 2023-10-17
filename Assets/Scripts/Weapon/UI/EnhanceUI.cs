@@ -10,23 +10,52 @@ namespace Weapon.UI
 {
     public class EnhanceUI : MonoBehaviourPun
     {
+        private enum EnhanceUiState
+        {
+            Select,
+            AllPlayerSelected
+        }
+
         [SerializeField] private Text timeText;
         [SerializeField] private RectTransform playerContainer;
         private Camera _camera;
 
+        private EnhanceUiState _uiState = EnhanceUiState.Select;
+        private bool _isUpdated = false;
         private EnhancementManager _enhancementManager;
         private List<EnhanceCardUI> _enhanceCards = new List<EnhanceCardUI>();
         private List<EnhancePlayerUI> _enhancePlayers = new List<EnhancePlayerUI>();
+
+        private void Update()
+        {
+            if (!_isUpdated)
+            {
+                return;
+            }
+
+            _isUpdated = false;
+            switch (_uiState)
+            {
+                case EnhanceUiState.Select:
+                    break;
+                case EnhanceUiState.AllPlayerSelected:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         public void Init(EnhancementManager enhancementManager, int maxCardCount, int cardCount)
         {
             _camera = Camera.main;
             _enhancementManager = enhancementManager;
             _enhancementManager.OnTimeElapsed += UpdateTime;
+            _enhancementManager.OnAllPlayerEnhanced += AllPlayerEnhanced;
             _enhancementManager.OnUpdateEnhanceUIEvent += UpdateEnhanceCardUI;
             CreatePlayers();
             CreateCards(enhancementManager.DataList, maxCardCount, cardCount);
         }
+
 
         private void UpdateEnhanceCardUI(int cardIndex, Color color)
         {
@@ -35,7 +64,7 @@ namespace Weapon.UI
 
         private void UpdateTime(float time)
         {
-            timeText.text = $"{time:N2}";
+            timeText.text = $"{time}";
         }
 
         private void CreateCards(List<EnhancementData> dataList, int maxCardCount, int cardCount)
@@ -82,6 +111,7 @@ namespace Weapon.UI
 
         public void SetPlayerOrder()
         {
+            //todo
         }
 
         private void CreatePlayers()
@@ -98,6 +128,11 @@ namespace Weapon.UI
         public void SetPlayerChecked(int playerNumber)
         {
             //todo dictionary??
+        }
+
+        private void AllPlayerEnhanced()
+        {
+            _isUpdated = true;
         }
     }
 }

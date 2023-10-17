@@ -7,14 +7,14 @@ using UnityEngine;
 
 public static class CsvReader
 {
-    public static List<T> ReadCsvFromResources<T>(string fileName, int skipRows)
+    public static List<T> ReadCsvFromResources<T>(string path, int skipRows)
     {
         List<T> result = new List<T>();
-        TextAsset textAsset = Resources.Load(fileName) as TextAsset;
+        TextAsset textAsset = Resources.Load(path) as TextAsset;
 
         if (textAsset == null)
         {
-            Debug.LogWarning($"{fileName} == NULL");
+            Debug.LogWarning($"{path} == NULL");
             return result;
         }
 

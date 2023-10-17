@@ -747,8 +747,17 @@ MonoBehaviour:
     weaponName: 
     tooltip: 
     spriteName: 
+    bulletName: 
+    baseAttackData:
+      statsChangeType: 0
+      bulletDamage: 0
+      bulletSpeed: 0
+      maxMagazine: 0
+      shotInterval: 0
+      reloadTime: 0
   _initialAttack: {fileID: 11400000, guid: 8ea306b8bfe764b4fa3f918f063f495b, type: 2}
   <CurrentAttack>k__BackingField:
+    statsChangeType: 0
     bulletDamage: 0
     bulletSpeed: 0
     maxMagazine: 0
