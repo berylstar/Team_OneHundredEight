@@ -32,7 +32,6 @@ public class EnhanceCardUI : MonoBehaviourPun
         UpdateUi();
     }
 
-    [PunRPC]
     private void UpdateUi()
     {
         nameText.text = _enhancementData.Name;
@@ -68,6 +67,7 @@ public class EnhanceCardUI : MonoBehaviourPun
 
     private void AnimateArrange(Vector2 position)
     {
+        //todo animate 
         transform.position = position;
     }
 }

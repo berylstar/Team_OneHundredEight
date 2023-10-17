@@ -11,4 +11,5 @@ public class WeaponData
     public string weaponName;
     public string tooltip;
     public string spriteName;
+    public AttackData baseAttackData;
 }

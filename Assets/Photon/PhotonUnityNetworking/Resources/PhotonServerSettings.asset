@@ -46,6 +46,8 @@ MonoBehaviour:
   - SelectCard
   - TestT
   - UpdateSpriteRPC
+  - EnhanceWeaponRPC
+  - UpdateSpriteRPC
   - ReadyRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0

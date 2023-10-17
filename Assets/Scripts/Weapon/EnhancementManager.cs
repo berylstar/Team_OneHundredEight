@@ -31,6 +31,7 @@ namespace Weapon
 
         //todo get from gameManager
         private int _headcount = 3;
+        private Dictionary<int, string> _userIds = new Dictionary<int, string>();
         public int Headcount => _headcount;
         private int CardCount => _headcount + 1 > MaxCardCount ? MaxCardCount : _headcount + 1;
 
@@ -52,6 +53,12 @@ namespace Weapon
             _enhancedPlayerIndexSet = new HashSet<int>();
         }
 
+        private void Start()
+        {
+            OnAllPlayerEnhanced += LoadNextRound;
+        }
+
+
         private void Update()
         {
             if (!_isInit)
@@ -66,6 +73,8 @@ namespace Weapon
                     _currentTime = 0f;
                     EnhanceNotSelectedPlayer();
                     OnAllPlayerEnhanced?.Invoke();
+                    _enhanceUI.gameObject.SetActive(false);
+                    _isInit = false;
                 }
             }
             else
@@ -87,7 +96,15 @@ namespace Weapon
                 .ToList();
         }
 
+
         public void EnhanceWeapon(int playerIndex, int cardIndex)
+        {
+            PhotonView pv = PhotonView.Get(this);
+            pv.RPC("EnhanceWeaponRPC", RpcTarget.AllBuffered, playerIndex, cardIndex);
+        }
+
+        [PunRPC]
+        public void EnhanceWeaponRPC(int playerIndex, int cardIndex)
         {
             var data = _dataEntries[cardIndex].ToEnhancementData();
             Debug.Log($"select Card P :{playerIndex} ,C : {cardIndex} ");
@@ -171,5 +188,12 @@ namespace Weapon
 
             return isEnd;
         }
+
+        private void LoadNextRound()
+        {
+            //todo 
+        }
     }
+    
+    
 }
