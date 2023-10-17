@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Weapon.Model;
+using Photon.Pun;
 
 namespace Weapon.Controller
 {
@@ -9,33 +10,29 @@ namespace Weapon.Controller
         private Rigidbody2D _rigidbody;
         public AttackData AttackData { get; private set; }
         public Vector2 Direction { private set; get; }
-        private bool _isReady = false;
 
         protected virtual void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        protected virtual void Update()
-        {
-            if (!_isReady)
-            {
-                return;
-            }
-
-            _rigidbody.velocity = Direction * AttackData.bulletSpeed;
-        }
-
         protected void OnDisable()
         {
-            _isReady = false;
+            GameManager.Instance.Pooler.PoolDestroy(gameObject);
         }
 
         public void Initialize(AttackData attackData, Vector2 direction)
         {
             AttackData = attackData;
             Direction = direction;
-            _isReady = true;
+
+            _rigidbody.velocity = Direction * AttackData.bulletSpeed;
+        }
+
+        [PunRPC]
+        public void RPCSetActive(bool flag)     // 오브젝트 풀링시 RPC로 활성화
+        {
+            gameObject.SetActive(flag);
         }
     }
 }

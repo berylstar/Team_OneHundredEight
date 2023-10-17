@@ -99,6 +99,11 @@ public class PlayerController : MonoBehaviour
     private void OnShoot(InputValue value)
     {
         // _attack.OnShoot?.Invoke();
+
+        // 테스트 용
+        GameObject obj = GameManager.Instance.Pooler.PoolInstantiate("Bullet", transform.position, Quaternion.identity);
+        obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
+        obj.GetComponent<Weapon.Controller.ProjectileController>().Initialize(_attack.CurrentAttack, _moveInput);
     }
 
     #endregion
