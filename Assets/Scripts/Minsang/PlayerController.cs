@@ -6,6 +6,8 @@ using TMPro;
 using Cinemachine;
 using Photon.Pun;
 
+using Weapon.Controller;
+
 public class PlayerController : MonoBehaviour
 {
     [Header("Player")]
@@ -17,6 +19,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _weaponTransform;
     [SerializeField] private SpriteRenderer _weaponRenderer;
 
+    public event Action<Vector2> OnFire;
+
     [Header("Canvas")]
     [SerializeField] private GameObject _canvas;
     [SerializeField] private TextMeshProUGUI _textNickname;
@@ -26,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
     private PlayerStatHandler _stat;
-    private PlayerAttackHandler _attack;
+
     private PhotonView _photonView;
 
     private Vector2 _moveInput;
@@ -37,7 +41,6 @@ public class PlayerController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
         _stat = GetComponent<PlayerStatHandler>();
-        _attack = GetComponent<PlayerAttackHandler>();
         _photonView = GetComponent<PhotonView>();
 
         _cam = Camera.main;
@@ -53,9 +56,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            var cvc = _cam.transform.GetChild(0).GetComponent<CinemachineVirtualCamera>();
-            cvc.Follow = transform;
-            cvc.LookAt = transform;
+            //var cvc = _cam.transform.GetChild(0).GetComponent<CinemachineVirtualCamera>();
+            //cvc.Follow = transform;
+            //cvc.LookAt = transform;
         }
     }
 
@@ -98,12 +101,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
-        // _attack.OnShoot?.Invoke();
-
         // 테스트 용
-        GameObject obj = GameManager.Instance.Pooler.PoolInstantiate("Bullet", transform.position, Quaternion.identity);
-        obj.GetComponent<Weapon.Controller.ProjectileController>().Initialize(_attack.CurrentAttack, _newAim);
-        obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
+        //GameObject obj = GameManager.Instance.Pooler.PoolInstantiate("Bullet", transform.position, Quaternion.identity);
+        //obj.GetComponent<ProjectileController>().Initialize(_attack.CurrentAttack, _newAim);
+        //obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
+
+        OnFire?.Invoke(_newAim);
     }
 
     #endregion

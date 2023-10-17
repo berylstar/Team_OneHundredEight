@@ -88,7 +88,7 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     {
         InitPlayerStat();
 
-        GameManager.Instance.PlayerStats.Add(this);
+        // GameManager.Instance.PlayerStats.Add(this);
     }
 
     public void InitPlayerStat()

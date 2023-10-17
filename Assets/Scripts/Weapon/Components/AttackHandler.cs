@@ -13,8 +13,13 @@ namespace Weapon.Components
         public AttackData CurrentAttackData { get; private set; }
         private List<AttackData> _attackDataModifiers = new List<AttackData>();
         private bool _isReady = false;
-        private WeaponData _weapon;
+        [SerializeField] private WeaponData _weapon;
         public Action OnReadyEvent;
+
+        private void Start()
+        {
+            SetWeaponData(_weapon);
+        }
 
         private void OnEnhancement(int playerIndex, EnhancementData data)
         {
@@ -31,19 +36,19 @@ namespace Weapon.Components
             OnReadyEvent?.Invoke();
         }
 
-    private void UpdateStats()
-    {
-        if (CurrentAttackData == null)
+        private void UpdateStats()
         {
-            CurrentAttackData = new AttackData()
+            if (CurrentAttackData == null)
             {
-                bulletDamage = _weapon.baseAttackData.bulletDamage,
-                bulletSpeed = _weapon.baseAttackData.bulletSpeed,
-                maxMagazine = _weapon.baseAttackData.maxMagazine,
-                shotInterval = _weapon.baseAttackData.shotInterval,
-                reloadTime = _weapon.baseAttackData.reloadTime
-            };
-        }
+                CurrentAttackData = new AttackData()
+                {
+                    bulletDamage = _weapon.baseAttackData.bulletDamage,
+                    bulletSpeed = _weapon.baseAttackData.bulletSpeed,
+                    maxMagazine = _weapon.baseAttackData.maxMagazine,
+                    shotInterval = _weapon.baseAttackData.shotInterval,
+                    reloadTime = _weapon.baseAttackData.reloadTime
+                };
+            }
 
             foreach (var attackDataModifier in _attackDataModifiers)
             {

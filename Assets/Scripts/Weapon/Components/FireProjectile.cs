@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Weapon.Controller;
 
+using Photon.Pun;
+
 namespace Weapon.Components
 {
     public class FireProjectile : MonoBehaviour
     {
-        private WeaponController _controller;
+        [SerializeField] private PlayerController _controller;
+
         private AttackHandler _handler;
         [SerializeField] private Transform spawnPosition;
 
@@ -31,13 +34,12 @@ namespace Weapon.Components
 
         private void Awake()
         {
-            _controller = GetComponent<WeaponController>();
             _handler = GetComponent<AttackHandler>();
         }
 
         private void Start()
         {
-            _controller.OnFireEvent += Attack;
+            _controller.OnFire += Attack;
             _handler.OnReadyEvent += Init;
         }
 
@@ -46,6 +48,7 @@ namespace Weapon.Components
         {
             if (!_isInit)
             {
+                Init();
                 return;
             }
 
@@ -84,9 +87,13 @@ namespace Weapon.Components
 
         private void CreateProjectile()
         {
-            //todo Migrate to manager class
-            ProjectileController projectile = Instantiate(bullet, spawnPosition.position, quaternion.identity);
-            projectile.Initialize(_handler.CurrentAttackData, _attackDirection);
+            ////todo Migrate to manager class
+            //ProjectileController projectile = Instantiate(bullet, spawnPosition.position, quaternion.identity);
+            //projectile.Initialize(_handler.CurrentAttackData, _attackDirection);
+
+            GameObject obj = GameManager.Instance.Pooler.PoolInstantiate("Bullet", spawnPosition.position, Quaternion.identity);
+            obj.GetComponent<ProjectileController>().Initialize(_handler.CurrentAttackData, _attackDirection);
+            obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
         }
 
         /// <summary>
