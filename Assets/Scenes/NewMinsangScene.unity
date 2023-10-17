@@ -893,6 +893,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 440313897986785235, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 977114880489526378, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1121534921217959609, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1143172203716064143, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: m_Name
       value: Stages
@@ -941,25 +953,101 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1282997741323608334, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1595744482152437756, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1953643684668841977, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2256832067356293897, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: sceneViewId
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494898991321825936, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610799416552443458, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4097995348179566533, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4447705891496503907, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4644510918099309545, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4959361748470568338, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977308740111173199, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5570269936484350746, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6225506075808896652, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6225506075808896652, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_TagString
+      value: Stage
+      objectReference: {fileID: 0}
+    - target: {fileID: 6369509728660819129, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6369509728660819129, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6369509728660819129, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_TagString
+      value: Stage
       objectReference: {fileID: 0}
     - target: {fileID: 6417855067670783182, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: sceneViewId
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 6733187614734241459, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7408789137541244531, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7727301390532627063, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7727301390532627063, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_TagString
+      value: Stage
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783325469948827780, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8089197401071922656, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8242459114327164838, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: sceneViewId
@@ -967,6 +1055,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805875387578012537, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
       propertyPath: sceneViewId
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9076398369190184688, guid: ecb3e8c1d19d6294bb13b3cb60720e91, type: 3}
+      propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1603,6 +1695,14 @@ MonoBehaviour:
   - weaponName: Pistol
     tooltip: "\uAD8C\uCD1D"
     spriteName: 
+    bulletName: 
+    baseAttackData:
+      statsChangeType: 0
+      bulletDamage: 0
+      bulletSpeed: 0
+      maxMagazine: 0
+      shotInterval: 0
+      reloadTime: 0
   panelLoading: {fileID: 2105629051}
 --- !u!114 &1446472609
 MonoBehaviour:
