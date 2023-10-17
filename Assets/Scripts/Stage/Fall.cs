@@ -1,10 +1,11 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fall : MonoBehaviour
+public class Fall : MonoBehaviourPun//, IPunObservable
 {
-    private Rigidbody2D _rb;
+    [SerializeField] private Rigidbody2D _rb;
 
     private void Awake()
     {
@@ -15,7 +16,7 @@ public class Fall : MonoBehaviour
         if (collision.gameObject.tag.Equals("Player"))
         {
             FallingPlatform(_rb);
-        }
+        }  
     }
     private void FallingPlatform(Rigidbody2D rb)
     {
@@ -24,4 +25,20 @@ public class Fall : MonoBehaviour
         rb.gravityScale = 0.001f;
         Destroy(gameObject, 30f);
     }
+
+    /*
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(_rb.position);
+            stream.SendNext(_rb.velocity);
+        }
+        else
+        {
+            _rb.position = (Vector2)stream.ReceiveNext();
+            _rb.velocity = (Vector2)stream.ReceiveNext();
+        }
+    }
+    */
 }
