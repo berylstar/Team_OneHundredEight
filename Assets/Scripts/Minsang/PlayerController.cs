@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _textNickname.text = _photonView.Owner.ActorNumber.ToString();
+        _textNickname.text = _photonView.Owner.NickName;
 
         if (!_photonView.IsMine)
         {
@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Water"));
+        RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Stage"));
 
         if (rayHit.collider == null)
             return;

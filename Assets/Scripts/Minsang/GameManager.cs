@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
+    [SerializeField] private List<Transform> spawnList;
     // 기초 스탯 (플레이어 스탯, 무기 정보, 공격 스탯, 맵 정보...)
 
     // 증강 선택
