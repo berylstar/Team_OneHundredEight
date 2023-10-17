@@ -6,27 +6,27 @@ using Photon.Realtime;
 
 public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
 {
-    private Vector3     _curPos;
-    private Quaternion  _curRotation;
-    private PhotonView  _PV;
-    private LayerMask   _playerCollisionLayer;
+    private Vector3 _curPos;
+    private Quaternion _curRotation;
+    private PhotonView _PV;
+    private LayerMask _playerCollisionLayer;
 
     private float _lifeTime = 9999;
     private Define.ItemType _itemType;
- 
-    public static GameObject Create(Vector3 position , Define.ItemType pickupType = Define.ItemType.Random, float lifeTime = 9999f)
+
+    public static GameObject Create(Vector3 position, Define.ItemType pickupType = Define.ItemType.Random, float lifeTime = 9999f)
     {
-        GameObject go = PhotonNetwork.Instantiate("Pickup" , position, Quaternion.identity);
+        GameObject go = PhotonNetwork.Instantiate("Pickup", position, Quaternion.identity);
         Pickup p = go.GetComponent<Pickup>();
 
         //이렇게한이유는 IsMine인 녀석이 딱 한번 이걸 부를테니까 Init이 일반함수면 안될것같아서.
-        p._PV.RPC("InitRPC", RpcTarget.AllBuffered , pickupType, lifeTime);
+        p._PV.RPC("InitRPC", RpcTarget.AllBuffered, pickupType, lifeTime);
 
         return go;
     }
 
     [PunRPC]
-    public void InitRPC(Define.ItemType pickupType , float lifeTime)
+    public void InitRPC(Define.ItemType pickupType, float lifeTime)
     {
         _lifeTime = lifeTime;
         _itemType = pickupType;
@@ -36,29 +36,29 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
         _PV = GetComponent<PhotonView>();
         _playerCollisionLayer = LayerMask.GetMask("Player");
     }
-    
+
     // Update is called once per frame
     void Update()
     {
-        if(_PV.IsMine)
+        if (_PV.IsMine)
         {
             _lifeTime -= Time.deltaTime;
-            if( _lifeTime < 0 )
+            if (_lifeTime < 0)
             {
-                _PV.RPC("DestroyRPC" , RpcTarget.AllBuffered);
+                _PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
             }
         }
         else
         {
-            if((transform.position - _curPos).sqrMagnitude >= 100)
+            if ((transform.position - _curPos).sqrMagnitude >= 100)
             {
                 transform.position = _curPos;
                 transform.rotation = _curRotation;
             }
             else
             {
-                transform.position = Vector3.Lerp(transform.position , _curPos , Time.deltaTime * 10);
-                transform.rotation = Quaternion.Lerp(transform.rotation , _curRotation , Time.deltaTime * 10);
+                transform.position = Vector3.Lerp(transform.position, _curPos, Time.deltaTime * 10);
+                transform.rotation = Quaternion.Lerp(transform.rotation, _curRotation, Time.deltaTime * 10);
             }
         }
     }
@@ -69,12 +69,12 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
         if (_PV.IsMine || !col.TryGetComponent<PhotonView>(out PhotonView pv) || !pv.IsMine)
             return;
 
-        if (0 != ( _playerCollisionLayer.value & ( 1 << col.gameObject.layer ) ))
+        if (0 != (_playerCollisionLayer.value & (1 << col.gameObject.layer)))
         {
             //플레이어 충돌 시
-            Item.Create(col.gameObject , _itemType);
+            Item.Create(col.gameObject, _itemType);
 
-            _PV.RPC("DestroyRPC" , RpcTarget.AllBuffered);
+            _PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
 
@@ -82,9 +82,9 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
 
-    public void OnPhotonSerializeView(PhotonStream stream , PhotonMessageInfo info)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if(stream.IsWriting)
+        if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);

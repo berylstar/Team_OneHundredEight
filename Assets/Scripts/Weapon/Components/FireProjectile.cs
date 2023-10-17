@@ -9,7 +9,7 @@ namespace Weapon.Components
     public class FireProjectile : MonoBehaviour
     {
         private WeaponController _controller;
-        private AttackHandler _handler;
+        //private AttackHandler _handler;
         [SerializeField] private Transform spawnPosition;
 
         //todo migrate to manager
@@ -18,7 +18,7 @@ namespace Weapon.Components
         private void Awake()
         {
             _controller = GetComponent<WeaponController>();
-            _handler = GetComponent<AttackHandler>();
+            //_handler = GetComponent<AttackHandler>();
         }
 
         private void Start()
@@ -30,7 +30,7 @@ namespace Weapon.Components
         {
             //todo Migrate to manager class 
             ProjectileController projectile = Instantiate(bullet, spawnPosition.position, quaternion.identity);
-            projectile.Initialize(_handler.CurrentAttackData, dir);
+            //projectile.Initialize(_handler.CurrentAttackData, dir);
         }
     }
 }

@@ -7,20 +7,26 @@ using Photon.Realtime;
 
 public class ForPhotonTest : MonoBehaviourPunCallbacks
 {
-    private readonly string player = "Player";
-
     void Start()
     {
-        //PhotonNetwork.SendRate = 60;
-        //PhotonNetwork.SerializationRate = 30;
-
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
     public override void OnJoinedLobby() => PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 5 }, null);
-    public override void OnJoinedRoom()
+    public override void OnJoinedRoom() { }
+    public void ChangeScene()
     {
-        PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+        if (PhotonNetwork.IsMasterClient)
+            photonView.RPC(nameof(TestT), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void TestT()
+    {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
+        PhotonNetwork.LoadLevel("MinsangScene");
     }
 }

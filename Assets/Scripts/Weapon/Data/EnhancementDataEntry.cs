@@ -7,10 +7,11 @@ namespace Weapon.Data
         public string Name;
         public string IconName;
         public string Desc;
-        public int Damage;
-        public int Magazine;
-        public float Delay;
-        public float BulletSpd;
+        public int BulletDamage;
+        public float BulletSpeed;
+        public int MaxMagazine;
+        public float ShotInterval;
+        public float ReloadTime;
 
         public EnhancementData ToEnhancementData() => new EnhancementData()
         {
@@ -19,10 +20,11 @@ namespace Weapon.Data
             Desc = Desc,
             AttackData = new AttackData()
             {
-                bulletSpd = BulletSpd,
-                delay = Delay,
-                damage = Damage,
-                magazine = Magazine
+                bulletDamage = BulletDamage,
+                bulletSpeed = BulletSpeed,
+                maxMagazine = MaxMagazine,
+                shotInterval = ShotInterval,
+                reloadTime = ReloadTime
             },
             Selected = -1,
         };

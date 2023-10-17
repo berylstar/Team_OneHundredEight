@@ -13,34 +13,34 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _footPivot;
     private Camera _cam;
 
-    // private Animator _animator;
-    private Rigidbody2D _rigidbody;
-    private PlayerInput _playerInput;
-    private PlayerStatHandler _stat;
-    
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
     [SerializeField] private SpriteRenderer _weaponRenderer;
-    public event Action EventShoot = null;
 
     [Header("Canvas")]
     [SerializeField] private GameObject _canvas;
     [SerializeField] private TextMeshProUGUI _textNickname;
     [SerializeField] private Image _hpBar ;
 
-    private Vector2 _moveInput;
-    private float _rotZ;
+    // private Animator _animator;
+    private Rigidbody2D _rigidbody;
+    private PlayerInput _playerInput;
+    private PlayerStatHandler _stat;
+    private PlayerAttackHandler _attack;
     private PhotonView _photonView;
 
+    private Vector2 _moveInput;
+    private float _rotZ;
+    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
-        _photonView = GetComponent<PhotonView>();
         _stat = GetComponent<PlayerStatHandler>();
+        _attack = GetComponent<PlayerAttackHandler>();
+        _photonView = GetComponent<PhotonView>();
 
         _cam = Camera.main;
-        
     }
 
     private void Start()
@@ -59,14 +59,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        _moveInput.y = _rigidbody.velocity.y;
+        _rigidbody.velocity = _moveInput;
+    }
+
     #region InputAction
 
     private void OnMove(InputValue value)
     {
-        _moveInput = value.Get<Vector2>().normalized * _stat.MoveSpeed;
-        _moveInput.y = _rigidbody.velocity.y;
-        
-        _rigidbody.velocity = _moveInput;
+        _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
     }
 
     private void OnJump(InputValue value)
@@ -76,7 +79,7 @@ public class PlayerController : MonoBehaviour
         if (rayHit.collider == null)
             return;
 
-        _rigidbody.AddForce(Vector2.up * _stat.JumpForce, ForceMode2D.Impulse);
+        _rigidbody.AddForce(Vector2.up * _stat.CurrentStat.JumpForce, ForceMode2D.Impulse);
     }
 
     private void OnAim(InputValue value)
@@ -95,7 +98,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
-        EventShoot?.Invoke();
+        // _attack.OnShoot?.Invoke();
     }
 
     #endregion

@@ -1,28 +1,24 @@
 using System;
 using Unity.VisualScripting;
 
-namespace Weapon.Model
+[Serializable]
+public class AttackData
 {
-    [Serializable]
-    public class AttackData
+    public int bulletDamage;
+    public float bulletSpeed;
+    public int maxMagazine;
+    public float shotInterval;
+    public float reloadTime;
+
+    public static AttackData operator +(AttackData a, AttackData b)
     {
-        public int damage;
-        public int magazine;
-        public float delay;
-        public float bulletSpd;
-        public float reloadTime;
-
-
-        public static AttackData operator +(AttackData a, AttackData b)
+        return new AttackData()
         {
-            return new AttackData()
-            {
-                damage = a.damage + b.damage,
-                magazine = a.magazine + b.magazine,
-                delay = a.delay + b.delay,
-                bulletSpd = a.bulletSpd + b.bulletSpd,
-                reloadTime = a.reloadTime + b.reloadTime
-            };
-        }
+            bulletDamage = a.bulletDamage + b.bulletDamage,
+            bulletSpeed = a.bulletSpeed + b.bulletSpeed,
+            maxMagazine = a.maxMagazine + b.maxMagazine,
+            shotInterval = a.shotInterval + b.shotInterval,
+            reloadTime = a.reloadTime + b.reloadTime
+        };
     }
 }
