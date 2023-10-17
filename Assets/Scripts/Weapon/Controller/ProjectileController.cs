@@ -1,41 +1,49 @@
 using System;
 using UnityEngine;
 using Weapon.Model;
+using Photon.Pun;
 
 namespace Weapon.Controller
 {
     public class ProjectileController : MonoBehaviour
     {
         private Rigidbody2D _rigidbody;
-        public AttackData AttackData { get; private set; }
-        public Vector2 Direction { private set; get; }
-        private bool _isReady = false;
+        [field: SerializeField] public AttackData AttackData { get; private set; }
+        [field: SerializeField] public Vector2 Direction { private set; get; }
 
         protected virtual void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        protected virtual void Update()
+        private void OnEnable()
         {
-            if (!_isReady)
-            {
-                return;
-            }
-
-            _rigidbody.velocity = Direction * AttackData.bulletSpeed;
+            Invoke(nameof(TESTdisapear), 1f);
         }
 
-        protected void OnDisable()
+        private void TESTdisapear()
         {
-            _isReady = false;
+            GameManager.Instance.Pooler.PoolDestroy(gameObject);
+        }
+
+        private void FixedUpdate()
+        {
+            if (AttackData == null)
+                return;
+
+            _rigidbody.velocity = Direction * AttackData.bulletSpeed;
         }
 
         public void Initialize(AttackData attackData, Vector2 direction)
         {
             AttackData = attackData;
             Direction = direction;
-            _isReady = true;
+        }
+
+        [PunRPC]
+        public void RPCSetActive(bool flag)     // 오브젝트 풀링시 RPC로 활성화
+        {
+            gameObject.SetActive(flag);
         }
     }
 }

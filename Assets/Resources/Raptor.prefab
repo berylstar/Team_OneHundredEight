@@ -228,9 +228,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponData:
     weaponName: Raptor
-    bulletName: Bullet
+    tooltip: 
+    weaponSprite: 
     baseAttackData:
-      damage: 1
-      magazine: 5
-      delay: 0.1
-      bulletSpd: 1
+      bulletDamage: 0
+      bulletSpeed: 0
+      maxMagazine: 0
+      shotInterval: 0
+      reloadTime: 0

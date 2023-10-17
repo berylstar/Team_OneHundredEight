@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour
     [Header("Weapon")]
     [SerializeField] private Transform _weaponTransform;
     [SerializeField] private SpriteRenderer _weaponRenderer;
-    public event Action EventShoot = null;
 
     [Header("Canvas")]
     [SerializeField] private GameObject _canvas;
@@ -27,20 +26,21 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
     private PlayerStatHandler _stat;
+    private PlayerAttackHandler _attack;
     private PhotonView _photonView;
 
     private Vector2 _moveInput;
-    private float _rotZ;
+    private Vector2 _newAim;
     
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
-        _photonView = GetComponent<PhotonView>();
         _stat = GetComponent<PlayerStatHandler>();
+        _attack = GetComponent<PlayerAttackHandler>();
+        _photonView = GetComponent<PhotonView>();
 
         _cam = Camera.main;
-        
     }
 
     private void Start()
@@ -85,11 +85,11 @@ public class PlayerController : MonoBehaviour
     private void OnAim(InputValue value)
     {
         Vector2 worldPos = _cam.ScreenToWorldPoint(value.Get<Vector2>());
-        Vector2 newAim = (worldPos - (Vector2)transform.position).normalized;
+        _newAim = (worldPos - (Vector2)transform.position).normalized;
 
-        if (newAim.magnitude >= 0.5f)
+        if (_newAim.magnitude >= 0.5f)
         {
-            _rotZ = Mathf.Atan2(newAim.y, newAim.x) * Mathf.Rad2Deg;
+            float _rotZ = Mathf.Atan2(_newAim.y, _newAim.x) * Mathf.Rad2Deg;
             _weaponRenderer.flipY = Mathf.Abs(_rotZ) > 90f;
             _playerRenderer.flipX = Mathf.Abs(_rotZ) > 90f;
             _weaponTransform.rotation = Quaternion.Euler(0, 0, _rotZ);
@@ -98,7 +98,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
-        EventShoot?.Invoke();
+        // _attack.OnShoot?.Invoke();
+
+        // 테스트 용
+        GameObject obj = GameManager.Instance.Pooler.PoolInstantiate("Bullet", transform.position, Quaternion.identity);
+        obj.GetComponent<Weapon.Controller.ProjectileController>().Initialize(_attack.CurrentAttack, _newAim);
+        obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
     }
 
     #endregion

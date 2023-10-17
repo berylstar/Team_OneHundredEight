@@ -10,6 +10,7 @@ public class WeaponData
 {
     public string weaponName;
     public string tooltip;
-    public string weaponSprite;
+    public string spriteName;
+    public string bulletName;
     public AttackData baseAttackData;
 }

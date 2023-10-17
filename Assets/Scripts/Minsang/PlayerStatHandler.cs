@@ -10,8 +10,6 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
-    [field: SerializeField] public WeaponData Weapon { get; private set; }
-
     public PlayerStat CurrentStat { get; private set; }
     public LinkedList<PlayerStat> statModifiers = new LinkedList<PlayerStat>();
  
@@ -28,12 +26,20 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public Coroutine co;
 
+    private void Awake()    //테스트용 
+    {
+        CurrentStat = new PlayerStat();
+
+        InitPlayerStat();
+    }
+
     //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
     public void SetInvincible(bool onoff)
     {
         StopCoroutine(co);
         _invincibility = onoff;
     }
+
     public bool ChangeHealth(float change)
     {
         if (change == 0  || _invincibility)
@@ -64,19 +70,20 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
         return true;
     }
+
     public IEnumerator COInvincible(float Time)
     {
         _invincibility = true;
         yield return new WaitForSeconds(Time);
         _invincibility = false;
     }
+
     public void SetHealth(float change)
     {
         //이렇게 써도되겠지만 고민좀 해봅시다 네..
         CurrentStat.HP = change;
     }
-    
-    
+
     public void InitPlayerStat(PlayerStatSO initialStat)
     {
         InitPlayerStat();
@@ -92,13 +99,10 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         CurrentStat = new PlayerStat();
-        this.initialStat = initialStat;
         CurrentStat.HP = initialStat.MaxHp;
         CurrentStat.MaxHp = initialStat.MaxHp;
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
-
-        Weapon = GameManager.Instance.Weapons[initialStat.WeaponIndex];
 
         pv.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
     }
@@ -108,6 +112,7 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     {
         _isReady = true;
     }
+
     public void AddStatModifier(PlayerStat statModifier)
     {
         statModifiers.AddLast(statModifier);

@@ -6,6 +6,5 @@ namespace Weapon.Model
         public string IconUrl;
         public string Desc;
         public AttackData AttackData;
-        public int Selected;
     }
 }

@@ -46,7 +46,13 @@ MonoBehaviour:
   - SelectCard
   - TestT
   - UpdateSpriteRPC
+  - EnhanceWeaponRPC
+  - UpdateSpriteRPC
   - ReadyRPC
+  - RPCSetActive
+  - CircleSettingRPC
+  - LineSettingRPC
+  - WidthSettingRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
