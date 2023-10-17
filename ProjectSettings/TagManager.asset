@@ -8,11 +8,12 @@ TagManager:
   - FirstBreak
   - SecondBreak
   - FallingPlatform
+  - Stage
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Stage
   - Water
   - UI
   - Player
