@@ -7,7 +7,6 @@ using UnityEngine;
 using Weapon.Data;
 using Weapon.Model;
 using Weapon.UI;
-using Random = UnityEngine.Random;
 
 namespace Weapon
 {
@@ -17,7 +16,7 @@ namespace Weapon
 
         //todo migrate to constants
         public const int MaxCardCount = 6;
-        public const float SelectionLimitTime = 10f;
+        public const float SelectionLimitTime = Constants.SelectionTime;
 
         //todo migrate to data manager
         [SerializeField] private List<Color> playerColors;
@@ -47,8 +46,10 @@ namespace Weapon
         private float _currentTime;
         private bool _isInit = false;
         private bool _isAllPlayerSelected;
+        private bool _isFightStarted = false;
         private int _currentEnhanceOrder = -1;
         private int _selectedPlayerCount = 0;
+        public event Action<int> OnNextOrder;
         public event Action<int> OnPlayerSelectEnhancement;
 
         /// key is playerIndex, value is selected enhancementData
@@ -57,6 +58,7 @@ namespace Weapon
         public event Action<int, Color> OnUpdateEnhanceUIEvent;
         public event Action<float> OnTimeElapsed;
         public event Action OnAllPlayerEnhanced;
+        public event Action OnReadyToFight;
 
 
         private void Awake()
@@ -78,7 +80,7 @@ namespace Weapon
 
         private void Start()
         {
-            OnAllPlayerEnhanced += LoadNextRound;
+            OnAllPlayerEnhanced += ShowNextRoundUI;
             OnEnhancementEvent += AddPlayerEnhanceCached;
         }
 
@@ -88,6 +90,8 @@ namespace Weapon
         }
 
 
+        /// 카드를 시간 마다 고른다. 시간내에 고르지 못하면 다음 순서의 인원도 카드를 고를 수 있다.
+        /// 마지막 까지 고르지 않으면 앞번호부터 순차대로 가져간다. 강화를 다 골랐다면 준비 후 다음 전투를 개시한다.
         private void Update()
         {
             if (!_isInit)
@@ -102,6 +106,11 @@ namespace Weapon
                     _currentTime -= Time.deltaTime;
                     OnTimeElapsed?.Invoke(_currentTime);
                 }
+                else if (!_isFightStarted)
+                {
+                    OnReadyToFight?.Invoke();
+                    _isFightStarted = true;
+                }
 
                 return;
             }
@@ -111,7 +120,6 @@ namespace Weapon
                 //todo rpc call 
                 PhotonView pv = PhotonView.Get(this);
                 pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
-                
             }
             else
             {
@@ -139,7 +147,7 @@ namespace Weapon
         public void EnhanceWeapon(int playerIndex, int cardIndex)
         {
             PhotonView pv = PhotonView.Get(this);
-            pv.RPC("EnhanceWeaponRPC", RpcTarget.AllBuffered, playerIndex, cardIndex);
+            pv.RPC(nameof(EnhanceWeaponRPC), RpcTarget.AllBuffered, playerIndex, cardIndex);
         }
 
         [PunRPC]
@@ -195,12 +203,10 @@ namespace Weapon
             }
 
             _headcount = PhotonNetwork.CurrentRoom.PlayerCount;
-            _canSelectEnhance[ranking[0]] = true;
-            _currentEnhanceOrder = ranking[0];
             EnhanceUI go = Resources.Load<EnhanceUI>("EnhanceUI");
             EnhanceUI ui = Instantiate(go);
             ui.Init(this, MaxCardCount, CardCount);
-            _currentTime = SelectionLimitTime;
+            _currentTime = 0f;
             _isInit = true;
         }
 
@@ -239,7 +245,7 @@ namespace Weapon
             }
         }
 
-        private bool SetNextSelectionOrder()
+        private bool SetNextOrderIfNotEnd()
         {
             bool isEnd = true;
             foreach (var selectPair in _canSelectEnhance)
@@ -250,11 +256,14 @@ namespace Weapon
                 }
 
                 _currentTime = SelectionLimitTime;
+                OnNextOrder?.Invoke(selectPair.Key);
                 _canSelectEnhance[selectPair.Key] = true;
                 _currentEnhanceOrder = selectPair.Key;
                 isEnd = false;
                 break;
             }
+
+            //todo send event to ui
 
             return isEnd;
         }
@@ -263,7 +272,7 @@ namespace Weapon
         [PunRPC]
         private void SetNextSelectionOrderRPC()
         {
-            if (SetNextSelectionOrder())
+            if (SetNextOrderIfNotEnd())
             {
                 _isAllPlayerSelected = true;
                 _currentTime = 0f;
@@ -271,12 +280,17 @@ namespace Weapon
             }
         }
 
-        private void LoadNextRound()
+        private void ShowNextRoundUI()
         {
             _currentTime = Constants.TimeToNextRound;
             NextRoundUI nextRoundObj = Resources.Load<NextRoundUI>("UI/ReadyBattleUI");
             NextRoundUI nextRoundUI = Instantiate(nextRoundObj);
             nextRoundUI.Init(this);
+        }
+
+        public void ClearEnhancementData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

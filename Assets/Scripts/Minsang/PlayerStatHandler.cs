@@ -10,7 +10,7 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
-    public PlayerStat CurrentStat { get; private set; }
+    [field: SerializeField] public PlayerStat CurrentStat { get; private set; }
     public LinkedList<PlayerStat> statModifiers = new LinkedList<PlayerStat>();
  
     [SerializeField] private float healthChangeDelay = .5f;
@@ -25,24 +25,34 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     public event Action OnInvincibilityEnd;
 
     public Coroutine co;
+    PhotonView _PV;
 
     private void Awake()    //테스트용 
     {
         CurrentStat = new PlayerStat();
-
+        _PV = GetComponent<PhotonView>();
         InitPlayerStat();
     }
 
     //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
     public void SetInvincible(bool onoff)
     {
-        StopCoroutine(co);
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
+        if (co != null)
+        {
+            StopCoroutine(co);
+        }
+
         _invincibility = onoff;
     }
 
     public bool ChangeHealth(float change)
     {
-        if (change == 0  || _invincibility)
+        if (!_PV.IsMine || change == 0  || _invincibility)
         {
             return false;
         }
@@ -50,8 +60,11 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         _timeSinceLastChange = 0f;
         CurrentStat.HP += change;
         CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
-        
-        StopCoroutine(co);
+        if (co != null)
+        {
+            StopCoroutine(co);
+        }
+
         co = StartCoroutine(COInvincible(healthChangeDelay));
         
         if (change > 0)
@@ -66,6 +79,8 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         if (CurrentStat.HP <= 0.0f)
         {
             OnDeath?.Invoke();
+
+            PhotonNetwork.Instantiate("Effects/Death", transform.position, Quaternion.identity);
         }
 
         return true;
@@ -80,31 +95,29 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public void SetHealth(float change)
     {
-        //이렇게 써도되겠지만 고민좀 해봅시다 네..
-        CurrentStat.HP = change;
-    }
-
-    public void InitPlayerStat(PlayerStatSO initialStat)
-    {
-        InitPlayerStat();
-
-        // GameManager.Instance.PlayerStats.Add(this);
-    }
-
-    public void InitPlayerStat()
-    {
-        if(!TryGetComponent<PhotonView>(out var pv) || !pv.IsMine)
+        if (!_PV.IsMine)
         {
             return;
         }
 
+        //이렇게 써도되겠지만 고민좀 해봅시다 네..
+        CurrentStat.HP = change;
+    }
+
+    public void InitPlayerStat()
+    {
         CurrentStat = new PlayerStat();
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         CurrentStat.HP = initialStat.MaxHp;
         CurrentStat.MaxHp = initialStat.MaxHp;
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
 
-        pv.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
+        _PV.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
     }
 
     [PunRPC]
@@ -115,18 +128,33 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public void AddStatModifier(PlayerStat statModifier)
     {
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         statModifiers.AddLast(statModifier);
         UpdateCharacterStats();
     }
 
     public void RemoveStatModifier(PlayerStat statModifier)
     {
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         statModifiers.Remove(statModifier);
         UpdateCharacterStats();
     }
 
     public void UpdateCharacterStats()
     {
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         SetBaseStat();
 
         foreach (PlayerStat modifier in statModifiers.OrderBy(x => x.statsChangeType))
@@ -155,9 +183,12 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     private void UpdateStat(Func<float, float, float> operation, PlayerStat newModifier)
     {
-        CurrentStat.MaxHp = operation(CurrentStat.MaxHp, newModifier.MaxHp);
-        CurrentStat.JumpForce = operation(CurrentStat.JumpForce, newModifier.JumpForce);
-        CurrentStat.MoveSpeed = operation(CurrentStat.MoveSpeed, newModifier.MoveSpeed);
+        if(newModifier.MaxHp != 0)
+            CurrentStat.MaxHp = operation(CurrentStat.MaxHp, newModifier.MaxHp);
+        if (newModifier.JumpForce != 0)
+            CurrentStat.JumpForce = operation(CurrentStat.JumpForce, newModifier.JumpForce);
+        if (newModifier.MoveSpeed != 0)
+            CurrentStat.MoveSpeed = operation(CurrentStat.MoveSpeed, newModifier.MoveSpeed);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -175,5 +206,10 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
             CurrentStat.HP = (float)stream.ReceiveNext();
             CurrentStat.MaxHp = (float)stream.ReceiveNext();
         }
+    }
+
+    public void Hit(int damage)
+    {
+        ChangeHealth(-1 * damage);
     }
 }

@@ -25,11 +25,24 @@ namespace Weapon.UI
 
         private void OnDisable()
         {
+            Unsubscribe();
+        }
+
+        private void OnDestroy()
+        {
+            Unsubscribe();
+        }
+
+        private void Unsubscribe()
+        {
             _enhancementManager.OnTimeElapsed -= UpdateTime;
             _enhancementManager.OnAllPlayerEnhanced -= AllPlayerEnhanced;
             _enhancementManager.OnPlayerSelectEnhancement -= SetPlayerChecked;
             _enhancementManager.OnUpdateEnhanceUIEvent -= UpdateEnhanceCardUI;
+            _enhancementManager.OnReadyToFight -= Disappear;
+            _enhancementManager.OnNextOrder -= UpdateOrderUI;
         }
+
 
         public void Init(EnhancementManager enhancementManager, int maxCardCount, int cardCount)
         {
@@ -39,8 +52,15 @@ namespace Weapon.UI
             _enhancementManager.OnAllPlayerEnhanced += AllPlayerEnhanced;
             _enhancementManager.OnPlayerSelectEnhancement += SetPlayerChecked;
             _enhancementManager.OnUpdateEnhanceUIEvent += UpdateEnhanceCardUI;
-            CreatePlayers();
+            _enhancementManager.OnReadyToFight += Disappear;
+            _enhancementManager.OnNextOrder += UpdateOrderUI;
+            CreatePlayerUI();
             CreateCards(enhancementManager.DataList, maxCardCount, cardCount);
+        }
+
+        private void Disappear()
+        {
+            Destroy(gameObject);
         }
 
         private void UpdateEnhanceCardUI(int cardIndex, Color color)
@@ -101,30 +121,42 @@ namespace Weapon.UI
             card.Arrange(_enhancementManager, startPosition, destPosition, index);
         }
 
-        public void SetPlayerOrder()
-        {
-            //todo
-        }
-
-        private void CreatePlayers()
+        private void CreatePlayerUI()
         {
             foreach (var player in _enhancementManager.PlayerColors)
             {
                 EnhancePlayerUI go = Resources.Load<EnhancePlayerUI>("EnhancePlayerUi");
                 EnhancePlayerUI playerUi = Instantiate(go, playerContainer, false);
+
+                string nickname = PhotonNetwork.CurrentRoom.Players[player.Key].NickName;
+                EnhancePlayerUI.UiState state = new EnhancePlayerUI.UiState()
+                {
+                    Color = player.Value, IsPlayerTurn = false, Nickname = nickname,
+                };
+
+                playerUi.ChangeState(state);
                 _enhancePlayerUis.Add(player.Key, playerUi);
-                playerUi.PlayerImage.color = _enhancementManager.PlayerColors[player.Key];
             }
         }
 
-        public void SetPlayerChecked(int playerNumber)
+        private void SetPlayerChecked(int playerNumber)
         {
-            _enhancePlayerUis[playerNumber].Check();
+            EnhancePlayerUI.UiState newState = _enhancePlayerUis[playerNumber].CurrentState with
+            {
+                IsPlayerTurn = false, IsSelected = true,
+            };
+            _enhancePlayerUis[playerNumber].ChangeState(newState);
         }
 
         private void AllPlayerEnhanced()
         {
-            gameObject.SetActive(false);
+            Disappear();
+        }
+
+        private void UpdateOrderUI(int actorNum)
+        {
+            EnhancePlayerUI.UiState newState = _enhancePlayerUis[actorNum].CurrentState with { IsPlayerTurn = true };
+            _enhancePlayerUis[actorNum].ChangeState(newState);
         }
     }
 }
