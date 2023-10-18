@@ -28,22 +28,22 @@ public class Item : MonoBehaviour
         {
             //TODO(KDM) : 각각 아이템들을 프리펩화 해두기
             case Define.ItemType.HpDown:
-                go = Object.Instantiate(Resources.Load<GameObject>("Item"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
                 break;
             case Define.ItemType.HpUp:
-                go = Object.Instantiate(Resources.Load<GameObject>("Item"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
                 break;
             case Define.ItemType.Invincible:
-                go = Object.Instantiate(Resources.Load<GameObject>("Item"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
                 break;
             case Define.ItemType.SpeedDown:
-                go = Object.Instantiate(Resources.Load<GameObject>("Item"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
                 break;
             case Define.ItemType.SpeedUp:
-                go = Object.Instantiate(Resources.Load<GameObject>("Item"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
                 break;
             case Define.ItemType.ReverseKey:
-                go = Object.Instantiate(Resources.Load<GameObject>("Item"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
                 break;
             default:
                 return null;
