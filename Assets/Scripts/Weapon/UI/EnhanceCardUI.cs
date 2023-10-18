@@ -20,7 +20,7 @@ public class EnhanceCardUI : MonoBehaviourPun
     private int _index = -1;
     private bool _isSelected = false;
     private EnhancementData _enhancementData;
-    private const float AnimationTime = 1.5f;
+    private const float AnimationTime = 0.5f;
     private float _time = 0f;
     private Vector2 _startPosition;
     private Vector2 _controlPosition;
@@ -76,7 +76,7 @@ public class EnhanceCardUI : MonoBehaviourPun
         _manager = enhancementManager;
         _index = index;
         _destPosition = position;
-        _controlPosition = _startPosition + (position - _startPosition) / 2 + (Vector2.up * rect.height * 0.5f);
+        _controlPosition = _startPosition + (position - _startPosition) / 2 + (Vector2.up * rect.height);
         AnimateArrange();
     }
 

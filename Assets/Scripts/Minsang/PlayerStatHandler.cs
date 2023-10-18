@@ -42,7 +42,11 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
-        // StopCoroutine(co);
+        if (co != null)
+        {
+            StopCoroutine(co);
+        }
+
         _invincibility = onoff;
     }
 
@@ -56,9 +60,12 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         _timeSinceLastChange = 0f;
         CurrentStat.HP += change;
         CurrentStat.HP = Mathf.Clamp(CurrentStat.HP, 0.0f, CurrentStat.MaxHp);
-        
-        //StopCoroutine(co);
-        //co = StartCoroutine(COInvincible(healthChangeDelay));
+        if (co != null)
+        {
+            StopCoroutine(co);
+        }
+
+        co = StartCoroutine(COInvincible(healthChangeDelay));
         
         if (change > 0)
         {
