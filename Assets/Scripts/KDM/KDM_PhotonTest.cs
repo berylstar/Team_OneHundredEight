@@ -28,5 +28,6 @@ public class KDM_PhotonTest : MonoBehaviourPunCallbacks
         //PhotonNetwork.Instantiate("Effects/Death", Vector3.zero, Quaternion.identity);
         Pickup.Create(new Vector3(0, 5, 0), Define.ItemType.Random, 10);
         Pickup.Create(new Vector3(3, 5, 0), Define.ItemType.Random, 10);
+
     }
 }

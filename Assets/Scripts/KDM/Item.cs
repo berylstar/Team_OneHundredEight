@@ -28,22 +28,22 @@ public class Item : MonoBehaviour
         {
             //TODO(KDM) : 각각 아이템들을 프리펩화 해두기
             case Define.ItemType.HpDown:
-                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30Down"));
                 break;
             case Define.ItemType.HpUp:
-                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30Up"));
                 break;
             case Define.ItemType.Invincible:
-                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Invincible"));
                 break;
             case Define.ItemType.SpeedDown:
-                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/SpeedMul0.5"));
                 break;
             case Define.ItemType.SpeedUp:
-                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/SpeedMul1.5"));
                 break;
             case Define.ItemType.ReverseKey:
-                go = Object.Instantiate(Resources.Load<GameObject>("Items/Hp30UpSpeedMul2"));
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/Reverse"));
                 break;
             default:
                 return null;
@@ -87,9 +87,6 @@ public class Item : MonoBehaviour
                 case Define.BuffType.Invincible:
                     _targetStatHandler.SetInvincible(true);
                     break;
-                case Define.BuffType.ReverseKey:
-                    //TODO(KDM) : 키반전 구현(PlayerInput쪽이려나?)
-                    break;
             }
         }
     }
@@ -106,9 +103,6 @@ public class Item : MonoBehaviour
                 break;
             case Define.BuffType.Invincible:
                 _targetStatHandler.SetInvincible(false);
-                break;
-            case Define.BuffType.ReverseKey:
-                //TODO(KDM) : 키반전 해제 구현(PlayerInput쪽이려나?)
                 break;
         }
     }
