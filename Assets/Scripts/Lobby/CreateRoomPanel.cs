@@ -25,7 +25,14 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
     }
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(roomNameInput.text, new RoomOptions { MaxPlayers = (int)personnelSlider.value });
+        if (roomNameInput.text != "")
+        {
+            PhotonNetwork.CreateRoom(roomNameInput.text, new RoomOptions { MaxPlayers = (int)personnelSlider.value });
+        }
+        else
+        {
+            roomNameText.text = "ë°© ì´ë¦„ì´ ì—†ìŠµë‹ˆë‹¤!";
+        }
     }
 
     public void CancelRoom()
@@ -37,7 +44,7 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         roomNameInput.text = string.Empty;
-        roomNameText.text = "ÀÌ¹Ì »ç¿ëÁßÀÎ ¹æ ÀÌ¸§ ÀÔ´Ï´Ù";
+        roomNameText.text = "ì´ë¯¸ ì‚¬ìš©ì¤‘ì¸ ë°© ì´ë¦„ ì…ë‹ˆë‹¤";
     }
 
     public override void OnJoinedRoom()
