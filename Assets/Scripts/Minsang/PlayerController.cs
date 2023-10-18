@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [Header("Player")]
     [SerializeField] private SpriteRenderer _playerRenderer;
     [SerializeField] private Transform _footPivot;
+    [SerializeField] private Animator _playerAni;
     private Camera _cam;
 
     [Header("Weapon")]
@@ -23,7 +24,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _textNickname;
     [SerializeField] private Image _hpBar ;
 
-    // private Animator _animator;
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
     private PlayerStatHandler _stat;
@@ -35,7 +35,11 @@ public class PlayerController : MonoBehaviour
 
     private int _maxJumpCount = 1;
     private int _jumpCount = 1;
-    
+
+    private int _animIdle = Animator.StringToHash("TrJump");
+    private int _animWalk = Animator.StringToHash("IsWalk");
+    private int _animAir = Animator.StringToHash("IsAir");
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -87,6 +91,8 @@ public class PlayerController : MonoBehaviour
     private void OnMove(InputValue value)
     {
         _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
+
+        _playerAni.SetBool(_animWalk, _moveInput != Vector2.zero);
     }
 
     private void OnJump(InputValue value)

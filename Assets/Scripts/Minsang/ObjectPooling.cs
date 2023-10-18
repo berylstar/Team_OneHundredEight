@@ -44,8 +44,9 @@ public class ObjectPooling : MonoBehaviourPun
             return null;
 
         GameObject obj = poolDictionary[tag].Dequeue();
-        obj.transform.position = position;
-        obj.transform.rotation = rotation;
+        //obj.transform.position = position;
+        //obj.transform.rotation = rotation;
+        obj.GetComponent<PhotonView>().RPC("RPCSetTransform", RpcTarget.All, position, rotation);
         poolDictionary[tag].Enqueue(obj);
 
         return obj;

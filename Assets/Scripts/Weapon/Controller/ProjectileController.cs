@@ -13,6 +13,8 @@ namespace Weapon.Controller
         private Rigidbody2D _rigidbody;
         private PhotonView _photonView;
 
+        private bool _isReady = false;
+
         protected virtual void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
@@ -21,6 +23,9 @@ namespace Weapon.Controller
 
         private void FixedUpdate()
         {
+            if (!_isReady)
+                return;
+
             _rigidbody.velocity = Direction * Speed;
         }
 
@@ -40,6 +45,7 @@ namespace Weapon.Controller
         {
             _photonView.RPC(nameof(RPCInitial), RpcTarget.All, data.bulletDamage, data.bulletSpeed, direction);
             _photonView.RPC("RPCSetActive", RpcTarget.All, true);
+            _isReady = true;
         }
 
         [PunRPC]
@@ -52,6 +58,7 @@ namespace Weapon.Controller
 
         private void Disapear()
         {
+            _isReady = false;
             _photonView.RPC("RPCSetActive", RpcTarget.All, false);
         }
     }
