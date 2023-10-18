@@ -26,23 +26,30 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public Coroutine co;
 
+    PhotonView _PV;
+
     private void Awake()    //테스트용 
     {
         CurrentStat = new PlayerStat();
-
+        _PV = GetComponent<PhotonView>();
         InitPlayerStat();
     }
 
     //TODO : 나중에 헬스시스템으로 따로 빼는게 괜찮긴할듯합니다
     public void SetInvincible(bool onoff)
     {
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         StopCoroutine(co);
         _invincibility = onoff;
     }
 
     public bool ChangeHealth(float change)
     {
-        if (change == 0  || _invincibility)
+        if (!_PV.IsMine || change == 0  || _invincibility)
         {
             return false;
         }
@@ -66,6 +73,8 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         if (CurrentStat.HP <= 0.0f)
         {
             OnDeath?.Invoke();
+
+            PhotonNetwork.Instantiate("Effects/Death", transform.position, Quaternion.identity);
         }
 
         return true;
@@ -80,31 +89,29 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public void SetHealth(float change)
     {
-        //이렇게 써도되겠지만 고민좀 해봅시다 네..
-        CurrentStat.HP = change;
-    }
-
-    public void InitPlayerStat(PlayerStatSO initialStat)
-    {
-        InitPlayerStat();
-
-        // GameManager.Instance.PlayerStats.Add(this);
-    }
-
-    public void InitPlayerStat()
-    {
-        if(!TryGetComponent<PhotonView>(out var pv) || !pv.IsMine)
+        if (!_PV.IsMine)
         {
             return;
         }
 
+        //이렇게 써도되겠지만 고민좀 해봅시다 네..
+        CurrentStat.HP = change;
+    }
+
+    public void InitPlayerStat()
+    {
         CurrentStat = new PlayerStat();
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         CurrentStat.HP = initialStat.MaxHp;
         CurrentStat.MaxHp = initialStat.MaxHp;
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
 
-        pv.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
+        _PV.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
     }
 
     [PunRPC]
@@ -115,18 +122,33 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public void AddStatModifier(PlayerStat statModifier)
     {
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         statModifiers.AddLast(statModifier);
         UpdateCharacterStats();
     }
 
     public void RemoveStatModifier(PlayerStat statModifier)
     {
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         statModifiers.Remove(statModifier);
         UpdateCharacterStats();
     }
 
     public void UpdateCharacterStats()
     {
+        if (!_PV.IsMine)
+        {
+            return;
+        }
+
         SetBaseStat();
 
         foreach (PlayerStat modifier in statModifiers.OrderBy(x => x.statsChangeType))

@@ -22,9 +22,10 @@ public class KDM_PhotonTest : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         //PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
-        PhotonNetwork.Instantiate("Particles/Blood", Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate("Effects/Blood", Vector3.zero, Quaternion.identity);
         PhotonNetwork.Instantiate("Boom", new Vector3(3.58f, 1.5f, 0), Quaternion.identity);
-        PhotonNetwork.Instantiate("Particles/Death", Vector3.zero, Quaternion.identity);
+        //포톤을 안쓰는걸로
+        //PhotonNetwork.Instantiate("Effects/Death", Vector3.zero, Quaternion.identity);
         Pickup.Create(new Vector3(0, 5, 0), Define.ItemType.Random, 10);
     }
 }
