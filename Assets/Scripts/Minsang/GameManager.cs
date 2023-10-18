@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
 
-
     // 기초 스탯 (플레이어 정보 목록)
     private Dictionary<int, PlayerStatus> _playerStatusMap;
     public IReadOnlyDictionary<int, PlayerStatus> PlayerStatusMap => _playerStatusMap;
@@ -34,6 +33,7 @@ public class GameManager : MonoBehaviour
     public List<int> KnockoutPlayers { get; private set; }
 
     private PhotonView _photonView;
+    public GameObject myPlayer;
 
     private readonly string player = "Player";
     private readonly string keyLoadScene = "LOAD_SCENE";
@@ -59,8 +59,8 @@ public class GameManager : MonoBehaviour
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { keyLoadScene, true } });
         StartCoroutine(CoLoading());
 
-        SubscribeEnhancementEvents();
-        EnhancementIntegrationTest();
+        //SubscribeEnhancementEvents();
+        //EnhancementIntegrationTest();
     }
 
     [Obsolete("For testing")]
@@ -87,7 +87,19 @@ public class GameManager : MonoBehaviour
         while (!AllHasTag(keyLoadPlayer)) { yield return null; }
 
         panelLoading.SetActive(false);
-        PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+        myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
+
+        yield return new WaitForSeconds(3);
+
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
+
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    SetPlayerSpawn();
+        //}
+
+        TEST();
     }
 
     private void AddPlayerStatus()
@@ -139,8 +151,22 @@ public class GameManager : MonoBehaviour
         int i = 0;
         foreach (GameObject p in GameObject.FindGameObjectsWithTag("Player"))
         {
+            Debug.Log(i);
             p.transform.position = poses[i];
             i += 1;
+        }
+    }
+
+    private void TEST()
+    {
+        List<Vector2> poses = _stageManager.SetSpawn();
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.PlayerList[i].ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber);
+                myPlayer.GetComponent<PhotonView>().RPC("RPCSetTransform", RpcTarget.All, new Vector3(poses[i].x, poses[i].y, 0), Quaternion.identity);
+            }
         }
     }
 
