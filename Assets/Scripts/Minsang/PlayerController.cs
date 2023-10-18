@@ -109,14 +109,27 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (!_photonView.IsMine)
-            return;
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (!_photonView.IsMine || collision.GetComponent<PhotonView>().IsMine)
+    //        return;
 
-        if (collision.CompareTag("Item"))
-        {
-            Debug.Log("ITEM");
-        }
+    //    if (collision.CompareTag("Bullet"))
+    //    {
+    //        _stat.ChangeHealth(-1 * collision.GetComponent<Weapon.Controller.ProjectileController>().Damage);
+    //        _photonView.RPC(nameof(ShowHP), RpcTarget.All);
+    //    }
+    //}
+
+    public void Hit(int damage)
+    {
+        _photonView.RPC(nameof(ShowHP), RpcTarget.All, damage);
+    }
+
+    [PunRPC]
+    private void ShowHP(int damage)
+    {
+        _stat.ChangeHealth(-1 * damage);
+        _hpBar.fillAmount = _stat.CurrentStat.HP / _stat.CurrentStat.MaxHp;
     }
 }

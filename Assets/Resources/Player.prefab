@@ -145,7 +145,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 3803138490637581718}
-  sceneViewId: 1
+  sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1797470856619403981
@@ -626,7 +626,7 @@ Transform:
   - {fileID: 6797787479081167484}
   - {fileID: 7149059669330501418}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1312927846276564294
 Rigidbody2D:
@@ -751,7 +751,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 6320573438653121117}
   - {fileID: 523587371998391249}
-  sceneViewId: 5
+  sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &6320573438653121117
@@ -802,6 +802,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialStat: {fileID: 11400000, guid: d48210786fa0beb44aa0852a3c4132d4, type: 2}
+  <CurrentStat>k__BackingField:
+    statsChangeType: 0
+    <HP>k__BackingField: 0
+    <MaxHp>k__BackingField: 0
+    <MoveSpeed>k__BackingField: 0
+    <JumpForce>k__BackingField: 0
   healthChangeDelay: 0.5
 --- !u!1 &8673564323359348097
 GameObject:
@@ -870,7 +876,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
