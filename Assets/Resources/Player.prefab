@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &482283639225792273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2009197263562314798}
+  m_Layer: 0
+  m_Name: EmptyCartragePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2009197263562314798
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482283639225792273}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.32, y: 0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6797787479081167484}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &526098914651547623
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,14 +41,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6797787479081167484}
   - component: {fileID: 3701505327562254967}
-  - component: {fileID: 8660388056677268562}
-  - component: {fileID: 5736972669486486008}
   - component: {fileID: 8172670310696106844}
   - component: {fileID: 3803138490637581718}
   - component: {fileID: 3800827607746785117}
-  - component: {fileID: 2184135096820539364}
   m_Layer: 0
-  m_Name: Raptor
+  m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,6 +64,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 704447449151828173}
+  - {fileID: 2009197263562314798}
+  - {fileID: 7535662181967593989}
   m_Father: {fileID: 8865400984333423758}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -63,32 +93,6 @@ MonoBehaviour:
       maxMagazine: 10
       shotInterval: 0.1
       reloadTime: 0.1
---- !u!114 &8660388056677268562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526098914651547623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f47e67bd3ed4401b9253672916eebc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5736972669486486008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526098914651547623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eace474a03bfa4110800eb1c4db8e224, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _weaponRenderer: {fileID: 4108288780902841204}
-  _weaponPivot: {fileID: 6797787479081167484}
 --- !u!114 &8172670310696106844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,30 +147,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2184135096820539364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526098914651547623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d1dba9564ce4cc1abdc4dccd8dffed1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponData:
-    weaponName: Raptor
-    tooltip: a
-    spriteName: a
-    bulletName: a
-    baseAttackData:
-      statsChangeType: 2
-      bulletDamage: 10
-      bulletSpeed: 10
-      maxMagazine: 10
-      shotInterval: 0.1
-      reloadTime: 0.1
 --- !u!1 &1797470856619403981
 GameObject:
   m_ObjectHideFlags: 0
@@ -898,3 +878,34 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &9151615428832646662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7535662181967593989}
+  m_Layer: 0
+  m_Name: FirePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7535662181967593989
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9151615428832646662}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.87, y: 0.08, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6797787479081167484}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
