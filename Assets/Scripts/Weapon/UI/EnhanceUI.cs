@@ -25,10 +25,21 @@ namespace Weapon.UI
 
         private void OnDisable()
         {
+            Unsubscribe();
+        }
+
+        private void OnDestroy()
+        {
+            Unsubscribe();
+        }
+
+        private void Unsubscribe()
+        {
             _enhancementManager.OnTimeElapsed -= UpdateTime;
             _enhancementManager.OnAllPlayerEnhanced -= AllPlayerEnhanced;
             _enhancementManager.OnPlayerSelectEnhancement -= SetPlayerChecked;
             _enhancementManager.OnUpdateEnhanceUIEvent -= UpdateEnhanceCardUI;
+            _enhancementManager.OnReadyToFight -= Disappear;
         }
 
         public void Init(EnhancementManager enhancementManager, int maxCardCount, int cardCount)
@@ -39,8 +50,14 @@ namespace Weapon.UI
             _enhancementManager.OnAllPlayerEnhanced += AllPlayerEnhanced;
             _enhancementManager.OnPlayerSelectEnhancement += SetPlayerChecked;
             _enhancementManager.OnUpdateEnhanceUIEvent += UpdateEnhanceCardUI;
+            _enhancementManager.OnReadyToFight += Disappear;
             CreatePlayers();
             CreateCards(enhancementManager.DataList, maxCardCount, cardCount);
+        }
+
+        private void Disappear()
+        {
+            Destroy(gameObject);
         }
 
         private void UpdateEnhanceCardUI(int cardIndex, Color color)
@@ -101,11 +118,6 @@ namespace Weapon.UI
             card.Arrange(_enhancementManager, startPosition, destPosition, index);
         }
 
-        public void SetPlayerOrder()
-        {
-            //todo
-        }
-
         private void CreatePlayers()
         {
             foreach (var player in _enhancementManager.PlayerColors)
@@ -124,7 +136,7 @@ namespace Weapon.UI
 
         private void AllPlayerEnhanced()
         {
-            gameObject.SetActive(false);
+            Disappear();
         }
     }
 }
