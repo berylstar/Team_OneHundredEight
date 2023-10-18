@@ -7,7 +7,6 @@ using UnityEngine;
 using Weapon.Data;
 using Weapon.Model;
 using Weapon.UI;
-using Random = UnityEngine.Random;
 
 namespace Weapon
 {
@@ -50,6 +49,7 @@ namespace Weapon
         private bool _isFightStarted = false;
         private int _currentEnhanceOrder = -1;
         private int _selectedPlayerCount = 0;
+        public event Action<int> OnNextOrder;
         public event Action<int> OnPlayerSelectEnhancement;
 
         /// key is playerIndex, value is selected enhancementData
@@ -147,7 +147,7 @@ namespace Weapon
         public void EnhanceWeapon(int playerIndex, int cardIndex)
         {
             PhotonView pv = PhotonView.Get(this);
-            pv.RPC("EnhanceWeaponRPC", RpcTarget.AllBuffered, playerIndex, cardIndex);
+            pv.RPC(nameof(EnhanceWeaponRPC), RpcTarget.AllBuffered, playerIndex, cardIndex);
         }
 
         [PunRPC]
@@ -203,13 +203,10 @@ namespace Weapon
             }
 
             _headcount = PhotonNetwork.CurrentRoom.PlayerCount;
-            _canSelectEnhance[ranking[0]] = true;
-            _currentEnhanceOrder = ranking[0];
-            
             EnhanceUI go = Resources.Load<EnhanceUI>("EnhanceUI");
             EnhanceUI ui = Instantiate(go);
             ui.Init(this, MaxCardCount, CardCount);
-            _currentTime = SelectionLimitTime;
+            _currentTime = 0f;
             _isInit = true;
         }
 
@@ -248,7 +245,7 @@ namespace Weapon
             }
         }
 
-        private bool SetNextSelectionOrder()
+        private bool SetNextOrderIfNotEnd()
         {
             bool isEnd = true;
             foreach (var selectPair in _canSelectEnhance)
@@ -259,11 +256,14 @@ namespace Weapon
                 }
 
                 _currentTime = SelectionLimitTime;
+                OnNextOrder?.Invoke(selectPair.Key);
                 _canSelectEnhance[selectPair.Key] = true;
                 _currentEnhanceOrder = selectPair.Key;
                 isEnd = false;
                 break;
             }
+
+            //todo send event to ui
 
             return isEnd;
         }
@@ -272,7 +272,7 @@ namespace Weapon
         [PunRPC]
         private void SetNextSelectionOrderRPC()
         {
-            if (SetNextSelectionOrder())
+            if (SetNextOrderIfNotEnd())
             {
                 _isAllPlayerSelected = true;
                 _currentTime = 0f;
@@ -286,6 +286,11 @@ namespace Weapon
             NextRoundUI nextRoundObj = Resources.Load<NextRoundUI>("UI/ReadyBattleUI");
             NextRoundUI nextRoundUI = Instantiate(nextRoundObj);
             nextRoundUI.Init(this);
+        }
+
+        public void ClearEnhancementData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

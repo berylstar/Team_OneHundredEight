@@ -56,11 +56,9 @@ MonoBehaviour:
   - SetNextSelectionOrderRPC
   - TESTETST
   - RPCRendererFlip
-  - StageDisable
-  - StageInit
-  - StageSelect
-  - Start
-  - StageEnable
+  - ShowHP
+  - RPCHit
+  - RPCInitial
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
