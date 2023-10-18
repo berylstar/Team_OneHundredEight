@@ -32,6 +32,7 @@ namespace Weapon.Controller
             if (!_photonView.IsMine && collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine)
             {
                 collision.GetComponent<PlayerStatHandler>().Hit(Damage);
+                PhotonNetwork.Instantiate("Effects/Blood", collision.ClosestPoint(transform.position), Quaternion.identity);
                 Disapear();
             }
         }

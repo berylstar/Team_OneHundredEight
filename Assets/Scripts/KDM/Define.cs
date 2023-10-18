@@ -20,7 +20,6 @@ public class Define
     {
         Hp,
         Speed,
-        ReverseKey,
         Invincible
     }
 
