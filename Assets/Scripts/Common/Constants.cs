@@ -21,7 +21,7 @@ namespace Common
             public static string WEAPON_CSV_FILE => $"data{DirectorySeparatorChar}{WeaponCsvFile}";
         }
 
-        public const float TimeToNextRound = 10f;
+        public const float TimeToNextRound = 5f;
         public const float SelectionTime = 20;
     }
 }

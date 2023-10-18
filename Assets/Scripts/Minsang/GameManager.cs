@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 
     private PhotonView _photonView;
     public GameObject myPlayer;
+    private AttackHandler _attackHandler;
 
     private readonly string player = "Player";
     private readonly string keyLoadScene = "LOAD_SCENE";
@@ -42,12 +43,11 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        ParticipantsManager = ParticipantsManager.Instance;
-
         if (Instance == null) { Instance = this; }
         else if (Instance != null) { Destroy(gameObject); }
 
         DontDestroyOnLoad(gameObject);
+        ParticipantsManager = ParticipantsManager.Instance;
         EnhancementManager = gameObject.AddComponent<EnhancementManager>();
         _photonView = GetComponent<PhotonView>();
         Pooler = GetComponent<ObjectPooling>();
@@ -60,9 +60,13 @@ public class GameManager : MonoBehaviour
     {
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { keyLoadScene, true } });
         StartCoroutine(CoLoading());
-
         SubscribeEnhancementEvents();
         EnhancementIntegrationTest();
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(ParticipantsManager);
     }
 
     [Obsolete("For testing")]
@@ -96,15 +100,10 @@ public class GameManager : MonoBehaviour
     {
         int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
         myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
-        WeaponData weaponData = ParticipantsManager.PlayerInfos[playerIndex].WeaponData;
-        AttackHandler handler = myPlayer.GetComponent<AttackHandler>();
-        handler.SetWeaponData(weaponData);
-        
+        _attackHandler = myPlayer.GetComponentInChildren<AttackHandler>();
+        WeaponData weaponData = ParticipantsManager.PlayerInfos[PhotonNetwork.LocalPlayer.ActorNumber].WeaponData;
+        _attackHandler.SetWeaponData(weaponData);
         myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
-    }
-
-    private void AddPlayerStatus()
-    {
     }
 
     private bool AllHasTag(string key)
@@ -134,7 +133,9 @@ public class GameManager : MonoBehaviour
     private void SubscribeEnhancementEvents()
     {
         EnhancementManager.OnReadyToFight += NextRound;
+        EnhancementManager.OnEnhancementEvent += EnhancePlayer;
     }
+
 
     private void NextRound()
     {
@@ -171,5 +172,12 @@ public class GameManager : MonoBehaviour
     public void AddKnockoutPlayer(int actNum)
     {
         KnockoutPlayers.Add(actNum);
+    }
+
+    private void EnhancePlayer(int actorNumber, EnhancementData data)
+    {
+        if (actorNumber != PhotonNetwork.LocalPlayer.ActorNumber) { return; }
+
+        _attackHandler.Enhance(data);
     }
 }
