@@ -3,10 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
-using Cinemachine;
 using Photon.Pun;
-
-using Weapon.Controller;
 
 public class PlayerController : MonoBehaviour
 {
@@ -93,19 +90,20 @@ public class PlayerController : MonoBehaviour
         if (_newAim.magnitude >= 0.5f)
         {
             float _rotZ = Mathf.Atan2(_newAim.y, _newAim.x) * Mathf.Rad2Deg;
-            _weaponRenderer.flipY = Mathf.Abs(_rotZ) > 90f;
-            _playerRenderer.flipX = Mathf.Abs(_rotZ) > 90f;
             _weaponTransform.rotation = Quaternion.Euler(0, 0, _rotZ);
+            _photonView.RPC(nameof(RPCRendererFlip), RpcTarget.All, Mathf.Abs(_rotZ) > 90f);
         }
+    }
+
+    [PunRPC]
+    private void RPCRendererFlip(bool flag)
+    {
+        _weaponRenderer.flipY = flag;
+        _playerRenderer.flipX = flag;
     }
 
     private void OnShoot(InputValue value)
     {
-        // 테스트 용
-        //GameObject obj = GameManager.Instance.Pooler.PoolInstantiate("Bullet", transform.position, Quaternion.identity);
-        //obj.GetComponent<ProjectileController>().Initialize(_attack.CurrentAttack, _newAim);
-        //obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
-
         OnFire?.Invoke(_newAim);
     }
 
