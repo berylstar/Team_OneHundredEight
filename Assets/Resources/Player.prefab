@@ -106,7 +106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 6821278655194907628}
-  spawnPosition: {fileID: 6797787479081167484}
+  bulletSpawnPosition: {fileID: 7535662181967593989}
+  emptySpawnPosition: {fileID: 2009197263562314798}
   bullet: {fileID: 1018720671211499167, guid: db845de5d5cc7424f943dd499303c953, type: 3}
 --- !u!114 &3803138490637581718
 MonoBehaviour:
@@ -625,7 +626,7 @@ Transform:
   - {fileID: 6797787479081167484}
   - {fileID: 7149059669330501418}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1312927846276564294
 Rigidbody2D:
