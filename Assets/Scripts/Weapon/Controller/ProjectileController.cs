@@ -21,6 +21,11 @@ namespace Weapon.Controller
             _photonView = GetComponent<PhotonView>();
         }
 
+        private void OnEnable()
+        {
+            Invoke(nameof(Disapear), 5f);
+        }
+
         private void FixedUpdate()
         {
             if (!_isReady)
