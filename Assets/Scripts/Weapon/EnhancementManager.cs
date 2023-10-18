@@ -272,6 +272,7 @@ namespace Weapon
         [PunRPC]
         private void SetNextSelectionOrderRPC()
         {
+            _isRunningRPC = false;
             if (SetNextOrderIfNotEnd())
             {
                 _isAllPlayerSelected = true;
