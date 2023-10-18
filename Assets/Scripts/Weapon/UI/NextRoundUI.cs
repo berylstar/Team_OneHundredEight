@@ -17,15 +17,36 @@ public class NextRoundUI : MonoBehaviour
 
     private void OnDisable()
     {
-        if (_enhanceManager == null) { return; }
+        Unsubscribe();
+    }
+
+    private void OnDestroy()
+    {
+        Unsubscribe();
+    }
+
+    private void Unsubscribe()
+    {
+        if (_enhanceManager == null)
+        {
+            return;
+        }
+
         _enhanceManager.OnTimeElapsed -= UpdateTimeUI;
+        _enhanceManager.OnReadyToFight += Disappear;
     }
 
     public void Init(EnhancementManager manager)
     {
         _enhanceManager = manager;
         manager.OnTimeElapsed += UpdateTimeUI;
+        manager.OnReadyToFight += Disappear;
         UpdatePlayerInfo();
+    }
+
+    private void Disappear()
+    {
+        Destroy(gameObject);
     }
 
     private void UpdatePlayerInfo()

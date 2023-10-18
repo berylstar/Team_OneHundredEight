@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 _moveInput;
     private Vector2 _newAim;
+
+    private int _maxJumpCount = 1;
+    private int _jumpCount = 1;
     
     private void Awake()
     {
@@ -58,7 +61,19 @@ public class PlayerController : MonoBehaviour
             //cvc.LookAt = transform;
         }
     }
+    private void Update()
+    {
+        if (_jumpCount != _maxJumpCount && _rigidbody.velocity.y <= 0)
+        {
+            RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Stage"));
 
+            if (rayHit.collider)
+            {
+                _jumpCount = _maxJumpCount;
+                PhotonNetwork.Instantiate("Effects/Land", rayHit.point, Quaternion.identity);
+            }
+        }
+    }
     private void FixedUpdate()
     {
         _moveInput.y = _rigidbody.velocity.y;
@@ -74,11 +89,15 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Stage"));
+        //RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Stage"));
 
-        if (rayHit.collider == null)
+        //if (rayHit.collider == null)
+        //    return;
+
+        if (_jumpCount < 1)
             return;
 
+        --_jumpCount;
         _rigidbody.AddForce(Vector2.up * _stat.CurrentStat.JumpForce, ForceMode2D.Impulse);
     }
 

@@ -96,7 +96,17 @@ namespace Weapon.Components
             obj.GetComponent<ProjectileController>().Initialize(_handler.CurrentAttackData, _attackDirection);
             obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
 
+            Vector3 euler = emptySpawnPosition.rotation.eulerAngles;
+            euler.z %= 360f;
+            if (euler.z > 90f && euler.z < 270f)
+            {
+                euler.z = 180f - euler.z;
+                euler.y = 180f;
+            }
 
+            obj = PhotonNetwork.Instantiate("Effects/EmptyCartridge", emptySpawnPosition.position, Quaternion.Euler(euler));
+            obj = PhotonNetwork.Instantiate("Effects/Muzzle", bulletSpawnPosition.position, bulletSpawnPosition.rotation);
+            //projectile.Initialize(_handler.CurrentAttackData, _attackDirection);
         }
 
         /// <summary>

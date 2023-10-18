@@ -22,5 +22,6 @@ namespace Common
         }
 
         public const float TimeToNextRound = 10f;
+        public const float SelectionTime = 20;
     }
 }
