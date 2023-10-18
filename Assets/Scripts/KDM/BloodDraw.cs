@@ -27,7 +27,7 @@ public class BloodDraw : MonoBehaviour
         texture = new Texture2D((int)r.width, (int)r.height, TextureFormat.ARGB32, false);
         texture.SetPixels(originalTexture.texture.GetPixels((int)r.xMin, (int)r.yMin, (int)r.width, (int)r.height, 0));
         texture.Apply();
-        brushSize = (int)originalTexture.rect.width / 4;
+        brushSize = 30;
         pixels = texture.GetPixels();
         //_PV.RPC("UpdateSprite", RpcTarget.All);
 
@@ -78,6 +78,8 @@ public class BloodDraw : MonoBehaviour
         int startY = Mathf.Max(0, y - (int)(brushSize * transform.localScale.x / 2));
         int endX = Mathf.Min(texture.width, x + (int)(brushSize * transform.localScale.y / 2));
         int endY = Mathf.Min(texture.height, y + (int)(brushSize * transform.localScale.x / 2));
+        int longX = Mathf.Max(Mathf.Abs(startX - x), Mathf.Abs(endX - x));
+        int longY = Mathf.Max(Mathf.Abs(startY - y), Mathf.Abs(endY - y));
 
         // ... 픽셀 변경 ...
         for (int i = startX; i < endX; i++)
@@ -86,9 +88,9 @@ public class BloodDraw : MonoBehaviour
             {
                 //현재i값 - x값의 절댓값
                 
-                if (pixels[j * texture.width + i].a > 0.2f&&
-                (Random.Range(0, x - startX) - 2 >= Mathf.Abs(x - i)
-                && Random.Range(0, y - startY) - 2 >= Mathf.Abs(y - j)))
+                if (pixels[j * texture.width + i].a > 0.2f &&
+                (Random.Range(0, longX) - 2 >= Mathf.Abs(x - i)
+                && Random.Range(0, longY) - 2 >= Mathf.Abs(y - j)))
                 {
                     pixels.SetValue(drawColor, j * texture.width + i);
                 }
