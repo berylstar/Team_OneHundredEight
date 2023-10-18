@@ -21,7 +21,7 @@ public class KDM_PhotonTest : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby() => PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 5 }, null);
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+        //PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
         PhotonNetwork.Instantiate("Effects/Blood", Vector3.zero, Quaternion.identity);
         PhotonNetwork.Instantiate("Boom", new Vector3(3.58f, 1.5f, 0), Quaternion.identity);
         //포톤을 안쓰는걸로
