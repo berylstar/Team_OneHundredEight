@@ -1,3 +1,4 @@
+using Managers;
 using Photon.Pun;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,13 @@ namespace Weapon.UI
         private readonly List<EnhanceCardUI> _enhanceCards = new List<EnhanceCardUI>();
 
         private readonly Dictionary<int, EnhancePlayerUI> _enhancePlayerUis = new Dictionary<int, EnhancePlayerUI>();
+        private IReadOnlyDictionary<int, PlayerInfo> _playerInfos;
+
+
+        private void Awake()
+        {
+            _playerInfos = CharacterManager.Instance.PlayerInfos;
+        }
 
         private void OnDisable()
         {
@@ -128,10 +136,14 @@ namespace Weapon.UI
                 EnhancePlayerUI go = Resources.Load<EnhancePlayerUI>("EnhancePlayerUi");
                 EnhancePlayerUI playerUi = Instantiate(go, playerContainer, false);
 
-                string nickname = PhotonNetwork.CurrentRoom.Players[player.Key].NickName;
+                //todo remove
+                string nickname = PhotonNetwork.CurrentRoom.GetPlayer(player.Key).NickName;
                 EnhancePlayerUI.UiState state = new EnhancePlayerUI.UiState()
                 {
-                    Color = player.Value, IsPlayerTurn = false, Nickname = nickname,
+                    Color = player.Value,
+                    IsPlayerTurn = false,
+                    Nickname = nickname,
+                    ImageUrl = _playerInfos[player.Key].CharacterImage
                 };
 
                 playerUi.ChangeState(state);

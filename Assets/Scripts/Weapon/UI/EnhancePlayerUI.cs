@@ -11,7 +11,7 @@ namespace Weapon.UI
         {
             public string Nickname;
             public Color Color;
-            public Sprite Image;
+            public string ImageUrl;
             public bool IsPlayerTurn;
             public bool IsSelected;
         }
@@ -33,10 +33,19 @@ namespace Weapon.UI
 
         private void UpdateUI()
         {
+            UpdateImage();
             nicknameText.text = CurrentState.Nickname;
             backgroundImage.color = CurrentState.Color;
             checkImage.gameObject.SetActive(CurrentState.IsSelected);
             orderArrowImage.gameObject.SetActive(CurrentState.IsPlayerTurn);
+        }
+
+        private void UpdateImage()
+        {
+            Sprite spriteObj = Resources.Load<Sprite>(CurrentState.ImageUrl);
+            Sprite img = Instantiate(spriteObj);
+
+            playerImage.sprite = img;
         }
     }
 }

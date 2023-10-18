@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Weapon.Model
 {
-    public class PlayerStatus
+    public class PlayerInfo
     {
-        public PlayerStatus(string nickname, string characterImage, WeaponData weaponData)
+        public PlayerInfo(string nickname, string characterImage, WeaponData weaponData)
         {
             Nickname = nickname;
             CharacterImage = characterImage;
