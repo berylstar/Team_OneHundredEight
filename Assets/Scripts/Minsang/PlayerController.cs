@@ -35,9 +35,9 @@ public class PlayerController : MonoBehaviour
 
     private int _maxJumpCount = 1;
     private int _jumpCount = 1;
-
-    private int _animIdle = Animator.StringToHash("TrJump");
+    
     private int _animWalk = Animator.StringToHash("IsWalk");
+    private int _animJump = Animator.StringToHash("TrJump");
     private int _animAir = Animator.StringToHash("IsAir");
 
     private void Awake()
@@ -87,6 +87,8 @@ public class PlayerController : MonoBehaviour
     {
         _moveInput.y = _rigidbody.velocity.y;
         _rigidbody.velocity = _moveInput;
+
+        _playerAni.SetBool(_animAir, _rigidbody.velocity.y != 0);
     }
 
     #region InputAction
@@ -110,6 +112,7 @@ public class PlayerController : MonoBehaviour
 
         --_jumpCount;
         _rigidbody.AddForce(Vector2.up * _stat.CurrentStat.JumpForce, ForceMode2D.Impulse);
+        _playerAni.SetTrigger(_animJump);
     }
 
     private void OnAim(InputValue value)
