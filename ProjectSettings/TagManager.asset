@@ -9,6 +9,7 @@ TagManager:
   - SecondBreak
   - FallingPlatform
   - Stage
+  - Bullet
   layers:
   - Default
   - TransparentFX

@@ -10,7 +10,7 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 {
     [SerializeField] private PlayerStatSO initialStat;
 
-    public PlayerStat CurrentStat { get; private set; }
+    [field: SerializeField] public PlayerStat CurrentStat { get; private set; }
     public LinkedList<PlayerStat> statModifiers = new LinkedList<PlayerStat>();
  
     [SerializeField] private float healthChangeDelay = .5f;
@@ -25,7 +25,6 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     public event Action OnInvincibilityEnd;
 
     public Coroutine co;
-
     PhotonView _PV;
 
     private void Awake()    //테스트용 
@@ -204,5 +203,10 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
             CurrentStat.HP = (float)stream.ReceiveNext();
             CurrentStat.MaxHp = (float)stream.ReceiveNext();
         }
+    }
+
+    public void Hit(int damage)
+    {
+        ChangeHealth(-1 * damage);
     }
 }
