@@ -94,7 +94,7 @@ namespace Weapon.Components
 
             GameObject obj = GameManager.Instance.Pooler.PoolInstantiate("Bullet", bulletSpawnPosition.position, Quaternion.identity);
             obj.GetComponent<ProjectileController>().Initialize(_handler.CurrentAttackData, _attackDirection);
-            obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
+            //obj.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
 
             Vector3 euler = emptySpawnPosition.rotation.eulerAngles;
             euler.z %= 360f;

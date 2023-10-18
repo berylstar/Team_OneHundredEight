@@ -24,6 +24,6 @@ public class ItemSpawner : MonoBehaviourPunCallbacks
             return;
         _spawnTime = 0.0f;
 
-        Pickup.Create(spawnPoint.position, Define.ItemType.Random, 10.0f);
+        Pickup.Create(spawnPoint.position, Define.ItemType.Random, 15.0f);
     }
 }

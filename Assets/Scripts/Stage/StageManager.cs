@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,6 @@ public class StageManager : MonoBehaviourPun
     {
         StageInit();
         StageSelect();
-        SetSpawn();
     }
     private void StageInit()
     {
@@ -28,13 +28,19 @@ public class StageManager : MonoBehaviourPun
     }
     public void StageSelect()  // 증강 캔버스 스크립트 안에 OnDisable 에서 호출
     {
-        _mapindex = Random.Range(0, StageList.Count);   // 맵고름
-
-        _mapName = StageList[_mapindex].name;   // 스폰위치를 위해 맵 이름을 넘겨줌
-
-        StageList[_mapindex].SetActive(true);   // 활성화
-
-        StageList.RemoveAt(_mapindex);  // 그 맵은 리스트에서 삭제
+        if (photonView.IsMine)
+        {
+            //_mapindex = UnityEngine.Random.Range(0, StageList.Count);   // 맵고름
+            _mapindex = 2;
+            _mapName = StageList[_mapindex].name;   // 스폰위치를 위해 맵 이름을 넘겨줌
+            photonView.RPC("StageEnable", RpcTarget.All, _mapindex);
+        }
+    }
+    [PunRPC]
+    public void StageEnable(int index)
+    {
+        StageList[index].SetActive(true);   // 활성화
+        StageList.RemoveAt(index);  // 그 맵은 리스트에서 삭제
     }
     public void StageDisable()  // 증강 캔버스 스크립트 안에 OnEnable 에서 호출
     {
@@ -47,19 +53,30 @@ public class StageManager : MonoBehaviourPun
         switch (_mapName)
         {
             case "Map 1":
-                // SpawnList.Add();
+                SpawnList.Add(new Vector2(-7f, 0f));    // 1p
+                SpawnList.Add(new Vector2(7f, 0f));     // 2p
+                SpawnList.Add(new Vector2(-2.5f, 0f));  // 3p
+                SpawnList.Add(new Vector2(2.5f, 0f));   // 4p
+                SpawnList.Add(new Vector2(3f, 3f));     // 5p
                 break;
 
             case "Map 2":
-
+                SpawnList.Add(new Vector2(-7.2f, -2f));  
+                SpawnList.Add(new Vector2(7f, -2f));    
+                SpawnList.Add(new Vector2(-2.5f, 0f)); 
+                SpawnList.Add(new Vector2(2.5f, 0f)); 
+                SpawnList.Add(new Vector2(0f, -2f));      
                 break;
 
             case "Map 3":
-
+                SpawnList.Add(new Vector2(-7f, 0f));   
+                SpawnList.Add(new Vector2(7f, 0f));     
+                SpawnList.Add(new Vector2(-2.5f, 0f)); 
+                SpawnList.Add(new Vector2(2.5f, 0f));   
+                SpawnList.Add(new Vector2(3f, 3f));    
                 break;
         }
 
-        Debug.Log(SpawnList);
         return SpawnList;
     }
     /*
