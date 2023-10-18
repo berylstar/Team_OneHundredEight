@@ -73,6 +73,8 @@ public class PlayerController : MonoBehaviour
                 PhotonNetwork.Instantiate("Effects/Land", rayHit.point, Quaternion.identity);
             }
         }
+
+        _hpBar.fillAmount = _stat.CurrentStat.HP / _stat.CurrentStat.MaxHp;
     }
     private void FixedUpdate()
     {
@@ -139,16 +141,4 @@ public class PlayerController : MonoBehaviour
     //        _photonView.RPC(nameof(ShowHP), RpcTarget.All);
     //    }
     //}
-
-    public void Hit(int damage)
-    {
-        _photonView.RPC(nameof(ShowHP), RpcTarget.All, damage);
-    }
-
-    [PunRPC]
-    private void ShowHP(int damage)
-    {
-        _stat.ChangeHealth(-1 * damage);
-        _hpBar.fillAmount = _stat.CurrentStat.HP / _stat.CurrentStat.MaxHp;
-    }
 }

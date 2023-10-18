@@ -31,27 +31,28 @@ namespace Weapon.Controller
 
             if (!_photonView.IsMine && collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine)
             {
-                collision.GetComponent<PlayerController>().Hit(10);
+                collision.GetComponent<PlayerStatHandler>().Hit(Damage);
                 Disapear();
             }
         }
 
         public void Initialize(AttackData data, Vector2 direction)
         {
-            Damage = data.bulletDamage;
-            Speed = data.bulletSpeed;
+            _photonView.RPC(nameof(RPCInitial), RpcTarget.All, data.bulletDamage, data.bulletSpeed, direction);
+            _photonView.RPC("RPCSetActive", RpcTarget.All, true);
+        }
+
+        [PunRPC]
+        private void RPCInitial(int damage, float speed, Vector2 direction)
+        {
+            Damage = damage;
+            Speed = speed;
             Direction = direction;
         }
 
         private void Disapear()
         {
-            _photonView.RPC(nameof(RPCSetActive), RpcTarget.All, false);
-        }
-
-        [PunRPC]
-        public void RPCSetActive(bool flag)     // 오브젝트 풀링시 RPC로 활성화
-        {
-            gameObject.SetActive(flag);
+            _photonView.RPC("RPCSetActive", RpcTarget.All, false);
         }
     }
 }
