@@ -24,7 +24,7 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     public event Action OnDeath;
     public event Action OnInvincibilityEnd;
 
-    //public Coroutine co;
+    public Coroutine co;
     PhotonView _PV;
 
     private void Awake()    //테스트용 
