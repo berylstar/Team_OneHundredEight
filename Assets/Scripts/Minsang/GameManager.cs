@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Linq;
 using Weapon;
 using Weapon.Model;
@@ -16,25 +17,19 @@ public class GameManager : MonoBehaviour
 
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
+
     [SerializeField] private List<Transform> spawnList;
-    // 기초 스탯 (플레이어 스탯, 무기 정보, 공격 스탯, 맵 정보...)
 
-    // 증강 선택
-    private EnhancementManager _enhancementManager;
 
-    public EnhancementManager EnhancementManager
-    {
-        get
-        {
-            if (_enhancementManager == null)
-            {
-                _enhancementManager = gameObject.AddComponent<EnhancementManager>();
-                SubscribeEnhancementEvents();
-            }
+    // 기초 스탯 (플레이어 정보 목록)
+    private Dictionary<int, PlayerStatus> _playerStatusMap;
+    public IReadOnlyDictionary<int, PlayerStatus> PlayerStatusMap => _playerStatusMap;
 
-            return _enhancementManager;
-        }
-    }
+    // 공격 정보 
+
+
+    // 증강
+    public EnhancementManager EnhancementManager { get; private set; }
 
     // PvP
     public List<int> KnockoutPlayers { get; private set; }
@@ -51,11 +46,12 @@ public class GameManager : MonoBehaviour
         else if (Instance != null) { Destroy(gameObject); }
 
         DontDestroyOnLoad(gameObject);
+        EnhancementManager = gameObject.AddComponent<EnhancementManager>();
         _photonView = GetComponent<PhotonView>();
         Pooler = GetComponent<ObjectPooling>();
 
-        KnockoutPlayers = new List<int>(10);
-
+        _playerStatusMap = new Dictionary<int, PlayerStatus>(5);
+        KnockoutPlayers = new List<int>(5);
     }
 
     private void Start()
@@ -63,9 +59,11 @@ public class GameManager : MonoBehaviour
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { keyLoadScene, true } });
         StartCoroutine(CoLoading());
 
+        SubscribeEnhancementEvents();
         EnhancementIntegrationTest();
     }
 
+    [Obsolete("For testing")]
     private void EnhancementIntegrationTest()
     {
         ClearKnockoutPlayers();
@@ -90,6 +88,10 @@ public class GameManager : MonoBehaviour
 
         panelLoading.SetActive(false);
         PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+    }
+
+    private void AddPlayerStatus()
+    {
     }
 
     private bool AllHasTag(string key)
@@ -118,8 +120,8 @@ public class GameManager : MonoBehaviour
     // 증강
     private void SubscribeEnhancementEvents()
     {
-        _enhancementManager.OnEnhancementEvent += SelectEnhancement;
-        _enhancementManager.OnReadyToFight += NextRound;
+        EnhancementManager.OnEnhancementEvent += SelectEnhancement;
+        EnhancementManager.OnReadyToFight += NextRound;
     }
 
     private void NextRound()
@@ -132,7 +134,9 @@ public class GameManager : MonoBehaviour
 
     private void SelectEnhancement(int playerIndex, EnhancementData data)
     {
-        Debug.Log($"Player{playerIndex} select {data}");
+        Debug.Log($"({playerIndex}) select {data}");
+
+        //todo get attackHandler to enhance
     }
 
     // PvP
