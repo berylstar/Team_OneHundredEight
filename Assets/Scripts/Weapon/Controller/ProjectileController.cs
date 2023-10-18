@@ -42,8 +42,8 @@ namespace Weapon.Controller
             if (!_photonView.IsMine && collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine)
             {
                 collision.GetComponent<PlayerStatHandler>().Hit(Damage);
-                Vector3 pos = collision.ClosestPoint(transform.position) - Direction * 0.6f;
-                pos.y += 0.3f;
+                Vector3 pos = collision.ClosestPoint(transform.position) - Direction * 0.3f;
+                pos.y += 0.2f;
                 PhotonNetwork.Instantiate("Effects/Blood", pos, Quaternion.identity);
                 Disapear();
             }
