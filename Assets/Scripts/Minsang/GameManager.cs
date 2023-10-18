@@ -18,8 +18,6 @@ public class GameManager : MonoBehaviour
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
 
-    [SerializeField] private List<Transform> spawnList;
-
 
     // 기초 스탯 (플레이어 정보 목록)
     private Dictionary<int, PlayerStatus> _playerStatusMap;
@@ -32,6 +30,7 @@ public class GameManager : MonoBehaviour
     public EnhancementManager EnhancementManager { get; private set; }
 
     // PvP
+    private StageManager _stageManager;
     public List<int> KnockoutPlayers { get; private set; }
 
     private PhotonView _photonView;
@@ -49,6 +48,7 @@ public class GameManager : MonoBehaviour
         EnhancementManager = gameObject.AddComponent<EnhancementManager>();
         _photonView = GetComponent<PhotonView>();
         Pooler = GetComponent<ObjectPooling>();
+        _stageManager = GetComponentInChildren<StageManager>();
 
         _playerStatusMap = new Dictionary<int, PlayerStatus>(5);
         KnockoutPlayers = new List<int>(5);
@@ -130,6 +130,18 @@ public class GameManager : MonoBehaviour
         Debug.Log("Create NextRound");
         Debug.Log("------------------------");
         ClearKnockoutPlayers();
+        SetPlayerSpawn();
+    }
+
+    private void SetPlayerSpawn()
+    {
+        List<Vector2> poses = _stageManager.SetSpawn();
+        int i = 0;
+        foreach (GameObject p in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            p.transform.position = poses[i];
+            i += 1;
+        }
     }
 
     private void SelectEnhancement(int playerIndex, EnhancementData data)
