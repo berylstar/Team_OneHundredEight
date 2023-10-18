@@ -7,7 +7,6 @@ TagManager:
   - Item
   - FirstBreak
   - SecondBreak
-  - FallingPlatform
   - Stage
   - Bullet
   layers:
