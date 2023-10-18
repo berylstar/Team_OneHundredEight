@@ -49,6 +49,7 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        roomNameInput.text = string.Empty;
         createRoomPanel.SetActive(false);
         roomPanel.SetActive(true);
     }
