@@ -183,9 +183,12 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     private void UpdateStat(Func<float, float, float> operation, PlayerStat newModifier)
     {
-        CurrentStat.MaxHp = operation(CurrentStat.MaxHp, newModifier.MaxHp);
-        CurrentStat.JumpForce = operation(CurrentStat.JumpForce, newModifier.JumpForce);
-        CurrentStat.MoveSpeed = operation(CurrentStat.MoveSpeed, newModifier.MoveSpeed);
+        if(newModifier.MaxHp != 0)
+            CurrentStat.MaxHp = operation(CurrentStat.MaxHp, newModifier.MaxHp);
+        if (newModifier.JumpForce != 0)
+            CurrentStat.JumpForce = operation(CurrentStat.JumpForce, newModifier.JumpForce);
+        if (newModifier.MoveSpeed != 0)
+            CurrentStat.MoveSpeed = operation(CurrentStat.MoveSpeed, newModifier.MoveSpeed);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

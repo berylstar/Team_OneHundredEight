@@ -69,12 +69,15 @@ public class PlayerController : MonoBehaviour
     {
         if (_jumpCount != _maxJumpCount && _rigidbody.velocity.y <= 0)
         {
-            RaycastHit2D rayHit = Physics2D.Raycast(_footPivot.position, Vector3.down, 0.125f, LayerMask.GetMask("Stage"));
+            RaycastHit2D[] rayHit = Physics2D.RaycastAll(_footPivot.position, Vector3.down, 0.125f);
 
-            if (rayHit.collider)
+            for (int i = 0; i < rayHit.Length; ++i)
             {
-                _jumpCount = _maxJumpCount;
-                PhotonNetwork.Instantiate("Effects/Land", rayHit.point, Quaternion.identity);
+                if (rayHit[i].transform.gameObject != this.gameObject)
+                {
+                    _jumpCount = _maxJumpCount;
+                    PhotonNetwork.Instantiate("Effects/Land", rayHit[i].point, Quaternion.identity);
+                }
             }
         }
 
