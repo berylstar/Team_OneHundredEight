@@ -6,20 +6,22 @@ using UnityEngine;
 
 public class MainPanel : MonoBehaviourPunCallbacks
 {
+
+    [SerializeField] private GameObject nicknameSettingPanel;
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject createRoomPanel;
     [SerializeField] private GameObject LobbyPanel;
     [SerializeField] private GameObject roomPanel;
     
 
-    public void OnJoinRandomRoomButtonClicked()//·£´ı ¹æÀ» Ã£´Â ÇÔ¼ö
+    public void OnJoinRandomRoomButtonClicked()//ëœë¤ ë°©ì„ ì°¾ëŠ” í•¨ìˆ˜
     {
-        PhotonNetwork.JoinRandomRoom();//·£´ı ·ë ÀÔÀå
+        PhotonNetwork.JoinRandomRoom();//ëœë¤ ë£¸ ì…ì¥
     }
 
-    public override void OnJoinRandomFailed(short returnCode, string message)//·£´ı ¹æÀÌ ¾øÀ» ‹š È£Ãâ µÇ´Â ÇÔ¼ö 
+    public override void OnJoinRandomFailed(short returnCode, string message)//ëœë¤ ë°©ì´ ì—†ì„ ë–„ í˜¸ì¶œ ë˜ëŠ” í•¨ìˆ˜ 
     {
-        string roomName = PhotonNetwork.LocalPlayer.NickName + "´Ô ¹æ";
+        string roomName = PhotonNetwork.LocalPlayer.NickName + "ë‹˜ ë°©";
 
         RoomOptions options = new RoomOptions { MaxPlayers = 5 };
 
@@ -44,8 +46,13 @@ public class MainPanel : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedLobby()
     {
-        print("·Îºñ Á¢¼Ó ¿Ï·á.");
+        print("ë¡œë¹„ ì ‘ì† ì™„ë£Œ.");
         mainPanel.SetActive(false);
         LobbyPanel.SetActive(true);
+    }
+    public void ReName()
+    {
+        mainPanel.SetActive(false);
+        nicknameSettingPanel.SetActive(true);
     }
 }

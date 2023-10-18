@@ -17,14 +17,14 @@ public class NicknameSettingPanel : MonoBehaviourPunCallbacks
     {
         if (inputNickName.text != "")
         {
-            print("¿Ã¹Ù¸¥ ´Ğ³×ÀÓ");
+            print("ì˜¬ë°”ë¥¸ ë‹‰ë„¤ì„");
             PhotonNetwork.LocalPlayer.NickName = inputNickName.text;
             inputNickName.text = string.Empty;
             NextScene();
         }
         else
         {
-            inputText.text = "¿Ã¹Ù¸¥ ´Ğ³×ÀÓÀÌ ¾Æ´Õ´Ï´Ù";
+            inputText.text = "ì˜¬ë°”ë¥¸ ë‹‰ë„¤ì„ì´ ì•„ë‹™ë‹ˆë‹¤";
             inputNickName.text = string.Empty;
         }
     }
