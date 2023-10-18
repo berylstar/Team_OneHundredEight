@@ -59,8 +59,8 @@ public class GameManager : MonoBehaviour
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { keyLoadScene, true } });
         StartCoroutine(CoLoading());
 
-        //SubscribeEnhancementEvents();
-        //EnhancementIntegrationTest();
+        SubscribeEnhancementEvents();
+        EnhancementIntegrationTest();
     }
 
     [Obsolete("For testing")]
@@ -88,18 +88,7 @@ public class GameManager : MonoBehaviour
 
         panelLoading.SetActive(false);
         myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
-        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
-
-        yield return new WaitForSeconds(3);
-
-        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
-
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    SetPlayerSpawn();
-        //}
-
-        TEST();
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);        
     }
 
     private void AddPlayerStatus()
@@ -141,23 +130,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("------------------------");
         Debug.Log("Create NextRound");
         Debug.Log("------------------------");
+
         ClearKnockoutPlayers();
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
         SetPlayerSpawn();
     }
 
     private void SetPlayerSpawn()
-    {
-        List<Vector2> poses = _stageManager.SetSpawn();
-        int i = 0;
-        foreach (GameObject p in GameObject.FindGameObjectsWithTag("Player"))
-        {
-            Debug.Log(i);
-            p.transform.position = poses[i];
-            i += 1;
-        }
-    }
-
-    private void TEST()
     {
         List<Vector2> poses = _stageManager.SetSpawn();
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
