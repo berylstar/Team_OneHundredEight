@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2471132918291625616}
   - component: {fileID: 745209335808181196}
   - component: {fileID: 7981153890342846068}
-  - component: {fileID: 1018720671211499167}
   - component: {fileID: 3182746326384144394}
+  - component: {fileID: 1018720671211499167}
   - component: {fileID: 8719787133516669196}
   - component: {fileID: 1306704653275332289}
   - component: {fileID: 5881330782660670985}
@@ -117,26 +117,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1018720671211499167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9119638007963519989}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55f59527e56a41c4b647447455f9cfda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <AttackData>k__BackingField:
-    statsChangeType: 0
-    bulletDamage: 0
-    bulletSpeed: 0
-    maxMagazine: 0
-    shotInterval: 0
-    reloadTime: 0
-  <Direction>k__BackingField: {x: 0, y: 0}
 --- !u!58 &3182746326384144394
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -172,6 +152,21 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &1018720671211499167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9119638007963519989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f59527e56a41c4b647447455f9cfda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Damage>k__BackingField: 0
+  <Speed>k__BackingField: 0
+  <Direction>k__BackingField: {x: 0, y: 0}
 --- !u!114 &8719787133516669196
 MonoBehaviour:
   m_ObjectHideFlags: 0

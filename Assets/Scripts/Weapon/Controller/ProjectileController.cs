@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Weapon.Model;
 using Photon.Pun;
@@ -7,36 +6,26 @@ namespace Weapon.Controller
 {
     public class ProjectileController : MonoBehaviour
     {
+        [field: SerializeField] public int Damage { get; private set; } = 0;
+        [field: SerializeField] public float Speed { get; private set; } = 0;
+        [field: SerializeField] public Vector2 Direction { get; private set; } = Vector2.zero;
+
         private Rigidbody2D _rigidbody;
-        [field: SerializeField] public AttackData AttackData { get; private set; }
-        [field: SerializeField] public Vector2 Direction { private set; get; }
 
         protected virtual void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        //private void OnEnable()
-        //{
-        //    Invoke(nameof(TESTdisapear), 1f);
-        //}
-
-        //private void TESTdisapear()
-        //{
-        //    GameManager.Instance.Pooler.PoolDestroy(gameObject);
-        //}
-
         private void FixedUpdate()
         {
-            if (AttackData == null)
-                return;
-
-            _rigidbody.velocity = Direction * AttackData.bulletSpeed;
+            _rigidbody.velocity = Direction * Speed;
         }
 
-        public void Initialize(AttackData attackData, Vector2 direction)
+        public void Initialize(AttackData data, Vector2 direction)
         {
-            AttackData = attackData;
+            Damage = data.bulletDamage;
+            Speed = data.bulletSpeed;
             Direction = direction;
         }
 
