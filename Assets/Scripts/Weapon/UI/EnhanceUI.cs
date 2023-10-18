@@ -19,29 +19,25 @@ namespace Weapon.UI
 
         private bool _isAllPlayerReady = false;
         private EnhancementManager _enhancementManager;
+        private ParticipantsManager _participantsManager;
 
         private readonly List<EnhanceCardUI> _enhanceCards = new List<EnhanceCardUI>();
 
         private readonly Dictionary<int, EnhancePlayerUI> _enhancePlayerUis = new Dictionary<int, EnhancePlayerUI>();
-        private IReadOnlyDictionary<int, PlayerInfo> _playerInfos;
+        private IReadOnlyDictionary<int, PlayerInfo> PlayerInfos => _participantsManager.PlayerInfos;
 
-
-        private void Awake()
-        {
-            _playerInfos = CharacterManager.Instance.PlayerInfos;
-        }
 
         private void OnDisable()
         {
-            Unsubscribe();
+            UnsubscribeEvents();
         }
 
         private void OnDestroy()
         {
-            Unsubscribe();
+            UnsubscribeEvents();
         }
 
-        private void Unsubscribe()
+        private void UnsubscribeEvents()
         {
             _enhancementManager.OnTimeElapsed -= UpdateTime;
             _enhancementManager.OnAllPlayerEnhanced -= AllPlayerEnhanced;
@@ -51,20 +47,30 @@ namespace Weapon.UI
             _enhancementManager.OnNextOrder -= UpdateOrderUI;
         }
 
-
-        public void Init(EnhancementManager enhancementManager, int maxCardCount, int cardCount)
+        private void SubscribeEvents()
         {
-            _camera = Camera.main;
-            _enhancementManager = enhancementManager;
             _enhancementManager.OnTimeElapsed += UpdateTime;
             _enhancementManager.OnAllPlayerEnhanced += AllPlayerEnhanced;
             _enhancementManager.OnPlayerSelectEnhancement += SetPlayerChecked;
             _enhancementManager.OnUpdateEnhanceUIEvent += UpdateEnhanceCardUI;
             _enhancementManager.OnReadyToFight += Disappear;
             _enhancementManager.OnNextOrder += UpdateOrderUI;
+        }
+
+        public void Init(
+            EnhancementManager enhancementManager,
+            ParticipantsManager participantsManager,
+            int maxCardCount,
+            int cardCount)
+        {
+            _camera = Camera.main;
+            _enhancementManager = enhancementManager;
+            _participantsManager = participantsManager;
+            SubscribeEvents();
             CreatePlayerUI();
             CreateCards(enhancementManager.DataList, maxCardCount, cardCount);
         }
+
 
         private void Disappear()
         {
@@ -124,8 +130,8 @@ namespace Weapon.UI
         {
             float startX = (maxCardCount - cardCount) / (float)maxCardCount * 0.5f;
             float paddingX = 1 / (float)maxCardCount;
-            Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
-            Vector3 destPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * index, 0.5f));
+            Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(0.5f, 0.3f));
+            Vector3 destPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * index, 0.3f));
             card.Arrange(_enhancementManager, startPosition, destPosition, index);
         }
 
@@ -136,14 +142,13 @@ namespace Weapon.UI
                 EnhancePlayerUI go = Resources.Load<EnhancePlayerUI>("EnhancePlayerUi");
                 EnhancePlayerUI playerUi = Instantiate(go, playerContainer, false);
 
-                //todo remove
                 string nickname = PhotonNetwork.CurrentRoom.GetPlayer(player.Key).NickName;
                 EnhancePlayerUI.UiState state = new EnhancePlayerUI.UiState()
                 {
                     Color = player.Value,
                     IsPlayerTurn = false,
                     Nickname = nickname,
-                    ImageUrl = _playerInfos[player.Key].CharacterImage
+                    ImageUrl = PlayerInfos[player.Key].CharacterImage
                 };
 
                 playerUi.ChangeState(state);

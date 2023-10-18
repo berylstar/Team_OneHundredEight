@@ -15,12 +15,7 @@ namespace Weapon.Components
         private bool _isReady = false;
         [SerializeField] private WeaponData _weapon;
         public Action OnReadyEvent;
-
-        private void Start()
-        {
-            SetWeaponData(_weapon);
-        }
-
+        
         private void OnEnhancement(int playerIndex, EnhancementData data)
         {
             if (playerIndex == PhotonNetwork.LocalPlayer.ActorNumber)

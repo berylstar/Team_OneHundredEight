@@ -7,6 +7,7 @@ using Photon.Realtime;
 using System;
 using System.Linq;
 using Weapon;
+using Weapon.Components;
 using Weapon.Model;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -19,16 +20,14 @@ public class GameManager : MonoBehaviour
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
 
-    // 기초 스탯 (플레이어 정보 목록)
-    private Dictionary<int, PlayerInfo> _playerStatusMap;
-    public IReadOnlyDictionary<int, PlayerInfo> PlayerStatusMap => _playerStatusMap;
-
-    // 공격 정보 
+    // 적용된 증강 정보
 
 
     // 증강
     public EnhancementManager EnhancementManager { get; private set; }
-    public CharacterManager CharacterManager { get; private set; }
+
+    // 참가자 정보 
+    public ParticipantsManager ParticipantsManager { get; private set; }
 
     // PvP
     private StageManager _stageManager;
@@ -43,7 +42,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        CharacterManager = CharacterManager.Instance;
+        ParticipantsManager = ParticipantsManager.Instance;
 
         if (Instance == null) { Instance = this; }
         else if (Instance != null) { Destroy(gameObject); }
@@ -54,7 +53,6 @@ public class GameManager : MonoBehaviour
         Pooler = GetComponent<ObjectPooling>();
         _stageManager = GetComponentInChildren<StageManager>();
 
-        _playerStatusMap = new Dictionary<int, PlayerInfo>(5);
         KnockoutPlayers = new List<int>(5);
     }
 
@@ -91,8 +89,18 @@ public class GameManager : MonoBehaviour
         while (!AllHasTag(keyLoadPlayer)) { yield return null; }
 
         panelLoading.SetActive(false);
+        CreatePhotonPlayer();
+    }
+
+    private void CreatePhotonPlayer()
+    {
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
         myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
-        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);        
+        WeaponData weaponData = ParticipantsManager.PlayerInfos[playerIndex].WeaponData;
+        AttackHandler handler = myPlayer.GetComponent<AttackHandler>();
+        handler.SetWeaponData(weaponData);
+        
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
     }
 
     private void AddPlayerStatus()
@@ -125,7 +133,6 @@ public class GameManager : MonoBehaviour
     // 증강
     private void SubscribeEnhancementEvents()
     {
-        EnhancementManager.OnEnhancementEvent += SelectEnhancement;
         EnhancementManager.OnReadyToFight += NextRound;
     }
 
@@ -148,15 +155,10 @@ public class GameManager : MonoBehaviour
             if (PhotonNetwork.PlayerList[i].ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber);
-                myPlayer.GetComponent<PhotonView>().RPC("RPCSetTransform", RpcTarget.All, new Vector3(poses[i].x, poses[i].y, 0), Quaternion.identity);
+                myPlayer.GetComponent<PhotonView>().RPC("RPCSetTransform", RpcTarget.All,
+                    new Vector3(poses[i].x, poses[i].y, 0), Quaternion.identity);
             }
         }
-    }
-
-    private void SelectEnhancement(int playerIndex, EnhancementData data)
-    {
-        Debug.Log($"({playerIndex}) select {data}");
-        //todo get attackHandler to enhance
     }
 
     // PvP
