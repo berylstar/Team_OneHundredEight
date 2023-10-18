@@ -49,6 +49,7 @@ namespace Weapon
         private bool _isFightStarted = false;
         private int _currentEnhanceOrder = -1;
         private int _selectedPlayerCount = 0;
+        private bool _isRunningRPC = false;
         public event Action<int> OnNextOrder;
         public event Action<int> OnPlayerSelectEnhancement;
 
@@ -115,11 +116,12 @@ namespace Weapon
                 return;
             }
 
-            if (_currentTime <= 0f)
+            if (_currentTime <= 0f && !_isRunningRPC)
             {
                 //todo rpc call 
                 PhotonView pv = PhotonView.Get(this);
                 pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
+                _isRunningRPC = true;
             }
             else
             {
@@ -172,12 +174,11 @@ namespace Weapon
                 return;
             }
 
-            if (_currentEnhanceOrder == playerIndex)
+            if (_currentEnhanceOrder == playerIndex && _selectedPlayerCount != PhotonNetwork.CurrentRoom.PlayerCount)
             {
                 _currentTime = 0f;
             }
 
-            //todo make event function
             OnPlayerSelectEnhancement?.Invoke(playerIndex);
 
             _selectedPlayerCount++;
@@ -248,6 +249,7 @@ namespace Weapon
         private bool SetNextOrderIfNotEnd()
         {
             bool isEnd = true;
+            _isRunningRPC = false;
             foreach (var selectPair in _canSelectEnhance)
             {
                 if (selectPair.Value)
@@ -263,8 +265,6 @@ namespace Weapon
                 break;
             }
 
-            //todo send event to ui
-
             return isEnd;
         }
 
@@ -272,6 +272,7 @@ namespace Weapon
         [PunRPC]
         private void SetNextSelectionOrderRPC()
         {
+            _isRunningRPC = false;
             if (SetNextOrderIfNotEnd())
             {
                 _isAllPlayerSelected = true;
@@ -290,7 +291,6 @@ namespace Weapon
 
         public void ClearEnhancementData()
         {
-            throw new NotImplementedException();
         }
     }
 }
