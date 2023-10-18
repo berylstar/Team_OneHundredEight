@@ -4,39 +4,38 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class BloodDraw : MonoBehaviourPunCallbacks
+public class BloodDraw : MonoBehaviour
 {
     [SerializeField] Texture2D Image;
     private Color drawColor = Color.red;
     private int brushSize = 30;
     private Texture2D texture;
     private SpriteRenderer spriteRenderer;
-    Texture2D originalTexture;
-    private PhotonView _PV;
+   // private PhotonView _PV;
     Color[] pixels;
+    Sprite originalTexture;
     void Awake()
     {
-        _PV = GetComponent<PhotonView>();
+       // _PV = GetComponentInParent<PhotonView>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
     void Start()
     {
-        if (_PV.IsMine)
-        {
-            originalTexture = GetComponent<SpriteRenderer>().sprite.texture;
-            texture = new Texture2D(originalTexture.width, originalTexture.height, TextureFormat.ARGB32, false);
-            texture.SetPixels(originalTexture.GetPixels());
-            texture.Apply();
-            pixels = texture.GetPixels();
-            //_PV.RPC("UpdateSprite", RpcTarget.All);
-        }
+
+        originalTexture = GetComponent<SpriteRenderer>().sprite;
+        Rect r = originalTexture.rect;
+        texture = new Texture2D((int)r.width, (int)r.height, TextureFormat.ARGB32, false);
+        texture.SetPixels(originalTexture.texture.GetPixels((int)r.xMin, (int)r.yMin, (int)r.width, (int)r.height, 0));
+        texture.Apply();
+        brushSize = (int)originalTexture.rect.width / 4;
+        pixels = texture.GetPixels();
+        //_PV.RPC("UpdateSprite", RpcTarget.All);
+
     }
 
     private void OnParticleCollision(GameObject other)
     {
-        if (!_PV.IsMine)
-            return;
-
+        //본체만 바꾸고 어찌저찌 해볼랬는데 뭔가 애매해서...
         ParticleSystem ptc = other.GetComponent<ParticleSystem>();
         List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
         int numofCollision = ptc.GetCollisionEvents(this.gameObject, collisionEvents);
@@ -64,9 +63,11 @@ public class BloodDraw : MonoBehaviourPunCallbacks
         {
             texture.SetPixels(pixels);
             texture.Apply();
-            _PV.RPC("UpdateSpriteRPC", RpcTarget.All, texture.GetRawTextureData());
+            //_PV.RPC("UpdateSpriteRPC", RpcTarget.All, texture.GetRawTextureData());
+            UpdateSpriteRPC(texture.GetRawTextureData());
         }
     }
+
 
     bool DrawTexture(Vector2 uv)
     {
@@ -84,8 +85,10 @@ public class BloodDraw : MonoBehaviourPunCallbacks
             for (int j = startY; j < endY; j++)
             {
                 //현재i값 - x값의 절댓값
-                if (Random.Range(0, x - startX) - 2 >= Mathf.Abs(x - i)
-                || Random.Range(0, y - startY) - 2 >= Mathf.Abs(y - j))
+                
+                if (pixels[j * texture.width + i].a > 0.2f&&
+                (Random.Range(0, x - startX) - 2 >= Mathf.Abs(x - i)
+                && Random.Range(0, y - startY) - 2 >= Mathf.Abs(y - j)))
                 {
                     pixels.SetValue(drawColor, j * texture.width + i);
                 }
@@ -93,11 +96,13 @@ public class BloodDraw : MonoBehaviourPunCallbacks
         }
         return true;
     }
-    [PunRPC]
+
+    //[PunRPC]
     private void UpdateSpriteRPC(byte[] receivedByte)
     {
         texture.LoadRawTextureData(receivedByte);
-        spriteRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f, spriteRenderer.sprite.pixelsPerUnit);
+        Vector2 middlePos = new Vector2(originalTexture.pivot.x / originalTexture.rect.width , originalTexture.pivot.y / originalTexture.rect.height);
+        spriteRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), middlePos, spriteRenderer.sprite.pixelsPerUnit);
     }
 
 }
