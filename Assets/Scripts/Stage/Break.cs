@@ -41,6 +41,18 @@ public class Break : MonoBehaviourPun
         }
     }
 
+    private void OnDisable()
+    {
+        for (int i = 0; i < _first.Length; i++)
+        {
+            Rewind(_first[i].GetComponent<Rigidbody2D>());
+        }
+        for (int i = 0; i < _second.Length; i++)
+        {
+            Rewind(_second[i].GetComponent<Rigidbody2D>());
+        }
+    }
+
     private void FirstBreak()
     {
         for (int i = 0; i < _first.Length; i++)
@@ -61,6 +73,11 @@ public class Break : MonoBehaviourPun
         rb.mass = 10f;
         rb.gravityScale = 0.1f;
         Destroy(rb.gameObject, 5f);
+    }
+
+    private void Rewind(Rigidbody2D rb)
+    {
+        rb.bodyType = RigidbodyType2D.Kinematic;
     }
 
     /*
