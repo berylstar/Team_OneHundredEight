@@ -233,18 +233,16 @@ public class GameManager : MonoBehaviour
                 if (v >= 2)
                 {
                     // 게임 종료
-                    DestroyImmediate(ParticipantsManager);
-                    PhotonNetwork.LeaveRoom();
-                    PhotonNetwork.LoadLevel("LobbyScene");
+                    StartCoroutine(EndDelay(winnerNickname));
+                    EndGame();
                 }
             }
 
             if (Winners.Count == 3)
             {
                 // 게임 종료
-                DestroyImmediate(ParticipantsManager);
-                PhotonNetwork.LeaveRoom();
-                PhotonNetwork.LoadLevel("LobbyScene");
+                StartCoroutine(EndDelay(winnerNickname));
+                EndGame();
             }
 
             // 증강 다시 선택
@@ -265,6 +263,21 @@ public class GameManager : MonoBehaviour
         textWinner.gameObject.SetActive(false);
         _stageManager.StageDelete();
         ShowEnhancementUI();
+    }
+
+    private IEnumerator EndDelay(string name)
+    {
+        textWinner.text = $" WINNER IS {name} !";
+        textWinner.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(1.5f);
+    }
+
+    private void EndGame()
+    {
+        DestroyImmediate(ParticipantsManager);
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel("LobbyScene");
     }
 
     private void EnhancePlayer(int actorNumber, EnhancementData data)
