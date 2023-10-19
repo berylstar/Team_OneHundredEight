@@ -528,6 +528,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 6049159165526899357, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_TagString
+      value: Stage
+      objectReference: {fileID: 0}
     - target: {fileID: 6049159165526899358, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_Color.b
       value: 0.3137255
@@ -603,6 +607,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1 &981422096175872593 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1007857777812333355, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -621,6 +627,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1 &6021586803735208935 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6049159165526899357, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -639,6 +647,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1 &6266359433684366913 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6238756283268919099, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -657,6 +667,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1 &7404076715211786312 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7395623028797133106, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -675,6 +687,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1001 &1423767634622470195
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -769,7 +783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5373330553216305747, guid: 19c814d7a6d59b74686e74ddb900f806, type: 3}
       propertyPath: m_TagString
-      value: Stage
+      value: FirstBreak
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -827,6 +841,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!4 &6436728765738963554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5373330553216305745, guid: 19c814d7a6d59b74686e74ddb900f806, type: 3}
@@ -926,7 +942,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5373330553216305747, guid: 19c814d7a6d59b74686e74ddb900f806, type: 3}
       propertyPath: m_TagString
-      value: Stage
+      value: FirstBreak
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -984,6 +1000,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!4 &7877841854271087603 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5373330553216305745, guid: 19c814d7a6d59b74686e74ddb900f806, type: 3}
@@ -1083,7 +1101,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5373330553216305747, guid: 19c814d7a6d59b74686e74ddb900f806, type: 3}
       propertyPath: m_TagString
-      value: Stage
+      value: SecondBreak
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1146,6 +1164,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1001 &7281527654298846179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1236,7 +1256,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5373330553216305747, guid: 19c814d7a6d59b74686e74ddb900f806, type: 3}
       propertyPath: m_TagString
-      value: Stage
+      value: SecondBreak
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1294,6 +1314,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!4 &3430838541127289266 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5373330553216305745, guid: 19c814d7a6d59b74686e74ddb900f806, type: 3}
@@ -1383,6 +1405,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 6049159165526899357, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_TagString
+      value: Stage
+      objectReference: {fileID: 0}
     - target: {fileID: 6238756283268919099, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -1437,6 +1463,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1 &3115196092364918731 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6238756283268919099, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -1455,6 +1483,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1 &3340839316109990509 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6049159165526899357, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -1473,6 +1503,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!1 &8093888621330564059 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1007857777812333355, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -1491,6 +1523,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0
 --- !u!4 &8733462701351083820 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 332311516743598044, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
@@ -1514,3 +1548,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 0
+  heightCount: 0

@@ -16,7 +16,7 @@ public class StageManager : MonoBehaviourPun, IPunObservable
     private void Start()
     {
         StageInit();
-        StageSelect();
+        // StageSelect();
     }
     private void StageInit()
     {
@@ -30,8 +30,8 @@ public class StageManager : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            //_mapindex = UnityEngine.Random.Range(0, StageList.Count);   // 맵고름
-            _mapindex = 2;
+            _mapindex = UnityEngine.Random.Range(0, StageList.Count);   // 맵고름
+            // _mapindex = 2;
             _mapName = StageList[_mapindex].name;   // 스폰위치를 위해 맵 이름을 넘겨줌
             photonView.RPC("StageEnable", RpcTarget.All, _mapindex);
         }
