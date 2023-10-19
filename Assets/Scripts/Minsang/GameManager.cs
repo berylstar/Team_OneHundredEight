@@ -232,12 +232,16 @@ public class GameManager : MonoBehaviour
                 if (v >= 2)
                 {
                     // 게임 종료
+                    transform.SetParent(Camera.main.transform);
+                    PhotonNetwork.LoadLevel("LobbyScene");
                 }
             }
 
             if (Winners.Count == 3)
             {
                 // 게임 종료
+                transform.SetParent(Camera.main.transform);
+                PhotonNetwork.LoadLevel("LobbyScene");
             }
 
             // 증강 다시 선택
