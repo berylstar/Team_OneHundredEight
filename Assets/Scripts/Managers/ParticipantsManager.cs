@@ -120,7 +120,7 @@ namespace Managers
                     baseAttackData = new AttackData()
                     {
                         bulletDamage = 3,
-                        bulletSpeed = 3,
+                        bulletSpeed = 10,
                         maxMagazine = 10,
                         reloadTime = 10,
                         shotInterval = 0.5f,
