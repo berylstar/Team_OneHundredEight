@@ -4,8 +4,9 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 using Photon.Pun;
+using System.Collections;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     [Header("Player")]
     [SerializeField] private SpriteRenderer _playerRenderer;
@@ -35,11 +36,14 @@ public class PlayerController : MonoBehaviour
 
     private int _maxJumpCount = 1;
     private int _jumpCount = 1;
+    private float _stun = 0f;
     
     private int _animWalk = Animator.StringToHash("IsWalk");
     private int _animJump = Animator.StringToHash("TrJump");
     private int _animAir = Animator.StringToHash("IsAir");
 
+    private bool _boomReady = true;
+    private float _boomDelay = 5f;
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -81,6 +85,11 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if(_stun >= 0f)
+        {
+            _stun -= Time.deltaTime;
+        }
+
         _hpBar.fillAmount = _stat.CurrentStat.HP / _stat.CurrentStat.MaxHp;
     }
     private void FixedUpdate()
@@ -95,9 +104,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-        _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
+        if (_stun > 0)
+        {
+            _moveInput = Vector2.zero;
+            _playerAni.SetBool(_animWalk, false);
+        }
+        else
+        {
+            _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
 
-        _playerAni.SetBool(_animWalk, _moveInput != Vector2.zero);
+            _playerAni.SetBool(_animWalk, _moveInput != Vector2.zero);
+        }
     }
 
     private void OnJump(InputValue value)
@@ -106,6 +123,10 @@ public class PlayerController : MonoBehaviour
 
         //if (rayHit.collider == null)
         //    return;
+        if (_stun > 0)
+        {
+            return;
+        }
 
         if (_jumpCount < 1)
             return;
@@ -117,6 +138,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnAim(InputValue value)
     {
+        if (_stun > 0)
+        {
+            return;
+        }
+
         Vector2 worldPos = _cam.ScreenToWorldPoint(value.Get<Vector2>());
         _newAim = (worldPos - (Vector2)transform.position).normalized;
 
@@ -137,9 +163,33 @@ public class PlayerController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
+        if (_stun > 0)
+        {
+            return;
+        }
+
         OnFire?.Invoke(_newAim);
     }
 
+    private void OnBoom(InputValue value)
+    {
+        if(_stun <= 0 &&  _photonView.IsMine && _boomReady)
+        {
+            _boomReady = false;
+            StartCoroutine(nameof(COBoomReload), 5f);
+            Boom.Create(this.gameObject, this.transform.position);
+        }
+    }
+    private IEnumerator COBoomReload(float time)
+    {
+        yield return new WaitForSeconds(time);
+        _boomReady = true;
+    }
+
+    public void SetStun(float stunTime)
+    {
+        _stun = stunTime;
+    }
     #endregion
 
     //private void OnTriggerEnter2D(Collider2D collision)

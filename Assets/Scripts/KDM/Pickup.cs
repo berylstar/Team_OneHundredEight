@@ -65,9 +65,12 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
     private void OnTriggerEnter2D(Collider2D col)
     {
         //느린쪽에 맞춘 히트판정 , 포톤을 쓰는 녀석들만 히트판정.(안쓰는게있나?)
+
+        //-> 아이템은 상대방콜리즌인데 내가 만든 아이템(Player)이 아니잖아 생각해보니까?
+        //->그럼 
          if(!col.TryGetComponent<PhotonView>(out PhotonView pv))
             return;
-        if (_PV.IsMine || !pv.IsMine)
+        if (!pv.IsMine)
             return;
 
         if (0 != (_playerCollisionLayer.value & (1 << col.gameObject.layer)))
