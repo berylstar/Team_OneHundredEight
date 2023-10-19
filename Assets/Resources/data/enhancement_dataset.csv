@@ -1,13 +1,9 @@
 이름,아이콘 이름,설명,공격력,총알 속도,탄창,후딜,장전시간
-TRG,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
-저격총,sprite/enhancement/trg,총알 속도가 감소하고 공격력이 증가,10,-0.5,-100,5,3
-저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
-TRG,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
-저격총,sprite/enhancement/trg,총알 속도가 감소하고 공격력이 증가,10,-0.5,-100,5,3
-저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
-TRG,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
-저격총,sprite/enhancement/trg,총알 속도가 감소하고 공격력이 증가,10,-0.5,-100,5,3
-저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
-TRG,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
-저격총,sprite/enhancement/trg,총알 속도가 감소하고 공격력이 증가,10,-0.5,-100,5,3
-저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
+저격총,sprite/enhancement/trg,공격력이 증가하지만 공격속도와 탄창이 감소한다,10,5,-100,-0.5,3
