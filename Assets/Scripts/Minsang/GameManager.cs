@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     // PvP
     private StageManager _stageManager;
 
-    [field: SerializeField] public List<int> KnockoutPlayers { get; private set; }
+    [field: SerializeField] public HashSet<int> KnockoutPlayers { get; private set; }
 
     //[field: SerializeField] public List<int> Winners { get; private set; }
     public Dictionary<int, int> Winners { get; private set; }
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         Pooler = GetComponent<ObjectPooling>();
         _stageManager = GetComponentInChildren<StageManager>();
 
-        KnockoutPlayers = new List<int>(5);
+        KnockoutPlayers = new HashSet<int>();
         //Winners = new List<int>();
         Winners = new Dictionary<int, int>();
     }
@@ -125,11 +125,11 @@ public class GameManager : MonoBehaviour
     public void ShowEnhancementUI()
     {
         int rankingCnt = KnockoutPlayers.Count;
-        int playerCnt = PhotonNetwork.CurrentRoom.PlayerCount;
-        int[] ranking = new int[playerCnt];
-        for (int i = 0; i < ranking.Length; i++)
+        int[] ranking = new int[rankingCnt];
+        int index = 0;
+        foreach(int a in KnockoutPlayers)
         {
-            ranking[i] = KnockoutPlayers[rankingCnt - i - 1];
+            ranking[index++] = a;
         }
 
         EnhancementManager.Init(ranking);
