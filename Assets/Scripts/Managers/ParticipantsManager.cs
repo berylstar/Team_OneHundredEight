@@ -148,7 +148,7 @@ namespace Managers
 
             foreach (KeyValuePair<int, Player> player in playersInCurrentRoom)
             {
-                PlayerInfo info = new PlayerInfo(player.Value.NickName, "PlayerImage/Human", _defaultWeaponData);
+                PlayerInfo info = new PlayerInfo(player.Value.NickName, "PlayerImage/Mouse", _defaultWeaponData);
                 _playerInfos.Add(
                     key: player.Key,
                     value: info
