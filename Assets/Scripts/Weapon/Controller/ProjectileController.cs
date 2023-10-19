@@ -47,7 +47,7 @@ namespace Weapon.Controller
                 PhotonNetwork.Instantiate("Effects/Blood", pos, Quaternion.identity);
                 if(collision.transform.TryGetComponent<Rigidbody2D>(out var com))
                 {
-                    com.velocity += Direction * 10;
+                    com.AddForce(Direction * 20, ForceMode2D.Impulse);
                 }
                 Disapear();
             }
