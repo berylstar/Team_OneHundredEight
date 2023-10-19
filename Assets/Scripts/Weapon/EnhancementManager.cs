@@ -69,16 +69,7 @@ namespace Weapon
             _gameManager = GameManager.Instance;
             _participantsManager = ParticipantsManager.Instance;
             _enhancedPlayerIndexSet = new HashSet<int>();
-
-            //todo get player image from manager
-            playerColors = new List<Color>()
-            {
-                Color.blue,
-                Color.green,
-                Color.red,
-                Color.magenta,
-                Color.cyan
-            };
+            playerColors = Constants.PlayerColors;
         }
 
         private void Start()

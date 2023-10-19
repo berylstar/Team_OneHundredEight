@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Destroy(ParticipantsManager);
+        ParticipantsManager.ClearParticipantsInfo();
     }
 
     [Obsolete("For testing")]
