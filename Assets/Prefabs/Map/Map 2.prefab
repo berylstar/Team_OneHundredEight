@@ -683,8 +683,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!4 &7367101790761172559 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7529635343020985367, guid: 8dab7379f6c67d9448d4c24d1eace61b, type: 3}
@@ -890,8 +890,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!4 &1006550129134773749 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2183321564951531329, guid: 2f54e7022d76f09478e2e1124e212cc5, type: 3}
@@ -1097,8 +1097,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!4 &8999931338229047220 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7529635343020985367, guid: 8dab7379f6c67d9448d4c24d1eace61b, type: 3}
@@ -1320,8 +1320,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!4 &4278498084321766726 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2183321564951531329, guid: 2f54e7022d76f09478e2e1124e212cc5, type: 3}
@@ -1527,8 +1527,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!4 &5659839958420291620 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7529635343020985367, guid: 8dab7379f6c67d9448d4c24d1eace61b, type: 3}
@@ -1755,8 +1755,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!1001 &6840478693642202087
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1962,8 +1962,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!1001 &7780354509963985502
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2169,8 +2169,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!1001 &8242482093034362222
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2387,8 +2387,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!4 &7795619553252612655 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2183321564951531329, guid: 2f54e7022d76f09478e2e1124e212cc5, type: 3}
@@ -2594,8 +2594,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
 --- !u!4 &7281215714894755911 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2183321564951531329, guid: 2f54e7022d76f09478e2e1124e212cc5, type: 3}
@@ -2822,5 +2822,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
-  widthCount: 0
-  heightCount: 0
+  widthCount: 1
+  heightCount: 1
