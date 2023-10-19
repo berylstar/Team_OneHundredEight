@@ -151,6 +151,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("Create NextRound");
         Debug.Log("------------------------");
 
+        _stageManager.StageSelect();
+
         ClearKnockoutPlayers();
         SetPlayerSpawn();
         myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);

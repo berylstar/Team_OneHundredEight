@@ -16,7 +16,7 @@ public class StageManager : MonoBehaviourPun, IPunObservable
     private void Start()
     {
         StageInit();
-        StageSelect();
+        // StageSelect();
     }
     private void StageInit()
     {
