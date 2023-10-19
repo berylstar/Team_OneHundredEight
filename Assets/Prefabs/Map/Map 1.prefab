@@ -157,7 +157,7 @@ Transform:
   - {fileID: 7895247259577715638}
   - {fileID: 6882082216711210322}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-5593693476214130452
 MonoBehaviour:
@@ -179,7 +179,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 3699968236058826076}
-  sceneViewId: 0
+  sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &3699968236058826076
@@ -603,6 +603,10 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: 4.85
       objectReference: {fileID: 0}
+    - target: {fileID: 2795387998076097749, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     - target: {fileID: 3611825365666693970, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_ConnectedAnchor.y
       value: -1.6000004
@@ -611,6 +615,10 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -1.5999999
       objectReference: {fileID: 0}
+    - target: {fileID: 4838858854761780979, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     - target: {fileID: 5512741834586553243, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_ConnectedAnchor.y
       value: -1.1999998
@@ -635,6 +643,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.3137255
       objectReference: {fileID: 0}
+    - target: {fileID: 6160971446267185406, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     - target: {fileID: 6238756283268919099, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -655,6 +667,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 8389114741285219850, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1480,6 +1496,10 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: 4.85
       objectReference: {fileID: 0}
+    - target: {fileID: 2795387998076097749, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     - target: {fileID: 3611825365666693970, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_ConnectedAnchor.y
       value: -1.6000004
@@ -1488,6 +1508,10 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -1.5999999
       objectReference: {fileID: 0}
+    - target: {fileID: 4838858854761780979, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     - target: {fileID: 5512741834586553243, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_ConnectedAnchor.y
       value: -1.1999998
@@ -1500,6 +1524,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Stage
       objectReference: {fileID: 0}
+    - target: {fileID: 6160971446267185406, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     - target: {fileID: 6238756283268919099, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -1516,6 +1544,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 8389114741285219850, guid: 8d645df5a6fbe1b498bc28f14100fddb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9095717837082945937, guid: ad1e40b513cf6ca4295587ee7562da3d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
