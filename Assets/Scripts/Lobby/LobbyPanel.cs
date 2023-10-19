@@ -48,7 +48,7 @@ public class LobbyPanel : MonoBehaviourPunCallbacks
 
         if (roomList.Count > roomPanelCase.childCount)
         {
-            for (int i = 0; i < PhotonNetwork.CountOfRooms - roomPanelCase.childCount; i++)
+            for (int i = 0; i < roomList.Count - roomPanelCase.childCount; i++)
             {
                 GameObject go = Instantiate(room);
                 go.transform.SetParent(roomPanelCase);
