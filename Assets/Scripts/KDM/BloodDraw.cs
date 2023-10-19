@@ -68,8 +68,8 @@ public class BloodDraw : MonoBehaviour
                     //여기까지 콜라이더 기준으로 UV를 짠거다.
 
                     //픽셀퍼유닛을 왜곱했더라? 컬러배열을 색칠할거여서...
-                    localPos.x *= originalTextures[0].pixelsPerUnit * widthCount;
-                    localPos.y *= originalTextures[0].pixelsPerUnit * heightCount;
+                    localPos.x *= textures[0].width * widthCount;
+                    localPos.y *= textures[0].height * heightCount;
 
                     pixelUpdate = DrawTexture(localPos);
                 }
@@ -106,9 +106,10 @@ public class BloodDraw : MonoBehaviour
             for (int j = startY; j < endY; j++)
             {
                 //현재i값 - x값의 절댓값
-                int indexX = i % pixelPerUnit;
-                int indexY = j % pixelPerUnit;
-                int listIndex = i / pixelPerUnit + (j / pixelPerUnit) * widthCount;
+                int indexX = i % textures[0].width;
+                int indexY = j % textures[0].height;
+                int listIndex = i / textures[0].width + (j / textures[0].height) * widthCount;
+                
                 if (pixels[listIndex][indexY * textures[0].width + indexX].a > 0.2f &&
                 (Random.Range(0, longX) - 2 >= Mathf.Abs(x - i)
                 && Random.Range(0, longY) - 2 >= Mathf.Abs(y - j)))
