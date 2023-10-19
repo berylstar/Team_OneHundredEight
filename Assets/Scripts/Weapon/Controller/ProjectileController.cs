@@ -36,7 +36,7 @@ namespace Weapon.Controller
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag("Stage"))
+            if (collision.CompareTag("Stage") || collision.CompareTag("FirstBreak") || collision.CompareTag("SecondBreak"))
                 Disapear();
 
             if (!_photonView.IsMine && collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine)
@@ -68,7 +68,7 @@ namespace Weapon.Controller
             Direction = direction;
         }
 
-        public void Disapear()
+        private void Disapear()
         {
             _isReady = false;
             _photonView.RPC("RPCSetActive", RpcTarget.All, false);
