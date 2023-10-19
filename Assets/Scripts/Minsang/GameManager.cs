@@ -7,6 +7,7 @@ using Photon.Realtime;
 using System;
 using System.Linq;
 using Weapon;
+using Weapon.Components;
 using Weapon.Model;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -19,16 +20,14 @@ public class GameManager : MonoBehaviour
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
 
-    // 기초 스탯 (플레이어 정보 목록)
-    private Dictionary<int, PlayerInfo> _playerStatusMap;
-    public IReadOnlyDictionary<int, PlayerInfo> PlayerStatusMap => _playerStatusMap;
-
-    // 공격 정보 
+    // 적용된 증강 정보
 
 
     // 증강
     public EnhancementManager EnhancementManager { get; private set; }
-    public CharacterManager CharacterManager { get; private set; }
+
+    // 참가자 정보 
+    public ParticipantsManager ParticipantsManager { get; private set; }
 
     // PvP
     private StageManager _stageManager;
@@ -36,6 +35,7 @@ public class GameManager : MonoBehaviour
 
     private PhotonView _photonView;
     public GameObject myPlayer;
+    private AttackHandler _attackHandler;
 
     private readonly string player = "Player";
     private readonly string keyLoadScene = "LOAD_SCENE";
@@ -43,18 +43,16 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        CharacterManager = CharacterManager.Instance;
-
         if (Instance == null) { Instance = this; }
         else if (Instance != null) { Destroy(gameObject); }
 
         DontDestroyOnLoad(gameObject);
+        ParticipantsManager = ParticipantsManager.Instance;
         EnhancementManager = gameObject.AddComponent<EnhancementManager>();
         _photonView = GetComponent<PhotonView>();
         Pooler = GetComponent<ObjectPooling>();
         _stageManager = GetComponentInChildren<StageManager>();
 
-        _playerStatusMap = new Dictionary<int, PlayerInfo>(5);
         KnockoutPlayers = new List<int>(5);
     }
 
@@ -62,9 +60,13 @@ public class GameManager : MonoBehaviour
     {
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { keyLoadScene, true } });
         StartCoroutine(CoLoading());
-
         SubscribeEnhancementEvents();
         EnhancementIntegrationTest();
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(ParticipantsManager);
     }
 
     [Obsolete("For testing")]
@@ -91,12 +93,17 @@ public class GameManager : MonoBehaviour
         while (!AllHasTag(keyLoadPlayer)) { yield return null; }
 
         panelLoading.SetActive(false);
-        myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
-        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);        
+        CreatePhotonPlayer();
     }
 
-    private void AddPlayerStatus()
+    private void CreatePhotonPlayer()
     {
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
+        myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+        _attackHandler = myPlayer.GetComponentInChildren<AttackHandler>();
+        WeaponData weaponData = ParticipantsManager.PlayerInfos[PhotonNetwork.LocalPlayer.ActorNumber].WeaponData;
+        _attackHandler.SetWeaponData(weaponData);
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
     }
 
     private bool AllHasTag(string key)
@@ -125,9 +132,10 @@ public class GameManager : MonoBehaviour
     // 증강
     private void SubscribeEnhancementEvents()
     {
-        EnhancementManager.OnEnhancementEvent += SelectEnhancement;
         EnhancementManager.OnReadyToFight += NextRound;
+        EnhancementManager.OnEnhancementEvent += EnhancePlayer;
     }
+
 
     private void NextRound()
     {
@@ -148,15 +156,10 @@ public class GameManager : MonoBehaviour
             if (PhotonNetwork.PlayerList[i].ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber);
-                myPlayer.GetComponent<PhotonView>().RPC("RPCSetTransform", RpcTarget.All, new Vector3(poses[i].x, poses[i].y, 0), Quaternion.identity);
+                myPlayer.GetComponent<PhotonView>().RPC("RPCSetTransform", RpcTarget.All,
+                    new Vector3(poses[i].x, poses[i].y, 0), Quaternion.identity);
             }
         }
-    }
-
-    private void SelectEnhancement(int playerIndex, EnhancementData data)
-    {
-        Debug.Log($"({playerIndex}) select {data}");
-        //todo get attackHandler to enhance
     }
 
     // PvP
@@ -169,5 +172,12 @@ public class GameManager : MonoBehaviour
     public void AddKnockoutPlayer(int actNum)
     {
         KnockoutPlayers.Add(actNum);
+    }
+
+    private void EnhancePlayer(int actorNumber, EnhancementData data)
+    {
+        if (actorNumber != PhotonNetwork.LocalPlayer.ActorNumber) { return; }
+
+        _attackHandler.Enhance(data);
     }
 }
