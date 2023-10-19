@@ -45,6 +45,9 @@ public class Item : MonoBehaviour
             case Define.ItemType.ReverseKey:
                 go = Object.Instantiate(Resources.Load<GameObject>("Items/Reverse"));
                 break;
+            case Define.ItemType.DeadZone:
+                go = Object.Instantiate(Resources.Load<GameObject>("Items/DeadZone"));
+                break;
             default:
                 return null;
         }
