@@ -76,7 +76,7 @@ public class StageManager : MonoBehaviourPun, IPunObservable
                 SpawnList.Add(new Vector2(0f, -2f));      
                 break;
 
-            case "Map 3":
+            default:
                 SpawnList.Add(new Vector2(-7f, 0f));   
                 SpawnList.Add(new Vector2(7f, 0f));     
                 SpawnList.Add(new Vector2(-2.5f, 0f)); 
