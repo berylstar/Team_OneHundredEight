@@ -13,7 +13,8 @@ public class Define
         SpeedDown,
         ReverseKey,
         Invincible,
-        End
+        End,
+        DeadZone
     }
 
     public enum BuffType
