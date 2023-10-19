@@ -13,7 +13,7 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     [field: SerializeField] public PlayerStat CurrentStat { get; private set; }
     public LinkedList<PlayerStat> statModifiers = new LinkedList<PlayerStat>();
  
-    [SerializeField] private float healthChangeDelay = .5f;
+    [SerializeField] private float healthChangeDelay = 0.5f;
     private float _timeSinceLastChange = float.MaxValue;
     private bool _invincibility = false;
 
@@ -84,6 +84,8 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         if (CurrentStat.HP <= 0.0f)
         {
             OnDeath?.Invoke();
+
+            _invincibility = false;
 
             PhotonNetwork.Instantiate("Effects/Death", transform.position, Quaternion.identity);
         }
