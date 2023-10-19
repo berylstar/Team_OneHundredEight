@@ -228,19 +228,25 @@ public class GameManager : MonoBehaviour
             if (myPlayer.activeInHierarchy)
                 myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
 
-            foreach (int v in Winners.Values)
+            foreach (int v in Winners.Keys)
             {
-                if (v >= 2)
+                if (Winners[v] >= 2)
                 {
                     // 게임 종료
-                    StartCoroutine(EndDelay(winnerNickname));
+                    foreach (Player p in PhotonNetwork.PlayerList)
+                    {
+                        if (p.ActorNumber == v)
+                        {
+                            StartCoroutine(EndDelay($"WINNER IS {p.NickName}"));
+                        }
+                    }
                 }
             }
 
             if (Winners.Count == 3)
             {
                 // 게임 종료
-                StartCoroutine(EndDelay(winnerNickname));
+                StartCoroutine(EndDelay("DRAW..."));
             }
 
             // 증강 다시 선택
@@ -263,9 +269,9 @@ public class GameManager : MonoBehaviour
         ShowEnhancementUI();
     }
 
-    private IEnumerator EndDelay(string name)
+    private IEnumerator EndDelay(string msg)
     {
-        textWinner.text = $" WINNER IS {name} !";
+        textWinner.text = msg;
         textWinner.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(1.5f);
