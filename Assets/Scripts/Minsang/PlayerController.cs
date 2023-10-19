@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         _moveInput.y = _rigidbody.velocity.y;
-        _rigidbody.velocity = _moveInput;
+        _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity , _moveInput, 0.3f);
 
         _playerAni.SetBool(_animAir, _rigidbody.velocity.y != 0);
     }
