@@ -74,6 +74,7 @@ public class Item : MonoBehaviour
             switch (stat.statSO.BuffType)
             {
                 case Define.BuffType.Hp:
+                    _targetStatHandler.SetInvincible(false);
                     if (stat.statSO.StatsChangeType == Define.StatsChangeType.Multiple)
                         _targetStatHandler.ChangeHealth(_targetStatHandler.CurrentStat.HP * stat.statSO.Value - _targetStatHandler.CurrentStat.HP);
                     else if (stat.statSO.StatsChangeType == Define.StatsChangeType.Add)
