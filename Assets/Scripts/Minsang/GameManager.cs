@@ -34,7 +34,9 @@ public class GameManager : MonoBehaviour
 
     // PvP
     private StageManager _stageManager;
+
     [field: SerializeField] public List<int> KnockoutPlayers { get; private set; }
+
     //[field: SerializeField] public List<int> Winners { get; private set; }
     public Dictionary<int, int> Winners { get; private set; }
 
@@ -69,11 +71,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(CoLoading());
         SubscribeEnhancementEvents();
         EnhancementIntegrationTest();
-    }
-
-    private void OnDestroy()
-    {
-        ParticipantsManager.ClearParticipantsInfo();
     }
 
     [Obsolete("For testing")]
@@ -138,6 +135,13 @@ public class GameManager : MonoBehaviour
     }
 
     // 증강
+    private void UnsubscribeEnhancementEvents()
+    {
+        EnhancementManager.OnReadyToFight -= NextRound;
+        EnhancementManager.OnEnhancementEvent -= EnhancePlayer;
+    }
+
+
     private void SubscribeEnhancementEvents()
     {
         EnhancementManager.OnReadyToFight += NextRound;
@@ -202,6 +206,7 @@ public class GameManager : MonoBehaviour
                 if (p.activeInHierarchy)
                 {
                     PhotonView pv = p.GetComponent<PhotonView>();
+                    AddKnockoutPlayer(pv.Controller.ActorNumber);
 
                     if (Winners.ContainsKey(pv.Controller.ActorNumber))
                     {
@@ -213,7 +218,7 @@ public class GameManager : MonoBehaviour
                     }
 
                     winnerNickname = pv.Controller.NickName;
-                }    
+                }
             }
 
             // pvp종료 후 증강 선택으로 넘어감
@@ -236,6 +241,10 @@ public class GameManager : MonoBehaviour
             }
 
             // 증강 다시 선택
+            UnsubscribeEnhancementEvents();
+            Destroy(EnhancementManager);
+            EnhancementManager = gameObject.AddComponent<EnhancementManager>();
+            SubscribeEnhancementEvents();
         }
     }
 
@@ -244,9 +253,10 @@ public class GameManager : MonoBehaviour
         textWinner.text = $" WINNER IS {name} !";
         textWinner.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
 
         textWinner.gameObject.SetActive(false);
+        ShowEnhancementUI();
     }
 
     private void EnhancePlayer(int actorNumber, EnhancementData data)

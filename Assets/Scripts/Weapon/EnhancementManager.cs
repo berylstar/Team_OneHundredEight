@@ -48,9 +48,9 @@ namespace Weapon
         private bool _isInit = false;
         private bool _isAllPlayerSelected;
         private bool _isFightStarted = false;
+        private bool _isRunningRPC = false;
         private int _currentEnhanceOrder = -1;
         private int _selectedPlayerCount = 0;
-        private bool _isRunningRPC = false;
         public event Action<int> OnNextOrder;
         public event Action<int> OnPlayerSelectEnhancement;
 
@@ -65,7 +65,6 @@ namespace Weapon
 
         private void Awake()
         {
-            LoadDataSet();
             _gameManager = GameManager.Instance;
             _participantsManager = ParticipantsManager.Instance;
             _enhancedPlayerIndexSet = new HashSet<int>();
@@ -90,11 +89,13 @@ namespace Weapon
         {
             if (!_isInit)
             {
+                Debug.Log("is not init");
                 return;
             }
 
             if (_isAllPlayerSelected)
             {
+                Debug.Log("is all player selected");
                 if (_currentTime > 0f)
                 {
                     _currentTime -= Time.deltaTime;
@@ -102,6 +103,7 @@ namespace Weapon
                 }
                 else if (!_isFightStarted)
                 {
+                    Debug.Log("ready to fight");
                     OnReadyToFight?.Invoke();
                     _isFightStarted = true;
                 }
@@ -111,15 +113,16 @@ namespace Weapon
 
             if (_currentTime <= 0f && !_isRunningRPC)
             {
+                Debug.Log("is running rpc");
                 PhotonView pv = PhotonView.Get(this);
-                pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
                 _isRunningRPC = true;
+                pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
             }
             else
             {
                 _currentTime -= Time.deltaTime;
             }
-
+            
             OnTimeElapsed?.Invoke(_currentTime);
         }
 
@@ -189,6 +192,12 @@ namespace Weapon
 
         public void Init(int[] ranking)
         {
+            foreach (int i in ranking)
+            {
+                Debug.Log($"OnInit : {i}");
+            }
+
+            LoadDataSet();
             int colorIndex = 0;
             foreach (var playerIndex in ranking)
             {
@@ -283,6 +292,10 @@ namespace Weapon
 
         public void ClearEnhancementData()
         {
+            _enhancedPlayerIndexSet.Clear();
+            _isInit = false;
+            _isAllPlayerSelected = false;
+            _isFightStarted = false;
         }
     }
 }
