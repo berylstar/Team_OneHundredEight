@@ -234,7 +234,6 @@ public class GameManager : MonoBehaviour
                 {
                     // 게임 종료
                     StartCoroutine(EndDelay(winnerNickname));
-                    EndGame();
                 }
             }
 
@@ -242,7 +241,6 @@ public class GameManager : MonoBehaviour
             {
                 // 게임 종료
                 StartCoroutine(EndDelay(winnerNickname));
-                EndGame();
             }
 
             // 증강 다시 선택
@@ -271,6 +269,8 @@ public class GameManager : MonoBehaviour
         textWinner.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(1.5f);
+
+        EndGame();
     }
 
     private void EndGame()

@@ -1,10 +1,10 @@
 이름,아이콘 이름,설명,공격력,총알 속도,탄창,후딜,장전시간
 저격총,sprite/enhancement/trg,공격력 + 5,5,0,0,0,0
 저격총,sprite/enhancement/trg,총알 속도 + 5,0,5,0,0,0
-저격총,sprite/enhancement/trg,"공격력 + 10, 총알속도 -5",10,-5,0,0,0
+저격총,sprite/enhancement/trg,공격력 + 10, 총알속도 -5,10,-5,0,0,0
 저격총,sprite/enhancement/trg,공격력 + 5,5,0,0,0,0
 저격총,sprite/enhancement/trg,총알 속도 + 5,0,5,0,0,0
-저격총,sprite/enhancement/trg,"공격력 + 10, 총알속도 -5",10,-5,0,0,0
+저격총,sprite/enhancement/trg,공격력 + 10, 총알속도 -5,10,-5,0,0,0
 저격총,sprite/enhancement/trg,공격력 + 5,5,0,0,0,0
 저격총,sprite/enhancement/trg,총알 속도 + 5,0,5,0,0,0
-저격총,sprite/enhancement/trg,"공격력 + 10, 총알속도 -5",10,-5,0,0,0
+저격총,sprite/enhancement/trg,공격력 + 10, 총알속도 -5,10,-5,0,0,0
