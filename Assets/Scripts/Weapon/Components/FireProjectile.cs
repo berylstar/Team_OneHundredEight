@@ -33,6 +33,8 @@ namespace Weapon.Components
         public event Action OnFireDuringReloading;
         public event Action<int> OnMagazineConsumed;
 
+        public AudioClip clip;
+
         private void Awake()
         {
             _handler = GetComponent<AttackHandler>();
@@ -82,6 +84,7 @@ namespace Weapon.Components
         {
             _isAttacking = true;
             _attackDirection = dir.normalized;
+            SoundsManager.instance.SFXPlay("Fire", clip);
         }
 
         private void CreateProjectile()

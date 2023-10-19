@@ -1012,6 +1012,7 @@ MonoBehaviour:
   bulletSpawnPosition: {fileID: 2338239991172069252}
   emptySpawnPosition: {fileID: 6464019446461136850}
   bullet: {fileID: 1018720671211499167, guid: db845de5d5cc7424f943dd499303c953, type: 3}
+  clip: {fileID: 8300000, guid: 8602b7d5cd15c1943a50aa53f171c8cf, type: 3}
 --- !u!114 &1409142590584410390
 MonoBehaviour:
   m_ObjectHideFlags: 0
