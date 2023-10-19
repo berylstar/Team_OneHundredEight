@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 8825392419811442535}
   - component: {fileID: 4229347408446023135}
   m_Layer: 3
-  m_Name: wp5933488-1920x1080-desktop-pixel-art-wallpapers
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
