@@ -217,5 +217,7 @@ namespace Managers
 
             PhotonNetwork.LoadLevel("NewMinsangScene");
         }
+        
+        //todo exit game 
     }
 }

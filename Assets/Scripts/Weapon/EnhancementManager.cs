@@ -27,7 +27,7 @@ namespace Weapon
 
         public List<EnhancementData> DataList { get; private set; }
 
-        private List<KeyValuePair<EnhancementData, bool>> _remainEnhancements;
+        private List<KeyValuePair<EnhancementData, bool>> _enhancedCard;
 
         //todo get from gameManager
         private int _headcount = 3;
@@ -51,6 +51,7 @@ namespace Weapon
         private bool _isRunningRPC = false;
         private int _currentEnhanceOrder = -1;
         private int _selectedPlayerCount = 0;
+        private HashSet<int> _readyPlayer;
         public event Action<int> OnNextOrder;
         public event Action<int> OnPlayerSelectEnhancement;
 
@@ -68,7 +69,6 @@ namespace Weapon
             _gameManager = GameManager.Instance;
             _participantsManager = ParticipantsManager.Instance;
             _enhancedPlayerIndexSet = new HashSet<int>();
-            playerColors = Constants.PlayerColors;
         }
 
         private void Start()
@@ -89,13 +89,11 @@ namespace Weapon
         {
             if (!_isInit)
             {
-                Debug.Log("is not init");
                 return;
             }
 
             if (_isAllPlayerSelected)
             {
-                Debug.Log("is all player selected");
                 if (_currentTime > 0f)
                 {
                     _currentTime -= Time.deltaTime;
@@ -103,7 +101,6 @@ namespace Weapon
                 }
                 else if (!_isFightStarted)
                 {
-                    Debug.Log("ready to fight");
                     OnReadyToFight?.Invoke();
                     _isFightStarted = true;
                 }
@@ -111,18 +108,24 @@ namespace Weapon
                 return;
             }
 
-            if (_currentTime <= 0f && !_isRunningRPC)
+            if (_currentTime <= 0f)
             {
-                Debug.Log("is running rpc");
+                _currentTime = 0f;
+                if (_isRunningRPC) { return; }
+
                 PhotonView pv = PhotonView.Get(this);
                 _isRunningRPC = true;
-                pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
+                if (pv.IsMine)
+                {
+                    Debug.Log("callSetNextSelectionOrder");
+                    pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
+                }
             }
             else
             {
                 _currentTime -= Time.deltaTime;
             }
-            
+
             OnTimeElapsed?.Invoke(_currentTime);
         }
 
@@ -134,8 +137,8 @@ namespace Weapon
                 CsvReader.ReadCsvFromResources<EnhancementDataEntry>(Constants.FilePath.ENHANCEMENT_CSV_FILE, 1);
 
             DataList = _dataEntries.Select(it => it.ToEnhancementData()).ToList();
-
-            _remainEnhancements = _dataEntries
+            playerColors = Constants.PlayerColors;
+            _enhancedCard = _dataEntries
                 .Select(data => new KeyValuePair<EnhancementData, bool>(data.ToEnhancementData(), false))
                 .ToList();
         }
@@ -143,6 +146,11 @@ namespace Weapon
 
         public void EnhanceWeapon(int playerIndex, int cardIndex)
         {
+            if (_enhancedPlayerIndexSet.Contains(PhotonNetwork.LocalPlayer.ActorNumber))
+            {
+                return;
+            }
+
             PhotonView pv = PhotonView.Get(this);
             pv.RPC(nameof(EnhanceWeaponRPC), RpcTarget.AllBuffered, playerIndex, cardIndex);
         }
@@ -180,8 +188,8 @@ namespace Weapon
             _enhancedPlayerIndexSet.Add(playerIndex);
             OnEnhancementEvent?.Invoke(playerIndex, data);
             OnUpdateEnhanceUIEvent?.Invoke(cardIndex, PlayerColors[playerIndex]);
-            KeyValuePair<EnhancementData, bool> currentEnhancement = _remainEnhancements[cardIndex];
-            _remainEnhancements[cardIndex] = new KeyValuePair<EnhancementData, bool>(currentEnhancement.Key, true);
+            KeyValuePair<EnhancementData, bool> currentEnhancement = _enhancedCard[cardIndex];
+            _enhancedCard[cardIndex] = new KeyValuePair<EnhancementData, bool>(currentEnhancement.Key, true);
 
             if (_selectedPlayerCount == PhotonNetwork.CurrentRoom.PlayerCount)
             {
@@ -192,12 +200,15 @@ namespace Weapon
 
         public void Init(int[] ranking)
         {
+            _readyPlayer = new HashSet<int>();
+
             foreach (int i in ranking)
             {
                 Debug.Log($"OnInit : {i}");
             }
 
             LoadDataSet();
+
             int colorIndex = 0;
             foreach (var playerIndex in ranking)
             {
@@ -221,9 +232,9 @@ namespace Weapon
             {
                 if (_enhancedPlayerIndexSet.Contains(playerSelectState.Key) == false)
                 {
-                    for (int i = 0; i < _remainEnhancements.Count; i++)
+                    for (int i = 0; i < _enhancedCard.Count; i++)
                     {
-                        KeyValuePair<EnhancementData, bool> enhancementState = _remainEnhancements[i];
+                        KeyValuePair<EnhancementData, bool> enhancementState = _enhancedCard[i];
                         if (enhancementState.Value) { continue; }
 
                         if (isCardSelected[i]) { continue; }
@@ -251,7 +262,6 @@ namespace Weapon
         private bool SetNextOrderIfNotEnd()
         {
             bool isEnd = true;
-            _isRunningRPC = false;
             foreach (var selectPair in _canSelectEnhance)
             {
                 if (selectPair.Value)
@@ -259,7 +269,6 @@ namespace Weapon
                     continue;
                 }
 
-                _currentTime = SelectionLimitTime;
                 OnNextOrder?.Invoke(selectPair.Key);
                 _canSelectEnhance[selectPair.Key] = true;
                 _currentEnhanceOrder = selectPair.Key;
@@ -270,16 +279,17 @@ namespace Weapon
             return isEnd;
         }
 
-        /// <returns>if true : all player selection order is done</returns>
         [PunRPC]
         private void SetNextSelectionOrderRPC()
         {
-            _isRunningRPC = false;
+            _currentTime = SelectionLimitTime;
             if (SetNextOrderIfNotEnd())
             {
                 _currentTime = 0f;
                 EnhanceNotSelectedPlayer();
             }
+
+            _isRunningRPC = false;
         }
 
         private void ShowNextRoundUI()
@@ -296,6 +306,11 @@ namespace Weapon
             _isInit = false;
             _isAllPlayerSelected = false;
             _isFightStarted = false;
+        }
+
+        private void PlayerReady(int actorNumber)
+        {
+            _readyPlayer.Add(actorNumber);
         }
     }
 }
