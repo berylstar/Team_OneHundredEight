@@ -45,6 +45,10 @@ namespace Weapon.Controller
                 Vector3 pos = collision.ClosestPoint(transform.position) - Direction * 0.3f;
                 pos.y += 0.2f;
                 PhotonNetwork.Instantiate("Effects/Blood", pos, Quaternion.identity);
+                if(collision.transform.TryGetComponent<Rigidbody2D>(out var com))
+                {
+                    com.velocity += Direction * 10;
+                }
                 Disapear();
             }
         }

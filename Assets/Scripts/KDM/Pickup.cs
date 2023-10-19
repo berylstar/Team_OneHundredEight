@@ -10,7 +10,6 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
     private Quaternion _curRotation;
     private PhotonView _PV;
     private LayerMask _playerCollisionLayer;
-
     private float _lifeTime = 9999;
     private Define.ItemType _itemType;
 
@@ -68,8 +67,8 @@ public class Pickup : MonoBehaviourPunCallbacks, IPunObservable
         //느린쪽에 맞춘 히트판정 , 포톤을 쓰는 녀석들만 히트판정.(안쓰는게있나?)
          if(!col.TryGetComponent<PhotonView>(out PhotonView pv))
             return;
-        //if (_PV.IsMine || !pv.IsMine)
-        //    return;
+        if (_PV.IsMine || !pv.IsMine)
+            return;
 
         if (0 != (_playerCollisionLayer.value & (1 << col.gameObject.layer)))
         {
