@@ -21,6 +21,11 @@ namespace Weapon.Controller
             _photonView = GetComponent<PhotonView>();
         }
 
+        private void OnEnable()
+        {
+            Invoke(nameof(Disapear), 5f);
+        }
+
         private void FixedUpdate()
         {
             if (!_isReady)
@@ -31,7 +36,7 @@ namespace Weapon.Controller
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag("Stage"))
+            if (collision.CompareTag("Stage") || collision.CompareTag("FirstBreak") || collision.CompareTag("SecondBreak"))
                 Disapear();
 
             if (!_photonView.IsMine && collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine)
@@ -40,6 +45,10 @@ namespace Weapon.Controller
                 Vector3 pos = collision.ClosestPoint(transform.position) - Direction * 0.3f;
                 pos.y += 0.2f;
                 PhotonNetwork.Instantiate("Effects/Blood", pos, Quaternion.identity);
+                if(collision.transform.TryGetComponent<Rigidbody2D>(out var com))
+                {
+                    com.AddForce(Direction * 20, ForceMode2D.Impulse);
+                }
                 Disapear();
             }
         }

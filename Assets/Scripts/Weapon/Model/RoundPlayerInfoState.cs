@@ -14,5 +14,6 @@ namespace Weapon.Model
             IconUrl = iconUrl;
             SelectedEnhancement = selectedEnhancement;
         }
+        
     }
 }

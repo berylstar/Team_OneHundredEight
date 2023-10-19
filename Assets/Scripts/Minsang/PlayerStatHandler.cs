@@ -118,6 +118,8 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         CurrentStat.JumpForce = initialStat.JumpForce;
 
         _PV.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
+
+        OnDeath += DeathEvent;
     }
 
     [PunRPC]
@@ -211,5 +213,11 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     public void Hit(int damage)
     {
         ChangeHealth(-1 * damage);
+    }
+
+    private void DeathEvent()
+    {
+        GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
+        GameManager.Instance.AddKnockoutPlayer(PhotonNetwork.LocalPlayer.ActorNumber);
     }
 }

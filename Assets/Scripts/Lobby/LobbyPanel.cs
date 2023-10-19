@@ -1,5 +1,7 @@
+using Managers;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,7 @@ using UnityEngine;
 
 public class LobbyPanel : MonoBehaviourPunCallbacks
 {
+    private ParticipantsManager _participantsManager;
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject lobbyPanel;
     [SerializeField] private GameObject roomPanel;
@@ -15,6 +18,22 @@ public class LobbyPanel : MonoBehaviourPunCallbacks
     [SerializeField] private RectTransform roomPanelCase;
 
     [SerializeField] private GameObject room;
+
+    private void Awake()
+    {
+        _participantsManager = ParticipantsManager.Instance;
+    }
+    
+    private void Start()
+    {
+        _participantsManager.OnExitRoomEvent += ShowLobbyUI;
+        gameObject.SetActive(false);
+    }
+
+    private void ShowLobbyUI()
+    {
+        gameObject.SetActive(true);
+    }
 
     public override void OnEnable()
     {
@@ -46,14 +65,16 @@ public class LobbyPanel : MonoBehaviourPunCallbacks
         }
 
 
-        for (int i = 0; i < roomList.Count ; i++)
+        for (int i = 0; i < roomList.Count; i++)
         {
             roomPanelCase.GetChild(i).GetComponent<Room>().roomName.text = roomList[i].Name;
-            roomPanelCase.GetChild(i).GetComponent<Room>().personnel.text = roomList[i].PlayerCount.ToString()+ "/"+ roomList[i].MaxPlayers.ToString();
+            roomPanelCase.GetChild(i).GetComponent<Room>().personnel.text =
+                roomList[i].PlayerCount.ToString() + "/" + roomList[i].MaxPlayers.ToString();
             roomPanelCase.GetChild(i).gameObject.SetActive(true);
             Debug.Log(roomList[i].Name + "생성");
         }
     }
+
     public void CancelRoom()
     {
         lobbyPanel.SetActive(false);

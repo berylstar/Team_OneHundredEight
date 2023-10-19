@@ -1,4 +1,5 @@
 using Common;
+using Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using Weapon.UI;
 
 namespace Weapon
 {
-    public class EnhancementManager : MonoBehaviourPunCallbacks
+    public class EnhancementManager : MonoBehaviour
     {
         private GameManager _gameManager;
 
@@ -18,7 +19,7 @@ namespace Weapon
         public const int MaxCardCount = 6;
         public const float SelectionLimitTime = Constants.SelectionTime;
 
-        //todo migrate to data manager
+        private ParticipantsManager _participantsManager;
         [SerializeField] private List<Color> playerColors;
 
         public Dictionary<int, Color> PlayerColors = new Dictionary<int, Color>();
@@ -49,6 +50,7 @@ namespace Weapon
         private bool _isFightStarted = false;
         private int _currentEnhanceOrder = -1;
         private int _selectedPlayerCount = 0;
+        private bool _isRunningRPC = false;
         public event Action<int> OnNextOrder;
         public event Action<int> OnPlayerSelectEnhancement;
 
@@ -65,17 +67,9 @@ namespace Weapon
         {
             LoadDataSet();
             _gameManager = GameManager.Instance;
+            _participantsManager = ParticipantsManager.Instance;
             _enhancedPlayerIndexSet = new HashSet<int>();
-
-            //todo get player image from manager
-            playerColors = new List<Color>()
-            {
-                Color.blue,
-                Color.green,
-                Color.red,
-                Color.magenta,
-                Color.cyan
-            };
+            playerColors = Constants.PlayerColors;
         }
 
         private void Start()
@@ -115,11 +109,11 @@ namespace Weapon
                 return;
             }
 
-            if (_currentTime <= 0f)
+            if (_currentTime <= 0f && !_isRunningRPC)
             {
-                //todo rpc call 
                 PhotonView pv = PhotonView.Get(this);
                 pv.RPC(nameof(SetNextSelectionOrderRPC), RpcTarget.AllBuffered);
+                _isRunningRPC = true;
             }
             else
             {
@@ -172,12 +166,11 @@ namespace Weapon
                 return;
             }
 
-            if (_currentEnhanceOrder == playerIndex)
+            if (_currentEnhanceOrder == playerIndex && _selectedPlayerCount != PhotonNetwork.CurrentRoom.PlayerCount)
             {
                 _currentTime = 0f;
             }
 
-            //todo make event function
             OnPlayerSelectEnhancement?.Invoke(playerIndex);
 
             _selectedPlayerCount++;
@@ -190,6 +183,7 @@ namespace Weapon
             if (_selectedPlayerCount == PhotonNetwork.CurrentRoom.PlayerCount)
             {
                 OnAllPlayerEnhanced?.Invoke();
+                _isAllPlayerSelected = true;
             }
         }
 
@@ -205,7 +199,7 @@ namespace Weapon
             _headcount = PhotonNetwork.CurrentRoom.PlayerCount;
             EnhanceUI go = Resources.Load<EnhanceUI>("EnhanceUI");
             EnhanceUI ui = Instantiate(go);
-            ui.Init(this, MaxCardCount, CardCount);
+            ui.Init(this, _participantsManager, MaxCardCount, CardCount);
             _currentTime = 0f;
             _isInit = true;
         }
@@ -248,6 +242,7 @@ namespace Weapon
         private bool SetNextOrderIfNotEnd()
         {
             bool isEnd = true;
+            _isRunningRPC = false;
             foreach (var selectPair in _canSelectEnhance)
             {
                 if (selectPair.Value)
@@ -263,8 +258,6 @@ namespace Weapon
                 break;
             }
 
-            //todo send event to ui
-
             return isEnd;
         }
 
@@ -272,9 +265,9 @@ namespace Weapon
         [PunRPC]
         private void SetNextSelectionOrderRPC()
         {
+            _isRunningRPC = false;
             if (SetNextOrderIfNotEnd())
             {
-                _isAllPlayerSelected = true;
                 _currentTime = 0f;
                 EnhanceNotSelectedPlayer();
             }
@@ -285,12 +278,11 @@ namespace Weapon
             _currentTime = Constants.TimeToNextRound;
             NextRoundUI nextRoundObj = Resources.Load<NextRoundUI>("UI/ReadyBattleUI");
             NextRoundUI nextRoundUI = Instantiate(nextRoundObj);
-            nextRoundUI.Init(this);
+            nextRoundUI.Init(this, _participantsManager);
         }
 
         public void ClearEnhancementData()
         {
-            throw new NotImplementedException();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StageManager : MonoBehaviourPun
+public class StageManager : MonoBehaviourPun, IPunObservable
 {
     private int _mapindex;
     private string _mapName;
@@ -16,7 +16,7 @@ public class StageManager : MonoBehaviourPun
     private void Start()
     {
         StageInit();
-        StageSelect();
+        // StageSelect();
     }
     private void StageInit()
     {
@@ -30,8 +30,8 @@ public class StageManager : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            //_mapindex = UnityEngine.Random.Range(0, StageList.Count);   // 맵고름
-            _mapindex = 2;
+            _mapindex = UnityEngine.Random.Range(0, StageList.Count);   // 맵고름
+            // _mapindex = 2;
             _mapName = StageList[_mapindex].name;   // 스폰위치를 위해 맵 이름을 넘겨줌
             photonView.RPC("StageEnable", RpcTarget.All, _mapindex);
         }
@@ -79,27 +79,40 @@ public class StageManager : MonoBehaviourPun
 
         return SpawnList;
     }
-    /*
-    _mapindex = Random.Range(0, 3);
 
-    switch (_mapindex)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        case 0:
-            _stage = GameObject.Find("Stages").transform.Find("Map 1").gameObject;
-            _stage.SetActive(true);
-            break;
-
-        case 1:
-            _stage = GameObject.Find("Stages").transform.Find("Map 2").gameObject;
-            _stage.SetActive(true);
-            break;
-
-        case 2:
-            _stage = GameObject.Find("Stages").transform.Find("Map 3").gameObject;
-            _stage.SetActive(true);
-            break;
+        if (stream.IsWriting)
+        {
+            stream.SendNext(_mapName);
+        }
+        else
+        {
+            _mapName = (string)stream.ReceiveNext();
+        }
     }
-    */
+
+    /*
+_mapindex = Random.Range(0, 3);
+
+switch (_mapindex)
+{
+   case 0:
+       _stage = GameObject.Find("Stages").transform.Find("Map 1").gameObject;
+       _stage.SetActive(true);
+       break;
+
+   case 1:
+       _stage = GameObject.Find("Stages").transform.Find("Map 2").gameObject;
+       _stage.SetActive(true);
+       break;
+
+   case 2:
+       _stage = GameObject.Find("Stages").transform.Find("Map 3").gameObject;
+       _stage.SetActive(true);
+       break;
+}
+*/
 
     /*
     private void Start()

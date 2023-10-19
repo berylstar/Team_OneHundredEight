@@ -1,3 +1,4 @@
+using Managers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,9 @@ using Photon.Realtime;
 using System;
 using System.Linq;
 using Weapon;
+using Weapon.Components;
 using Weapon.Model;
+using TMPro;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameManager : MonoBehaviour
@@ -17,24 +20,27 @@ public class GameManager : MonoBehaviour
 
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
+    [SerializeField] private TextMeshProUGUI textWinner;
 
-    [SerializeField] private List<Transform> spawnList;
-
-
-    // 기초 스탯 (플레이어 정보 목록)
-    private Dictionary<int, PlayerStatus> _playerStatusMap;
-    public IReadOnlyDictionary<int, PlayerStatus> PlayerStatusMap => _playerStatusMap;
-
-    // 공격 정보 
+    // 적용된 증강 정보
 
 
     // 증강
     public EnhancementManager EnhancementManager { get; private set; }
 
+    // 참가자 정보 
+    public int PlayerCount { get; private set; }
+    public ParticipantsManager ParticipantsManager { get; private set; }
+
     // PvP
-    public List<int> KnockoutPlayers { get; private set; }
+    private StageManager _stageManager;
+    [field: SerializeField] public List<int> KnockoutPlayers { get; private set; }
+    //[field: SerializeField] public List<int> Winners { get; private set; }
+    public Dictionary<int, int> Winners { get; private set; }
 
     private PhotonView _photonView;
+    public GameObject myPlayer;
+    private AttackHandler _attackHandler;
 
     private readonly string player = "Player";
     private readonly string keyLoadScene = "LOAD_SCENE";
@@ -46,21 +52,28 @@ public class GameManager : MonoBehaviour
         else if (Instance != null) { Destroy(gameObject); }
 
         DontDestroyOnLoad(gameObject);
+        ParticipantsManager = ParticipantsManager.Instance;
         EnhancementManager = gameObject.AddComponent<EnhancementManager>();
         _photonView = GetComponent<PhotonView>();
         Pooler = GetComponent<ObjectPooling>();
+        _stageManager = GetComponentInChildren<StageManager>();
 
-        _playerStatusMap = new Dictionary<int, PlayerStatus>(5);
         KnockoutPlayers = new List<int>(5);
+        //Winners = new List<int>();
+        Winners = new Dictionary<int, int>();
     }
 
     private void Start()
     {
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { keyLoadScene, true } });
         StartCoroutine(CoLoading());
-
         SubscribeEnhancementEvents();
         EnhancementIntegrationTest();
+    }
+
+    private void OnDestroy()
+    {
+        ParticipantsManager.ClearParticipantsInfo();
     }
 
     [Obsolete("For testing")]
@@ -86,12 +99,19 @@ public class GameManager : MonoBehaviour
 
         while (!AllHasTag(keyLoadPlayer)) { yield return null; }
 
+        PlayerCount = PhotonNetwork.PlayerList.Length;
         panelLoading.SetActive(false);
-        PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+        CreatePhotonPlayer();
     }
 
-    private void AddPlayerStatus()
+    private void CreatePhotonPlayer()
     {
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
+        myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+        _attackHandler = myPlayer.GetComponentInChildren<AttackHandler>();
+        WeaponData weaponData = ParticipantsManager.PlayerInfos[PhotonNetwork.LocalPlayer.ActorNumber].WeaponData;
+        _attackHandler.SetWeaponData(weaponData);
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
     }
 
     private bool AllHasTag(string key)
@@ -120,23 +140,36 @@ public class GameManager : MonoBehaviour
     // 증강
     private void SubscribeEnhancementEvents()
     {
-        EnhancementManager.OnEnhancementEvent += SelectEnhancement;
         EnhancementManager.OnReadyToFight += NextRound;
+        EnhancementManager.OnEnhancementEvent += EnhancePlayer;
     }
+
 
     private void NextRound()
     {
         Debug.Log("------------------------");
         Debug.Log("Create NextRound");
         Debug.Log("------------------------");
+
+        _stageManager.StageSelect();
+
         ClearKnockoutPlayers();
+        SetPlayerSpawn();
+        myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
     }
 
-    private void SelectEnhancement(int playerIndex, EnhancementData data)
+    private void SetPlayerSpawn()
     {
-        Debug.Log($"({playerIndex}) select {data}");
-
-        //todo get attackHandler to enhance
+        List<Vector2> poses = _stageManager.SetSpawn();
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.PlayerList[i].ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber);
+                myPlayer.GetComponent<PhotonView>().RPC("RPCSetTransform", RpcTarget.All,
+                    new Vector3(poses[i].x, poses[i].y, 0), Quaternion.identity);
+            }
+        }
     }
 
     // PvP
@@ -148,6 +181,78 @@ public class GameManager : MonoBehaviour
     // PvP 중 플레이어 탈락시 호출
     public void AddKnockoutPlayer(int actNum)
     {
+        _photonView.RPC(nameof(RPCAddKnockoutPlayer), RpcTarget.All, actNum);
+    }
+
+    [PunRPC]
+    private void RPCAddKnockoutPlayer(int actNum)
+    {
         KnockoutPlayers.Add(actNum);
+        CheckEndBattle();
+    }
+
+    private void CheckEndBattle()
+    {
+        string winnerNickname = "";
+
+        if (KnockoutPlayers.Count == PlayerCount - 1)
+        {
+            foreach (GameObject p in GameObject.FindGameObjectsWithTag("Player"))
+            {
+                if (p.activeInHierarchy)
+                {
+                    PhotonView pv = p.GetComponent<PhotonView>();
+
+                    if (Winners.ContainsKey(pv.Controller.ActorNumber))
+                    {
+                        Winners[pv.Controller.ActorNumber] += 1;
+                    }
+                    else
+                    {
+                        Winners[pv.Controller.ActorNumber] = 1;
+                    }
+
+                    winnerNickname = pv.Controller.NickName;
+                }    
+            }
+
+            // pvp종료 후 증강 선택으로 넘어감
+            StartCoroutine(WinnerDelay(winnerNickname));
+
+            if (myPlayer.activeInHierarchy)
+                myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
+
+            foreach (int v in Winners.Values)
+            {
+                if (v >= 2)
+                {
+                    // 게임 종료
+                }
+            }
+
+            if (Winners.Count == 3)
+            {
+                // 게임 종료
+            }
+
+            // 증강 다시 선택
+        }
+    }
+
+    private IEnumerator WinnerDelay(string name)
+    {
+        textWinner.text = $" WINNER IS {name} !";
+        textWinner.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(3f);
+
+        textWinner.gameObject.SetActive(false);
+    }
+
+    private void EnhancePlayer(int actorNumber, EnhancementData data)
+    {
+        if (actorNumber != PhotonNetwork.LocalPlayer.ActorNumber) { return; }
+
+        _attackHandler.Enhance(data);
     }
 }

@@ -4,8 +4,9 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 using Photon.Pun;
+using System.Collections;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     [Header("Player")]
     [SerializeField] private SpriteRenderer _playerRenderer;
@@ -35,10 +36,19 @@ public class PlayerController : MonoBehaviour
 
     private int _maxJumpCount = 1;
     private int _jumpCount = 1;
+    private float _stun = 0f;
     
     private int _animWalk = Animator.StringToHash("IsWalk");
     private int _animJump = Animator.StringToHash("TrJump");
     private int _animAir = Animator.StringToHash("IsAir");
+
+
+    [Header("Boom")]
+    [SerializeField] private Transform _boomTransform;
+    [SerializeField] private Image _boomImage;
+    [SerializeField] private float _maxBoomDelay;
+    private bool _boomReady = true;
+    private float _boomDelay = 0f;
 
     private void Awake()
     {
@@ -53,7 +63,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _textNickname.text = _photonView.Owner.NickName;
-
         if (!_photonView.IsMine)
         {
             _playerInput.enabled = false;
@@ -81,12 +90,27 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if(_stun >= 0f)
+        {
+            _stun -= Time.deltaTime;
+        }
+        if(!_boomReady)
+        {
+            _boomDelay -= Time.deltaTime;
+            if(_boomDelay < 0)
+            {
+                _boomDelay = 0f;
+                _boomReady = true;
+            }
+            _boomImage.fillAmount = (_maxBoomDelay - _boomDelay) / _maxBoomDelay;
+        }
+
         _hpBar.fillAmount = _stat.CurrentStat.HP / _stat.CurrentStat.MaxHp;
     }
     private void FixedUpdate()
     {
         _moveInput.y = _rigidbody.velocity.y;
-        _rigidbody.velocity = _moveInput;
+        _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity , _moveInput, 0.3f);
 
         _playerAni.SetBool(_animAir, _rigidbody.velocity.y != 0);
     }
@@ -95,9 +119,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-        _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
+        if (_stun > 0)
+        {
+            _moveInput = Vector2.zero;
+            _playerAni.SetBool(_animWalk, false);
+        }
+        else
+        {
+            _moveInput = value.Get<Vector2>().normalized * _stat.CurrentStat.MoveSpeed;
 
-        _playerAni.SetBool(_animWalk, _moveInput != Vector2.zero);
+            _playerAni.SetBool(_animWalk, _moveInput != Vector2.zero);
+        }
     }
 
     private void OnJump(InputValue value)
@@ -106,6 +138,10 @@ public class PlayerController : MonoBehaviour
 
         //if (rayHit.collider == null)
         //    return;
+        if (_stun > 0)
+        {
+            return;
+        }
 
         if (_jumpCount < 1)
             return;
@@ -117,6 +153,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnAim(InputValue value)
     {
+        if (_stun > 0)
+        {
+            return;
+        }
+
         Vector2 worldPos = _cam.ScreenToWorldPoint(value.Get<Vector2>());
         _newAim = (worldPos - (Vector2)transform.position).normalized;
 
@@ -133,13 +174,35 @@ public class PlayerController : MonoBehaviour
     {
         _weaponRenderer.flipY = flag;
         _playerRenderer.flipX = flag;
+        Vector3 pos = _boomTransform.localPosition;
+        pos.x = flag ? 40f : -40f;
+        _boomTransform.localPosition = pos;
     }
 
     private void OnShoot(InputValue value)
     {
+        if (_stun > 0)
+        {
+            return;
+        }
+
         OnFire?.Invoke(_newAim);
     }
 
+    private void OnBoom(InputValue value)
+    {
+        if(_stun <= 0 &&  _photonView.IsMine && _boomReady)
+        {
+            _boomReady = false;
+            _boomDelay = _maxBoomDelay;
+            Boom.Create(this.gameObject, this.transform.position);
+        }
+    }
+
+    public void SetStun(float stunTime)
+    {
+        _stun = stunTime;
+    }
     #endregion
 
     //private void OnTriggerEnter2D(Collider2D collision)

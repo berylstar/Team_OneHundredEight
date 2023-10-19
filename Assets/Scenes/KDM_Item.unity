@@ -340,6 +340,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 1
+  heightCount: 1
 --- !u!61 &967155475
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -849,6 +851,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 1
+  heightCount: 1
 --- !u!61 &1688279024
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1107,6 +1111,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 0}
+  widthCount: 1
+  heightCount: 1
 --- !u!114 &1847243470
 MonoBehaviour:
   m_ObjectHideFlags: 0

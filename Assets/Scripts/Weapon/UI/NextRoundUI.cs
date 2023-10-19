@@ -1,4 +1,5 @@
 using Common;
+using Managers;
 using Photon.Pun;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ public class NextRoundUI : MonoBehaviour
     [SerializeField] private Slider waitingSlider;
     [SerializeField] private Text timeText;
     [SerializeField] private RectTransform playerInfoContainer;
+
+    private ParticipantsManager _participantsManager;
     private EnhancementManager _enhanceManager;
 
     private void OnDisable()
@@ -36,11 +39,12 @@ public class NextRoundUI : MonoBehaviour
         _enhanceManager.OnReadyToFight += Disappear;
     }
 
-    public void Init(EnhancementManager manager)
+    public void Init(EnhancementManager enhancementManager, ParticipantsManager participantsManager)
     {
-        _enhanceManager = manager;
-        manager.OnTimeElapsed += UpdateTimeUI;
-        manager.OnReadyToFight += Disappear;
+        _enhanceManager = enhancementManager;
+        _participantsManager = participantsManager;
+        _enhanceManager.OnTimeElapsed += UpdateTimeUI;
+        _enhanceManager.OnReadyToFight += Disappear;
         UpdatePlayerInfo();
     }
 
@@ -62,11 +66,12 @@ public class NextRoundUI : MonoBehaviour
     {
         RoundPlayerInfoUI roundPlayerInfoObj = Resources.Load<RoundPlayerInfoUI>("UI/RoundPlayerInfoUI");
         RoundPlayerInfoUI ui = Instantiate(roundPlayerInfoObj, playerInfoContainer, false);
-        //todo get player image, player name from manager
+        PlayerInfo info = _participantsManager.PlayerInfos[player];
+
         RoundPlayerInfoState state = new RoundPlayerInfoState(
-            name: "name",
+            name: info.Nickname,
             playerIndex: player,
-            iconUrl: "Sprite/Blood",
+            iconUrl: info.CharacterImage,
             data
         );
         ui.Init(state);

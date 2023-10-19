@@ -76,7 +76,7 @@ public class EnhanceCardUI : MonoBehaviourPun
         _manager = enhancementManager;
         _index = index;
         _destPosition = position;
-        _controlPosition = _startPosition + (position - _startPosition) / 2 + (Vector2.up * rect.height);
+        _controlPosition = _startPosition + (position - _startPosition) / 2 + (Vector2.up * rect.height * 1.25f);
         AnimateArrange();
     }
 

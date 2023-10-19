@@ -1,4 +1,5 @@
 using Common;
+using Managers;
 using System;
 using System.Collections.Generic;
 using Photon.Pun;
@@ -10,30 +11,28 @@ namespace Weapon.Components
     //todo synchronize ??
     public class AttackHandler : MonoBehaviour
     {
+        [SerializeField] private WeaponData _weapon;
         public AttackData CurrentAttackData { get; private set; }
         private List<AttackData> _attackDataModifiers = new List<AttackData>();
         private bool _isReady = false;
-        [SerializeField] private WeaponData _weapon;
-        public Action OnReadyEvent;
+        private FireProjectile _fireProjectile;
 
-        private void Start()
+        private void Awake()
         {
-            SetWeaponData(_weapon);
+            _fireProjectile = GetComponent<FireProjectile>();
         }
 
-        private void OnEnhancement(int playerIndex, EnhancementData data)
+        public void Enhance(EnhancementData data)
         {
-            if (playerIndex == PhotonNetwork.LocalPlayer.ActorNumber)
-            {
-                AddAttackModifier(data.AttackData);
-            }
+            Debug.Log($"Enhance:{data}");
+            AddAttackModifier(data.AttackData);
         }
 
-        public void SetWeaponData(WeaponData weaponData)
+        public void SetWeaponData(WeaponData data)
         {
-            _weapon = weaponData;
+            _weapon = data;
             UpdateStats();
-            OnReadyEvent?.Invoke();
+            _fireProjectile.Init();
         }
 
         private void UpdateStats()

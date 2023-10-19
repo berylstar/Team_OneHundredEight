@@ -1,3 +1,4 @@
+using Managers;
 using System;
 using System.Text;
 using Photon.Pun;
@@ -149,6 +150,8 @@ namespace Weapon
         {
             if (PhotonNetwork.CurrentRoom.PlayerCount >= 1)
             {
+                PhotonNetwork.LocalPlayer.NickName = "KimDaeYeol";
+                ParticipantsManager.Instance.Init();
                 _state = new EnhancementState()
                 {
                     Headcount = PhotonNetwork.CurrentRoom.PlayerCount,

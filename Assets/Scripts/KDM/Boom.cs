@@ -25,6 +25,17 @@ public class Boom : MonoBehaviourPunCallbacks, IPunObservable
     private LayerMask _wallCollisionLayer;
 
     private PhotonView _PV;
+    public static Boom Create(GameObject user, Vector3 position, float maxDistance = 3f)
+    {
+        GameObject go = PhotonNetwork.Instantiate("Boom", position, Quaternion.identity);
+        Boom p = go.GetComponent<Boom>();
+
+        //이렇게한이유는 IsMine인 녀석이 딱 한번 이걸 부를테니까 Init이 일반함수면 안될것같아서.
+        p.Init(maxDistance);
+        p._PV.RPC(nameof(WidthSettingRPC), RpcTarget.All);
+
+        return p;
+    }
     private void Awake()
     {
         _PV = GetComponent<PhotonView>();
@@ -38,16 +49,14 @@ public class Boom : MonoBehaviourPunCallbacks, IPunObservable
         //Test
         _angleGap = 360f / _size;
     }
-    public void Init(GameObject user, Vector3 position, float maxDistance = 3f)
+
+    public void Init(float maxDistance)
     {
         if (!_PV.IsMine)
             return;
 
         _maxDistance = maxDistance;
-        transform.position = position;
-        _user = user;
         _angleGap = 360f / _size;
-        _PV.RPC(nameof(WidthSettingRPC), RpcTarget.All);
     }
     // Update is called once per frame
     void Update()
@@ -115,7 +124,7 @@ public class Boom : MonoBehaviourPunCallbacks, IPunObservable
     private void OnTriggerEnter2D(Collider2D col)
     {
         //느린쪽에 맞춘 히트판정 , 포톤을 쓰는 녀석들만 히트판정.(안쓰는게있나?)
-        if (_PV.IsMine || !col.TryGetComponent<PhotonView>(out PhotonView pv) || !pv.IsMine)
+        if (_PV.AmOwner || !col.TryGetComponent<PhotonView>(out PhotonView pv) || !pv.IsMine)
             return;
         if (col.gameObject == _user)
             return;
@@ -127,20 +136,27 @@ public class Boom : MonoBehaviourPunCallbacks, IPunObservable
 
             //사실 플레이어의 콜라이더의 크기를 가져와서 각도랑 라디우스랑 잘 계산해가지고 좌측끝과 우측끝을 구한다음에
             //양쪽에 레이를 쏴서 맞은것중에 콜라이더에서 맞은게 있는지 판단해야됨
-            RaycastHit2D[] rays = Physics2D.RaycastAll(transform.position, col.ClosestPoint(transform.position) - (Vector2)transform.position, float.MaxValue, _wallCollisionLayer | _playerCollisionLayer);
+            Vector2 dir = (col.ClosestPoint(transform.position) - (Vector2)transform.position).normalized;
+            RaycastHit2D[] rays = Physics2D.RaycastAll(transform.position, dir, float.MaxValue, _wallCollisionLayer | _playerCollisionLayer);
             if (rays.Length > 0)
             {
                 for (int i = 0; i < rays.Length; ++i)
                 {
                     if (1 << rays[i].transform.gameObject.layer == _wallCollisionLayer)
                     {
-                        //벽과 충돌 -> 
                         return;
                     }
                     else if (rays[i].transform.gameObject == col.gameObject)
                     {
                         //이때 진짜 충돌판정
-
+                        if (col.transform.TryGetComponent<Rigidbody2D>(out var com))
+                        {
+                            com.AddForce(dir * 20, ForceMode2D.Impulse);
+                        }
+                        if(col.transform.TryGetComponent<PlayerController>(out var pc))
+                        {
+                            pc.SetStun(1.5f);
+                        }
                         return;
                     }
                 }

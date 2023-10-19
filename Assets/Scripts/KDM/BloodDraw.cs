@@ -9,28 +9,35 @@ public class BloodDraw : MonoBehaviour
     [SerializeField] Texture2D Image;
     private Color drawColor = Color.red;
     private int brushSize = 30;
-    private Texture2D texture;
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer[] spriteRenderer;
+    private BoxCollider2D collider;
    // private PhotonView _PV;
-    Color[] pixels;
-    Sprite originalTexture;
+    List<Color[]> pixels = new List<Color[]>();
+    List<Sprite> originalTextures = new List<Sprite>();
+    List<Texture2D> textures = new List<Texture2D>();
+    int pixelPerUnit = 0;
+    [SerializeField] private int widthCount;
+    [SerializeField] private int heightCount;
+    HashSet<int> changed = new HashSet<int>();
     void Awake()
     {
        // _PV = GetComponentInParent<PhotonView>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentsInChildren<SpriteRenderer>();
+        collider = GetComponent<BoxCollider2D>();
     }
     void Start()
     {
-
-        originalTexture = GetComponent<SpriteRenderer>().sprite;
-        Rect r = originalTexture.rect;
-        texture = new Texture2D((int)r.width, (int)r.height, TextureFormat.ARGB32, false);
-        texture.SetPixels(originalTexture.texture.GetPixels((int)r.xMin, (int)r.yMin, (int)r.width, (int)r.height, 0));
-        texture.Apply();
+        for (int i = 0; i < spriteRenderer.Length; i++)
+        {
+            originalTextures.Add(spriteRenderer[i].sprite);
+            Rect r = originalTextures[i].rect;
+            textures.Add(new Texture2D((int)r.width, (int)r.height, TextureFormat.ARGB32, false));
+            textures[i].SetPixels(originalTextures[i].texture.GetPixels((int)r.xMin, (int)r.yMin, (int)r.width, (int)r.height, 0));
+            textures[i].Apply();
+            pixels.Add(textures[i].GetPixels());
+        }
+        pixelPerUnit = (int)originalTextures[0].pixelsPerUnit;
         brushSize = 30;
-        pixels = texture.GetPixels();
-        //_PV.RPC("UpdateSprite", RpcTarget.All);
-
     }
 
     private void OnParticleCollision(GameObject other)
@@ -40,6 +47,8 @@ public class BloodDraw : MonoBehaviour
         List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
         int numofCollision = ptc.GetCollisionEvents(this.gameObject, collisionEvents);
         bool pixelUpdate = false;
+        changed.Clear();
+
         while (numofCollision > 0)
         {
             --numofCollision;
@@ -48,23 +57,33 @@ public class BloodDraw : MonoBehaviour
             {
                 if (hit.transform == transform)
                 {
-                    if (!GetComponent<SpriteRenderer>().enabled)
-                        return;
                     Vector2 localPos = hit.point - (Vector2)transform.position;
                     localPos = Quaternion.Inverse(transform.rotation) * localPos;
-                    localPos.x = localPos.x / transform.localScale.x + 0.5f;
-                    localPos.y = localPos.y / transform.localScale.y + 0.5f;
-                    localPos *= spriteRenderer.sprite.pixelsPerUnit;
+                    localPos.x -= collider.offset.x;
+                    localPos.y -= collider.offset.y;
+
+                    localPos.x = localPos.x / collider.size.x / transform.localScale.x + 0.5f;//여기가 UV
+                    localPos.y = localPos.y / collider.size.y / transform.localScale.y + 0.5f;//여기가 UV
+
+                    //여기까지 콜라이더 기준으로 UV를 짠거다.
+
+                    //픽셀퍼유닛을 왜곱했더라? 컬러배열을 색칠할거여서...
+                    localPos.x *= textures[0].width * widthCount;
+                    localPos.y *= textures[0].height * heightCount;
+
                     pixelUpdate = DrawTexture(localPos);
                 }
             }
         }
         if (pixelUpdate)
         {
-            texture.SetPixels(pixels);
-            texture.Apply();
-            //_PV.RPC("UpdateSpriteRPC", RpcTarget.All, texture.GetRawTextureData());
-            UpdateSpriteRPC(texture.GetRawTextureData());
+            foreach (var val in changed)
+            {
+                textures[val].SetPixels(pixels[val]);
+                textures[val].Apply();
+                //_PV.RPC("UpdateSpriteRPC", RpcTarget.All, texture.GetRawTextureData());
+                UpdateSpriteRPC(textures[val].GetRawTextureData(), val);
+            }
         }
     }
 
@@ -76,23 +95,27 @@ public class BloodDraw : MonoBehaviour
 
         int startX = Mathf.Max(0, x - (int)(brushSize * transform.localScale.y / 2));
         int startY = Mathf.Max(0, y - (int)(brushSize * transform.localScale.x / 2));
-        int endX = Mathf.Min(texture.width, x + (int)(brushSize * transform.localScale.y / 2));
-        int endY = Mathf.Min(texture.height, y + (int)(brushSize * transform.localScale.x / 2));
+        int endX = Mathf.Min(textures[0].width * widthCount, x + (int)(brushSize * transform.localScale.y / 2));
+        int endY = Mathf.Min(textures[0].height * heightCount, y + (int)(brushSize * transform.localScale.x / 2));
         int longX = Mathf.Max(Mathf.Abs(startX - x), Mathf.Abs(endX - x));
         int longY = Mathf.Max(Mathf.Abs(startY - y), Mathf.Abs(endY - y));
-
+        
         // ... 픽셀 변경 ...
         for (int i = startX; i < endX; i++)
         {
             for (int j = startY; j < endY; j++)
             {
                 //현재i값 - x값의 절댓값
+                int indexX = i % textures[0].width;
+                int indexY = j % textures[0].height;
+                int listIndex = i / textures[0].width + (j / textures[0].height) * widthCount;
                 
-                if (pixels[j * texture.width + i].a > 0.2f &&
+                if (pixels[listIndex][indexY * textures[0].width + indexX].a > 0.2f &&
                 (Random.Range(0, longX) - 2 >= Mathf.Abs(x - i)
                 && Random.Range(0, longY) - 2 >= Mathf.Abs(y - j)))
                 {
-                    pixels.SetValue(drawColor, j * texture.width + i);
+                    pixels[listIndex].SetValue(drawColor, indexY * textures[0].width + indexX);
+                    changed.Add(listIndex);
                 }
             }
         }
@@ -100,11 +123,11 @@ public class BloodDraw : MonoBehaviour
     }
 
     //[PunRPC]
-    private void UpdateSpriteRPC(byte[] receivedByte)
+    private void UpdateSpriteRPC(byte[] receivedByte, int index)
     {
-        texture.LoadRawTextureData(receivedByte);
-        Vector2 middlePos = new Vector2(originalTexture.pivot.x / originalTexture.rect.width , originalTexture.pivot.y / originalTexture.rect.height);
-        spriteRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), middlePos, spriteRenderer.sprite.pixelsPerUnit);
+        textures[index].LoadRawTextureData(receivedByte);
+        Vector2 middlePos = new Vector2(originalTextures[index].pivot.x / originalTextures[index].rect.width , originalTextures[index].pivot.y / originalTextures[index].rect.height);
+        spriteRenderer[index].sprite = Sprite.Create(textures[index], new Rect(0, 0, textures[index].width, textures[index].height), middlePos, originalTextures[index].pixelsPerUnit);
     }
 
 }

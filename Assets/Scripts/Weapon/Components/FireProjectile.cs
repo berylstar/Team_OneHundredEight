@@ -43,7 +43,6 @@ namespace Weapon.Components
         private void Start()
         {
             _controller.OnFire += Attack;
-            _handler.OnReadyEvent += Init;
         }
 
         //todo synchronize
@@ -51,7 +50,6 @@ namespace Weapon.Components
         {
             if (!_isInit)
             {
-                Init();
                 return;
             }
 
@@ -152,7 +150,7 @@ namespace Weapon.Components
             OnReloadCompleted?.Invoke();
         }
 
-        private void Init()
+        public void Init()
         {
             _isInit = true;
             RestMagazine = _handler.CurrentAttackData.maxMagazine;
