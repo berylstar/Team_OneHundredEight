@@ -144,7 +144,7 @@ namespace Weapon
         }
 
 
-        public void EnhanceWeapon(int playerIndex, int cardIndex)
+        public void EnhanceWeapon(int playerIndex, int cardIndex, int uiIndex)
         {
             if (_enhancedPlayerIndexSet.Contains(PhotonNetwork.LocalPlayer.ActorNumber))
             {
@@ -152,11 +152,11 @@ namespace Weapon
             }
 
             PhotonView pv = PhotonView.Get(this);
-            pv.RPC(nameof(EnhanceWeaponRPC), RpcTarget.AllBuffered, playerIndex, cardIndex);
+            pv.RPC(nameof(EnhanceWeaponRPC), RpcTarget.AllBuffered, playerIndex, cardIndex, uiIndex);
         }
 
         [PunRPC]
-        public void EnhanceWeaponRPC(int playerIndex, int cardIndex)
+        public void EnhanceWeaponRPC(int playerIndex, int cardIndex, int uiIndex)
         {
             EnhancementData data = _dataEntries[cardIndex].ToEnhancementData();
             Debug.Log($"select Card P :{playerIndex} ,C : {cardIndex} ");
@@ -187,7 +187,7 @@ namespace Weapon
             _selectedPlayerCount++;
             _enhancedPlayerIndexSet.Add(playerIndex);
             OnEnhancementEvent?.Invoke(playerIndex, data);
-            OnUpdateEnhanceUIEvent?.Invoke(cardIndex, PlayerColors[playerIndex]);
+            OnUpdateEnhanceUIEvent?.Invoke(uiIndex, PlayerColors[playerIndex]);
             KeyValuePair<EnhancementData, bool> currentEnhancement = _enhancedCard[cardIndex];
             _enhancedCard[cardIndex] = new KeyValuePair<EnhancementData, bool>(currentEnhancement.Key, true);
 
@@ -255,7 +255,7 @@ namespace Weapon
             {
                 int playerIndex = playerCard.Key;
                 int cardIndex = playerCard.Value;
-                EnhanceWeapon(playerIndex, cardIndex);
+                EnhanceWeapon(playerIndex, cardIndex, -1);
             }
         }
 

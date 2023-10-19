@@ -121,18 +121,18 @@ namespace Weapon.UI
                     EnhanceCardUI card = Instantiate(cardPrefab, transform, false);
                     _enhanceCards.Add(card);
                     card.SetEnhancementData(dataList[i]);
-                    ArrangeCard(card, cnt++, maxCardCount, cardCount);
+                    ArrangeCard(card, cnt++, i, maxCardCount, cardCount);
                 }
             }
         }
 
-        private void ArrangeCard(EnhanceCardUI card, int index, int maxCardCount, int cardCount)
+        private void ArrangeCard(EnhanceCardUI card, int positionIndex, int index, int maxCardCount, int cardCount)
         {
             float startX = (maxCardCount - cardCount) / (float)maxCardCount * 0.5f;
             float paddingX = 1 / (float)maxCardCount;
             Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(0.5f, 0.3f));
-            Vector3 destPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * index, 0.3f));
-            card.Arrange(_enhancementManager, startPosition, destPosition, index);
+            Vector3 destPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * positionIndex, 0.3f));
+            card.Arrange(_enhancementManager, startPosition, destPosition, index, positionIndex);
         }
 
         private void CreatePlayerUI()

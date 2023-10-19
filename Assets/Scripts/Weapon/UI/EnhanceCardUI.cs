@@ -18,6 +18,7 @@ public class EnhanceCardUI : MonoBehaviourPun
 
     private EnhancementManager _manager;
     private int _index = -1;
+    private int _uiIndex = -1;
     private bool _isSelected = false;
     private EnhancementData _enhancementData;
     private const float AnimationTime = 0.5f;
@@ -59,7 +60,7 @@ public class EnhanceCardUI : MonoBehaviourPun
         }
 
         int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
-        _manager.EnhanceWeapon(playerIndex, _index);
+        _manager.EnhanceWeapon(playerIndex, _index,_uiIndex);
     }
 
     public void SelectEnhancement(Color selectedColor)
@@ -69,11 +70,13 @@ public class EnhanceCardUI : MonoBehaviourPun
         UpdateUi();
     }
 
-    public void Arrange(EnhancementManager enhancementManager, Vector2 centerPosition, Vector2 position, int index)
+    public void Arrange(EnhancementManager enhancementManager, Vector2 centerPosition, Vector2 position, int index,
+        int uiIndex)
     {
         Rect rect = GetComponent<RectTransform>().rect;
         _startPosition = centerPosition;
         _manager = enhancementManager;
+        _uiIndex = uiIndex;
         _index = index;
         _destPosition = position;
         _controlPosition = _startPosition + (position - _startPosition) / 2 + (Vector2.up * rect.height * 1.25f);
