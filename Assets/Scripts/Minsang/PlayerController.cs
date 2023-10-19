@@ -42,8 +42,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private int _animJump = Animator.StringToHash("TrJump");
     private int _animAir = Animator.StringToHash("IsAir");
 
+
+    [Header("Boom")]
+    [SerializeField] private Transform _boomTransform;
+    [SerializeField] private Image _boomImage;
+    [SerializeField] private float _maxBoomDelay;
     private bool _boomReady = true;
-    private float _boomDelay = 5f;
+    private float _boomDelay = 0f;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -57,7 +63,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private void Start()
     {
         _textNickname.text = _photonView.Owner.NickName;
-
         if (!_photonView.IsMine)
         {
             _playerInput.enabled = false;
@@ -88,6 +93,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if(_stun >= 0f)
         {
             _stun -= Time.deltaTime;
+        }
+        if(!_boomReady)
+        {
+            _boomDelay -= Time.deltaTime;
+            if(_boomDelay < 0)
+            {
+                _boomDelay = 0f;
+                _boomReady = true;
+            }
+            _boomImage.fillAmount = (_maxBoomDelay - _boomDelay) / _maxBoomDelay;
         }
 
         _hpBar.fillAmount = _stat.CurrentStat.HP / _stat.CurrentStat.MaxHp;
@@ -159,6 +174,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         _weaponRenderer.flipY = flag;
         _playerRenderer.flipX = flag;
+        Vector3 pos = _boomTransform.localPosition;
+        pos.x = flag ? 40f : -40f;
+        _boomTransform.localPosition = pos;
     }
 
     private void OnShoot(InputValue value)
@@ -176,14 +194,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if(_stun <= 0 &&  _photonView.IsMine && _boomReady)
         {
             _boomReady = false;
-            StartCoroutine(nameof(COBoomReload), 5f);
+            _boomDelay = _maxBoomDelay;
             Boom.Create(this.gameObject, this.transform.position);
         }
-    }
-    private IEnumerator COBoomReload(float time)
-    {
-        yield return new WaitForSeconds(time);
-        _boomReady = true;
     }
 
     public void SetStun(float stunTime)
