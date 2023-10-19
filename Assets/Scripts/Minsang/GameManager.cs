@@ -275,6 +275,7 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
+        // Application.Quit();
         DestroyImmediate(ParticipantsManager);
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LoadLevel("LobbyScene");
