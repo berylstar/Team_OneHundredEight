@@ -70,6 +70,7 @@ public class RoomPanel : MonoBehaviour
         _participantsManager.OnExitRoomEvent += CloseRoomUI;
         _participantsManager.OnStartConditionChanged += ChangeStartButtonVisibility;
         _participantsManager.OnPlayerStatusChangedEvent += AddParticipantInfo;
+        _participantsManager.OnPlayerLeftRoomEvent += RemoveParticipantInfo;
 
         startButton.onClick.AddListener(StartGame);
         readyButton.onClick.AddListener(Ready);
@@ -96,6 +97,8 @@ public class RoomPanel : MonoBehaviour
         _uiState.RoomName = _participantsManager.RoomName;
         _uiState.IsMaster = _participantsManager.IsMaster;
         _uiState.MaxPlayerCount = _participantsManager.MaxPlayerCount;
+        _uiState.PlayerInfos.Clear();
+        
         foreach (var playerInfoInCurrentRoom in _participantsManager.PlayerInfos)
         {
             int actorNumber = playerInfoInCurrentRoom.Key;
@@ -109,8 +112,15 @@ public class RoomPanel : MonoBehaviour
         UpdateUI();
     }
 
+    private void RemoveParticipantInfo(int actorNumber)
+    {
+        _uiState.PlayerInfos.Remove(actorNumber);
+    }
+
     private void CloseRoomUI()
     {
+        _uiState.PlayerInfos.Clear();
+        _uiState.ReadyPlayers.Clear();
         gameObject.SetActive(false);
     }
 
@@ -128,7 +138,7 @@ public class RoomPanel : MonoBehaviour
             index++;
         }
 
-        while (index < headcount)
+        while (index < 5)
         {
             participants[index].UpdateVisibility(false);
             index++;

@@ -68,7 +68,7 @@ namespace Lobby
             {
                 _actorNumber = -1;
             }
-
+            
             backgroundImage.gameObject.SetActive(isVisible);
             playerImage.gameObject.SetActive(isVisible);
             weaponImage.gameObject.SetActive(isVisible);
