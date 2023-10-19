@@ -31,6 +31,11 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
     {
         CurrentStat = new PlayerStat();
         _PV = GetComponent<PhotonView>();
+    }
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
         InitPlayerStat();
     }
 
@@ -117,9 +122,14 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         CurrentStat.MoveSpeed = initialStat.MoveSpeed;
         CurrentStat.JumpForce = initialStat.JumpForce;
 
+        statModifiers.Clear();
+        UpdateCharacterStats();
+
         _PV.RPC(nameof(ReadyRPC), RpcTarget.AllBuffered);
 
         OnDeath += DeathEvent;
+
+        
     }
 
     [PunRPC]
@@ -141,11 +151,11 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
 
     public void RemoveStatModifier(PlayerStat statModifier)
     {
-        if (!_PV.IsMine)
+        if (!_PV.IsMine || !statModifiers.Contains(statModifier))
         {
             return;
         }
-
+        
         statModifiers.Remove(statModifier);
         UpdateCharacterStats();
     }

@@ -27,7 +27,7 @@ public class KDM_PhotonTest : MonoBehaviourPunCallbacks
         //포톤을 안쓰는걸로
         //PhotonNetwork.Instantiate("Effects/Death", Vector3.zero, Quaternion.identity);
        // Pickup.Create(new Vector3(0, 5, 0), Define.ItemType.DeadZone, 10);
-        Pickup.Create(new Vector3(3, 5, 0), Define.ItemType.Random, 10);
+        Pickup.Create(new Vector3(3, 5, 0), Define.ItemType.HpDown, 10);
 
     }
 }
