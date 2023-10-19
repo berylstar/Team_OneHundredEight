@@ -1060,7 +1060,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelLoading: {fileID: 2105629051}
-  _stageManager: {fileID: 0}
+  myPlayer: {fileID: 0}
 --- !u!114 &1446472609
 MonoBehaviour:
   m_ObjectHideFlags: 0

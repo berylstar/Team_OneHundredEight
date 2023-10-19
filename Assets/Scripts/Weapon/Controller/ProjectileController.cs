@@ -64,7 +64,7 @@ namespace Weapon.Controller
             Direction = direction;
         }
 
-        private void Disapear()
+        public void Disapear()
         {
             _isReady = false;
             _photonView.RPC("RPCSetActive", RpcTarget.All, false);
