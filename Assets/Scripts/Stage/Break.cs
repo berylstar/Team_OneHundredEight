@@ -28,13 +28,13 @@ public class Break : MonoBehaviourPun
     {
         _time += Time.deltaTime;
 
-        if (!_isFirstBreak && _time > 15f)
+        if (!_isFirstBreak && _time > 150f)
         {
             FirstBreak();
             _isFirstBreak = true;
         }
 
-        if (!_isSecondBreak && _time > 30f)
+        if (!_isSecondBreak && _time > 300f)
         {
             SecondBreak();
             _isSecondBreak = true;
