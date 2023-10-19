@@ -12,6 +12,8 @@ public class Break : MonoBehaviourPun
 
     [SerializeField] private GameObject[] _first;
     [SerializeField] private GameObject[] _second;
+    // [SerializeField] List<GameObject> FirstBreakList = new List<GameObject>();
+    // [SerializeField] List<GameObject> SecondBreakList = new List<GameObject>();
 
     private void Awake()
     {
@@ -26,13 +28,13 @@ public class Break : MonoBehaviourPun
     {
         _time += Time.deltaTime;
 
-        if (!_isFirstBreak && _time > 300f)
+        if (!_isFirstBreak && _time > 150f)
         {
             FirstBreak();
             _isFirstBreak = true;
         }
 
-        if (!_isSecondBreak && _time > 600f)
+        if (!_isSecondBreak && _time > 300f)
         {
             SecondBreak();
             _isSecondBreak = true;
