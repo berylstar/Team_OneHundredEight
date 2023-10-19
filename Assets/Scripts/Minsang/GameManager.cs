@@ -35,7 +35,8 @@ public class GameManager : MonoBehaviour
     // PvP
     private StageManager _stageManager;
     [field: SerializeField] public List<int> KnockoutPlayers { get; private set; }
-    [field: SerializeField] public List<int> Winners { get; private set; }
+    //[field: SerializeField] public List<int> Winners { get; private set; }
+    public Dictionary<int, int> Winners { get; private set; }
 
     private PhotonView _photonView;
     public GameObject myPlayer;
@@ -58,7 +59,8 @@ public class GameManager : MonoBehaviour
         _stageManager = GetComponentInChildren<StageManager>();
 
         KnockoutPlayers = new List<int>(5);
-        Winners = new List<int>();
+        //Winners = new List<int>();
+        Winners = new Dictionary<int, int>();
     }
 
     private void Start()
@@ -197,18 +199,41 @@ public class GameManager : MonoBehaviour
             {
                 if (p.activeInHierarchy)
                 {
-                    Winners.Add(p.GetComponent<PhotonView>().Controller.ActorNumber);
-                    winnerNickname = p.GetComponent<PhotonView>().Controller.NickName;
+                    PhotonView pv = p.GetComponent<PhotonView>();
+
+                    if (Winners.ContainsKey(pv.Controller.ActorNumber))
+                    {
+                        Winners[pv.Controller.ActorNumber] += 1;
+                    }
+                    else
+                    {
+                        Winners[pv.Controller.ActorNumber] = 1;
+                    }
+
+                    winnerNickname = pv.Controller.NickName;
                 }    
             }
 
             // pvp종료 후 증강 선택으로 넘어감
-
             StartCoroutine(WinnerDelay(winnerNickname));
 
             if (myPlayer.activeInHierarchy)
                 myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
-            // EnhancementIntegrationTest();
+
+            foreach (int v in Winners.Values)
+            {
+                if (v >= 2)
+                {
+                    // 게임 종료
+                }
+            }
+
+            if (Winners.Count == 3)
+            {
+                // 게임 종료
+            }
+
+            // 증강 다시 선택
         }
     }
 
