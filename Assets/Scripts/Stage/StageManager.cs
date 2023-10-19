@@ -42,9 +42,13 @@ public class StageManager : MonoBehaviourPun, IPunObservable
         StageList[index].SetActive(true);   // 활성화
         StageList.RemoveAt(index);  // 그 맵은 리스트에서 삭제
     }
+    public void StageDelete()
+    {
+        photonView.RPC("StageDisable", RpcTarget.All);
+    }
     public void StageDisable()  // 증강 캔버스 스크립트 안에 OnEnable 에서 호출
     {
-        GameObject.FindWithTag("Stage").SetActive(false);   // 전판 맵 비활성화
+        GameObject.FindGameObjectWithTag("Stage").SetActive(false);   // 전판 맵 비활성화
     }
     public List<Vector2> SetSpawn()
     {
