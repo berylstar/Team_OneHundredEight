@@ -2,6 +2,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class StageManager : MonoBehaviourPun, IPunObservable
@@ -40,15 +41,18 @@ public class StageManager : MonoBehaviourPun, IPunObservable
     public void StageEnable(int index)
     {
         StageList[index].SetActive(true);   // 활성화
-        StageList.RemoveAt(index);  // 그 맵은 리스트에서 삭제
+        // StageList.RemoveAt(index);  // 그 맵은 리스트에서 삭제
     }
     public void StageDelete()
     {
-        photonView.RPC("StageDisable", RpcTarget.All);
+        if (photonView.IsMine)
+            photonView.RPC("StageDisable", RpcTarget.All, _mapindex);
     }
-    public void StageDisable()  // 증강 캔버스 스크립트 안에 OnEnable 에서 호출
+    [PunRPC]
+    public void StageDisable(int index)  // 증강 캔버스 스크립트 안에 OnEnable 에서 호출
     {
-        GameObject.FindGameObjectWithTag("Stage").SetActive(false);   // 전판 맵 비활성화
+        StageList[index].SetActive(false);   // 활성화
+        StageList.RemoveAt(index);  // 그 맵은 리스트에서 삭제   // 전판 맵 비활성화
     }
     public List<Vector2> SetSpawn()
     {
