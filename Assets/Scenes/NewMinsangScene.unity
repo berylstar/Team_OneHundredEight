@@ -345,7 +345,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: WIN !
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0b8f8d0fa5e659048bbc51df5e3bb415, type: 2}
   m_sharedMaterial: {fileID: -3574420964048929127, guid: 0b8f8d0fa5e659048bbc51df5e3bb415, type: 2}
@@ -1332,7 +1332,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelLoading: {fileID: 2105629051}
   textWinner: {fileID: 183728579}
-  <KnockoutPlayers>k__BackingField: 
   myPlayer: {fileID: 0}
 --- !u!114 &1446472609
 MonoBehaviour:
