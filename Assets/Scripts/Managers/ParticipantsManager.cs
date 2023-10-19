@@ -99,6 +99,8 @@ namespace Managers
             {
                 Debug.LogWarning($"RemoveFailed :{otherPlayer.NickName}");
             }
+
+            OnPlayerLeftRoomEvent?.Invoke(otherPlayer.ActorNumber);
         }
 
         public override void OnLeftRoom()
@@ -152,7 +154,7 @@ namespace Managers
                     value: info
                 );
             }
-
+            
             RoomName = PhotonNetwork.CurrentRoom.Name;
             IsMaster = PhotonNetwork.CurrentRoom.MasterClientId == PhotonNetwork.LocalPlayer.ActorNumber;
         }
@@ -198,7 +200,6 @@ namespace Managers
         {
             PhotonNetwork.LeaveRoom();
             OnExitRoomEvent?.Invoke();
-            ClearParticipantsInfo();
         }
 
         public void StartGame()
