@@ -233,8 +233,9 @@ public class GameManager : MonoBehaviour
                 if (v >= 2)
                 {
                     // 게임 종료
-                    ParticipantsManager.transform.SetParent(Camera.main.transform);
+                    DestroyImmediate(ParticipantsManager);
                     PhotonNetwork.LeaveRoom();
+                    PhotonNetwork.LeaveLobby();
                     PhotonNetwork.LoadLevel("LobbyScene");
                 }
             }
@@ -242,8 +243,9 @@ public class GameManager : MonoBehaviour
             if (Winners.Count == 3)
             {
                 // 게임 종료
-                ParticipantsManager.transform.SetParent(Camera.main.transform);
+                DestroyImmediate(ParticipantsManager);
                 PhotonNetwork.LeaveRoom();
+                PhotonNetwork.LeaveLobby();
                 PhotonNetwork.LoadLevel("LobbyScene");
             }
 
