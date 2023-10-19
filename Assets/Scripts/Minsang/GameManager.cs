@@ -256,6 +256,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         textWinner.gameObject.SetActive(false);
+        _stageManager.StageDelete();
         ShowEnhancementUI();
     }
 
