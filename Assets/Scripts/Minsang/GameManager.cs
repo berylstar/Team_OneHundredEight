@@ -124,11 +124,12 @@ public class GameManager : MonoBehaviour
 
     public void ShowEnhancementUI()
     {
-        int cnt = KnockoutPlayers.Count;
-        int[] ranking = new int[cnt];
+        int rankingCnt = KnockoutPlayers.Count;
+        int playerCnt = PhotonNetwork.CurrentRoom.PlayerCount;
+        int[] ranking = new int[playerCnt];
         for (int i = 0; i < ranking.Length; i++)
         {
-            ranking[i] = KnockoutPlayers[cnt - i - 1];
+            ranking[i] = KnockoutPlayers[rankingCnt - i - 1];
         }
 
         EnhancementManager.Init(ranking);
