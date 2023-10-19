@@ -84,7 +84,6 @@ namespace Weapon.Components
         {
             _isAttacking = true;
             _attackDirection = dir.normalized;
-            SoundsManager.instance.SFXPlay("Fire", clip);
         }
 
         private void CreateProjectile()
@@ -108,6 +107,8 @@ namespace Weapon.Components
             obj = PhotonNetwork.Instantiate("Effects/EmptyCartridge", emptySpawnPosition.position, Quaternion.Euler(euler));
             obj = PhotonNetwork.Instantiate("Effects/Muzzle", bulletSpawnPosition.position, bulletSpawnPosition.rotation);
             //projectile.Initialize(_handler.CurrentAttackData, _attackDirection);
+            SoundsManager.instance.SFXPlay("Fire", clip);
+
         }
 
         /// <summary>
