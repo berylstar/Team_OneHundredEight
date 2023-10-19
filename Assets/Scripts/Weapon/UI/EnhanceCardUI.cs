@@ -53,7 +53,7 @@ public class EnhanceCardUI : MonoBehaviourPun
 
     private void ClickCard()
     {
-        if (_isSelected)
+        if (_isSelected || _manager == null)
         {
             return;
         }
