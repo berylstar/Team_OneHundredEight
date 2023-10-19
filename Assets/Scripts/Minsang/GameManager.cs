@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null) { Instance = this; }
         else if (Instance != null) { Destroy(gameObject); }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         ParticipantsManager = ParticipantsManager.Instance;
         EnhancementManager = gameObject.AddComponent<EnhancementManager>();
         _photonView = GetComponent<PhotonView>();
@@ -232,7 +232,8 @@ public class GameManager : MonoBehaviour
                 if (v >= 2)
                 {
                     // 게임 종료
-                    transform.SetParent(Camera.main.transform);
+                    ParticipantsManager.transform.SetParent(Camera.main.transform);
+                    PhotonNetwork.LeaveRoom();
                     PhotonNetwork.LoadLevel("LobbyScene");
                 }
             }
@@ -240,7 +241,8 @@ public class GameManager : MonoBehaviour
             if (Winners.Count == 3)
             {
                 // 게임 종료
-                transform.SetParent(Camera.main.transform);
+                ParticipantsManager.transform.SetParent(Camera.main.transform);
+                PhotonNetwork.LeaveRoom();
                 PhotonNetwork.LoadLevel("LobbyScene");
             }
 
