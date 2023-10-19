@@ -118,25 +118,6 @@ namespace Managers
             if (_defaultWeaponData == null)
             {
                 _defaultWeaponData = DataManager.Instance.WeaponDataList.FirstOrDefault();
-                if (_defaultWeaponData == null)
-                {
-                    _defaultWeaponData = new WeaponData()
-                    {
-                        baseAttackData = new AttackData()
-                        {
-                            bulletDamage = 3,
-                            bulletSpeed = 10,
-                            maxMagazine = 10,
-                            reloadTime = 10,
-                            shotInterval = 0.5f,
-                            statsChangeType = Define.StatsChangeType.Override
-                        },
-                        bulletName = "Bullet",
-                        spriteName = "Sprite/Weapon/M1A1",
-                        tooltip = "균형잡힌 성능을 자랑하는 권총이다.",
-                        weaponName = "권총"
-                    };
-                }
             }
 
             if (_defaultCharacterImageUrl == null)

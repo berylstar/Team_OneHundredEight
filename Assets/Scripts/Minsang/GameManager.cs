@@ -241,7 +241,7 @@ public class GameManager : MonoBehaviour
                     {
                         if (p.ActorNumber == v)
                         {
-                            StartCoroutine(EndDelay($"WINNER IS {p.NickName}"));
+                            StartCoroutine(EndDelay($"FINAL\nWINNER\nIS\n{p.NickName}"));
                         }
                     }
                 }
@@ -263,7 +263,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WinnerDelay(string name)
     {
-        textWinner.text = $" WINNER IS {name} !";
+        textWinner.text = $"WINNER\nIS\n{name} !";
         textWinner.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(1.5f);
