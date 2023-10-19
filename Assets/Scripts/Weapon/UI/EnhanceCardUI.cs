@@ -60,7 +60,7 @@ public class EnhanceCardUI : MonoBehaviourPun
         }
 
         int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
-        _manager.EnhanceWeapon(playerIndex, _index,_uiIndex);
+        _manager.EnhanceWeapon(playerIndex, _index, _uiIndex);
     }
 
     public void SelectEnhancement(Color selectedColor)
@@ -79,6 +79,7 @@ public class EnhanceCardUI : MonoBehaviourPun
         _uiIndex = uiIndex;
         _index = index;
         _destPosition = position;
+        _destPosition.x += rect.width * 0.5f;
         _controlPosition = _startPosition + (position - _startPosition) / 2 + (Vector2.up * rect.height * 1.25f);
         AnimateArrange();
     }

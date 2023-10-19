@@ -29,8 +29,21 @@ namespace Lobby
             }
             else
             {
-                Debug.LogWarning("UI is not initialized.");
+                Debug.LogWarning("ProfileUI is not initialized.");
             }
+
+            profileButton.onClick.AddListener(ShowProfileChangeUI);
+        }
+
+        private void ShowProfileChangeUI()
+        {
+            if (_actorNumber == -1)
+            {
+                Debug.LogWarning("ActorNumber is not initialized.");
+                return;
+            }
+
+            OnProfileClicked?.Invoke(_actorNumber);
         }
 
         public void Init(int actorNumber)
@@ -68,7 +81,7 @@ namespace Lobby
             {
                 _actorNumber = -1;
             }
-            
+
             backgroundImage.gameObject.SetActive(isVisible);
             playerImage.gameObject.SetActive(isVisible);
             weaponImage.gameObject.SetActive(isVisible);

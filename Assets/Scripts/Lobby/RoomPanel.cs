@@ -20,22 +20,19 @@ public class RoomPanel : MonoBehaviour
         public string RoomName;
         public int MaxPlayerCount;
         public bool IsMaster;
-        public int LocalActorNumber;
 
         public RoomUIState(
             Dictionary<int, PlayerInfo> playerInfos,
             string roomName,
             int maxPlayerCount,
             bool isMaster,
-            Dictionary<int, bool> readyPlayers,
-            int localActorNumber = -1)
+            Dictionary<int, bool> readyPlayers)
         {
             PlayerInfos = playerInfos;
             RoomName = roomName;
             MaxPlayerCount = maxPlayerCount;
             IsMaster = isMaster;
             ReadyPlayers = readyPlayers;
-            LocalActorNumber = localActorNumber;
         }
     }
 
@@ -76,6 +73,7 @@ public class RoomPanel : MonoBehaviour
         readyButton.onClick.AddListener(Ready);
         exitButton.onClick.AddListener(LeaveRoom);
         sendButton.onClick.AddListener(SendChat);
+
         foreach (ParticipantUI participantUI in participants)
         {
             participantUI.OnProfileClicked += OnProfileClicked;
@@ -89,6 +87,10 @@ public class RoomPanel : MonoBehaviour
     {
         //todo unsubscribe all events 
         _participantsManager.OnEnterRoomEvent -= InitRoomUIState;
+        _participantsManager.OnExitRoomEvent -= CloseRoomUI;
+        _participantsManager.OnStartConditionChanged -= ChangeStartButtonVisibility;
+        _participantsManager.OnPlayerStatusChangedEvent -= AddParticipantInfo;
+        _participantsManager.OnPlayerLeftRoomEvent -= RemoveParticipantInfo;
     }
 
     private void InitRoomUIState()
@@ -98,7 +100,7 @@ public class RoomPanel : MonoBehaviour
         _uiState.IsMaster = _participantsManager.IsMaster;
         _uiState.MaxPlayerCount = _participantsManager.MaxPlayerCount;
         _uiState.PlayerInfos.Clear();
-        
+
         foreach (var playerInfoInCurrentRoom in _participantsManager.PlayerInfos)
         {
             int actorNumber = playerInfoInCurrentRoom.Key;
@@ -186,9 +188,9 @@ public class RoomPanel : MonoBehaviour
 
     public void OnProfileClicked(int actorNumber)
     {
-        if (actorNumber != _uiState.LocalActorNumber) { return; }
+        if (actorNumber != PhotonNetwork.LocalPlayer.ActorNumber) { return; }
 
-        //todo show image 
+        ShowProfileDetailPopup();
     }
 
 
@@ -198,5 +200,12 @@ public class RoomPanel : MonoBehaviour
 
     private void Ready()
     {
+    }
+
+    private void ShowProfileDetailPopup()
+    {
+        ProfileDetailUI detailUIAsset = Resources.Load<ProfileDetailUI>($"{nameof(ProfileDetailUI)}");
+        ProfileDetailUI detailUI = Instantiate(detailUIAsset);
+        detailUI.Init(_participantsManager, _participantsManager.Weapons);
     }
 }

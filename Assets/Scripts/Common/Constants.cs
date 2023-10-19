@@ -18,7 +18,7 @@ namespace Common
         public static class FilePath
         {
             private const string EnhancementCsvFile = "enhancement_dataset";
-            private const string WeaponCsvFile = "108_dataset-weapon";
+            private const string WeaponCsvFile = "108_dataset - weapon";
             public static string ENHANCEMENT_CSV_FILE => $"data{DirectorySeparatorChar}{EnhancementCsvFile}";
             public static string WEAPON_CSV_FILE => $"data{DirectorySeparatorChar}{WeaponCsvFile}";
         }

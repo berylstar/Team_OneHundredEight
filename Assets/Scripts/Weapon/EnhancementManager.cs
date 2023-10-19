@@ -33,7 +33,7 @@ namespace Weapon
         private int _headcount = 3;
         private Dictionary<int, string> _userIds = new Dictionary<int, string>();
         public int Headcount => _headcount;
-        private int CardCount => _headcount + 1 > MaxCardCount ? MaxCardCount : _headcount + 1;
+        private int CardCount => 5;
 
         private EnhanceUI _enhanceUI;
         private HashSet<int> _enhancedPlayerIndexSet;

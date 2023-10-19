@@ -1,0 +1,4 @@
+무기명,설명,이미지,총알명,공격력,총알 속도,탄창,딜레이,재장전,탄알 수 ,사거리
+M1A1,따발총이다.,Sprite/Weapon/M1A1,Bullet,1,10,30,0.25,2,1,5
+Raptor,한 손으로 쥘 수 있는 권총이다,Sprite/Weapon/Raptor,Bullet,5,7,15,1,2,1,5
+Shotgun,샷건이다. 사거리가 매우짧다.,Sprite/Weapon/Shotgun,Bullet,10,7,5,1.5,2,3,5

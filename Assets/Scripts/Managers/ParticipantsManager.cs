@@ -36,12 +36,14 @@ namespace Managers
 
         public bool IsMaster { get; private set; } = true;
 
-        public bool CanStart => IsMaster && PhotonNetwork.CurrentRoom.PlayerCount >= 2;
+        public bool CanStart => IsMaster && PhotonNetwork.CurrentRoom.PlayerCount >= 1;
         public string RoomName { get; private set; } = "RoomName";
         public int MaxPlayerCount { get; set; } = 2;
         public int Headcount => PhotonNetwork.CurrentRoom.PlayerCount;
 
         private string _message = string.Empty;
+
+        public IReadOnlyList<WeaponData> Weapons => DataManager.Instance.WeaponDataList;
 
         public event Action OnEnterRoomEvent;
 
@@ -115,27 +117,31 @@ namespace Managers
         {
             if (_defaultWeaponData == null)
             {
-                _defaultWeaponData = new WeaponData()
+                _defaultWeaponData = DataManager.Instance.WeaponDataList.FirstOrDefault();
+                if (_defaultWeaponData == null)
                 {
-                    baseAttackData = new AttackData()
+                    _defaultWeaponData = new WeaponData()
                     {
-                        bulletDamage = 3,
-                        bulletSpeed = 10,
-                        maxMagazine = 10,
-                        reloadTime = 10,
-                        shotInterval = 0.5f,
-                        statsChangeType = Define.StatsChangeType.Override
-                    },
-                    bulletName = "Bullet",
-                    spriteName = "Sprite/Weapon/M1A1",
-                    tooltip = "균형잡힌 성능을 자랑하는 권총이다.",
-                    weaponName = "권총"
-                };
+                        baseAttackData = new AttackData()
+                        {
+                            bulletDamage = 3,
+                            bulletSpeed = 10,
+                            maxMagazine = 10,
+                            reloadTime = 10,
+                            shotInterval = 0.5f,
+                            statsChangeType = Define.StatsChangeType.Override
+                        },
+                        bulletName = "Bullet",
+                        spriteName = "Sprite/Weapon/M1A1",
+                        tooltip = "균형잡힌 성능을 자랑하는 권총이다.",
+                        weaponName = "권총"
+                    };
+                }
             }
 
             if (_defaultCharacterImageUrl == null)
             {
-                _defaultCharacterImageUrl = "PlayerImage/Human";
+                _defaultCharacterImageUrl = "PlayerImage/Mouse";
             }
         }
 
@@ -154,7 +160,7 @@ namespace Managers
                     value: info
                 );
             }
-            
+
             RoomName = PhotonNetwork.CurrentRoom.Name;
             IsMaster = PhotonNetwork.CurrentRoom.MasterClientId == PhotonNetwork.LocalPlayer.ActorNumber;
         }
@@ -164,23 +170,22 @@ namespace Managers
         {
             PhotonView
                 .Get(this)
-                .RPC(methodName: nameof(ChangePlayerInfo),
+                .RPC(methodName: nameof(ChangePlayerInfoRPC),
                     target: RpcTarget.All,
-                    actorNumber, info);
+                    actorNumber, info.ToRpcData());
         }
 
-        public void RemovePlayerInfo(int actorNumber)
-        {
-            if (_playerInfos.ContainsKey(actorNumber))
-            {
-                _playerInfos.Remove(actorNumber);
-            }
-        }
 
         [PunRPC]
-        private void ChangePlayerInfoRPC(int actorNumber, PlayerInfo info)
+        private void ChangePlayerInfoRPC(int actorNumber, object[] parameters)
         {
-            _playerInfos[actorNumber] = info;
+            PlayerInfo info = _playerInfos[actorNumber];
+            string characterImage = parameters[0] as string;
+            string weaponName = parameters[1] as string;
+            WeaponData data = DataManager.Instance.WeaponDataList.FirstOrDefault(it => it.weaponName == weaponName);
+            PlayerInfo newInfo = new PlayerInfo(nickname: info.Nickname, characterImage: characterImage, data);
+            _playerInfos[actorNumber] = newInfo;
+            OnPlayerStatusChangedEvent?.Invoke(actorNumber);
         }
 
         public void ClearParticipantsInfo()
@@ -217,7 +222,27 @@ namespace Managers
 
             PhotonNetwork.LoadLevel("NewMinsangScene");
         }
-        
+
+        public void ChangeProfile(int actorNumber, int deltaIndex)
+        {
+            string[] imageUrls = DataManager.Instance.CharacterImageUrlArray;
+            string currentImageUrl = _playerInfos[actorNumber].CharacterImage;
+            int curIdx = 0;
+            for (int i = 0; i < imageUrls.Length; i++)
+            {
+                if (currentImageUrl == imageUrls[i])
+                {
+                    curIdx = i;
+                }
+            }
+
+            curIdx += deltaIndex;
+            curIdx = (curIdx + imageUrls.Length) % imageUrls.Length;
+            string newImage = imageUrls[curIdx];
+            PlayerInfo info = _playerInfos[actorNumber];
+            PlayerInfo newInfo = new PlayerInfo(info.Nickname, newImage, info.WeaponData);
+            ChangePlayerInfo(actorNumber, newInfo);
+        }
         //todo exit game 
     }
 }

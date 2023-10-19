@@ -108,6 +108,10 @@ public class GameManager : MonoBehaviour
         _attackHandler = myPlayer.GetComponentInChildren<AttackHandler>();
         WeaponData weaponData = ParticipantsManager.PlayerInfos[PhotonNetwork.LocalPlayer.ActorNumber].WeaponData;
         _attackHandler.SetWeaponData(weaponData);
+        
+        PlayerInfo info = ParticipantsManager.PlayerInfos[playerIndex];
+        Debug.Log($"my player data is :{info}");
+        myPlayer.GetComponentsInChildren<SpriteRenderer>();
         myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
     }
 

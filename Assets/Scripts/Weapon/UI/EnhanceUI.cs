@@ -129,9 +129,9 @@ namespace Weapon.UI
         private void ArrangeCard(EnhanceCardUI card, int positionIndex, int index, int maxCardCount, int cardCount)
         {
             float startX = (maxCardCount - cardCount) / (float)maxCardCount * 0.5f;
-            float paddingX = 1 / (float)maxCardCount;
-            Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(0.5f, 0.3f));
-            Vector3 destPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * positionIndex, 0.3f));
+            float paddingX = 1f / (float)maxCardCount;
+            Vector3 startPosition = _camera.ViewportToScreenPoint(new Vector3(0.5f, 0.4f));
+            Vector3 destPosition = _camera.ViewportToScreenPoint(new Vector3(startX + paddingX * positionIndex, 0.4f));
             card.Arrange(_enhancementManager, startPosition, destPosition, index, positionIndex);
         }
 

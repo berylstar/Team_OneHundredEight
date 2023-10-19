@@ -10,10 +10,15 @@ namespace Weapon.Model
             CharacterImage = characterImage;
             WeaponData = weaponData;
         }
-        
+
         public string Nickname { get; }
         public string CharacterImage { get; }
         public WeaponData WeaponData { get; }
+
+        public override string ToString()
+        {
+            return $"Nickname : {Nickname}, CharacterImage : {CharacterImage}, WeaponData : {WeaponData}";
+        }
 
         public object[] ToRpcData()
         {
