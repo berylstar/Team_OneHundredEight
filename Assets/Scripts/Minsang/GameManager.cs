@@ -235,7 +235,6 @@ public class GameManager : MonoBehaviour
                     // 게임 종료
                     DestroyImmediate(ParticipantsManager);
                     PhotonNetwork.LeaveRoom();
-                    PhotonNetwork.LeaveLobby();
                     PhotonNetwork.LoadLevel("LobbyScene");
                 }
             }
@@ -245,7 +244,6 @@ public class GameManager : MonoBehaviour
                 // 게임 종료
                 DestroyImmediate(ParticipantsManager);
                 PhotonNetwork.LeaveRoom();
-                PhotonNetwork.LeaveLobby();
                 PhotonNetwork.LoadLevel("LobbyScene");
             }
 
