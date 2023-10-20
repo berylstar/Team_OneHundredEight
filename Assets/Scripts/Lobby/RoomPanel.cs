@@ -95,7 +95,7 @@ public class RoomPanel : MonoBehaviour
     {
         Text chat = Instantiate(chatTextPrefab, chatContent.transform, false);
         chat.text = newMessage;
-        chatScrollView.normalizedPosition = new Vector2(0, 0);
+        chatScrollView.verticalNormalizedPosition = 0f;
     }
 
 
