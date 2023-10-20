@@ -527,6 +527,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3006980465175172200}
+  - component: {fileID: 6854543905063749646}
+  - component: {fileID: 5724038978095608742}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -552,8 +554,48 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &6854543905063749646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197320976476297355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
+--- !u!114 &5724038978095608742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197320976476297355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 30
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1248950008994621610
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,7 +650,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1248950008994621610}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -621,7 +663,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uCC44\uD305"
+  m_text: ' '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1759,7 +1801,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 0
+  m_CharacterLimit: 30
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -1787,7 +1829,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: Chat
+  m_Text: 
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -2710,7 +2752,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Chat\u200B"
+  m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0b8f8d0fa5e659048bbc51df5e3bb415, type: 2}
   m_sharedMaterial: {fileID: -3574420964048929127, guid: 0b8f8d0fa5e659048bbc51df5e3bb415, type: 2}
@@ -3269,10 +3311,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0600fc19f229bca45947c931e49b8568, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chatContent: {fileID: 3006980465175172200}
   roomNameText: {fileID: 8183836572833407058}
-  playerContainer: {fileID: 0}
-  playerInfoPrefab: {fileID: 0}
-  chatTextInput: {fileID: 0}
+  chatTextInput: {fileID: 8816650739444725950}
   readyButton: {fileID: 9147253917514523847}
   startButton: {fileID: 1072389218128253363}
   exitButton: {fileID: 9205648492831921666}
@@ -3283,6 +3324,7 @@ MonoBehaviour:
   - {fileID: 1457513348680465222}
   - {fileID: 2407823173172813824}
   - {fileID: 5245123981630522749}
+  chatTextPrefab: {fileID: 6783097365808250995, guid: 6df3a0231ccd94285bf1d4fc52cb41ff, type: 3}
 --- !u!222 &5591856746009833052
 CanvasRenderer:
   m_ObjectHideFlags: 0

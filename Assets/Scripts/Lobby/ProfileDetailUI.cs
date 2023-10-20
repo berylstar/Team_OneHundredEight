@@ -61,6 +61,8 @@ namespace Lobby
 
         private void UpdateUI(int actorNumber)
         {
+            if (actorNumber != PhotonNetwork.LocalPlayer.ActorNumber) { return; }
+
             PlayerInfo info = _participantsManager.PlayerInfos[actorNumber];
             Sprite profileSpriteAsset =
                 Resources.Load<Sprite>(info.CharacterImage);
