@@ -143,6 +143,6 @@
 - https://wallpapercave.com/1920x1080-desktop-pixel-art-wallpapers
 
 # 5. 만든 사람들
-<a href="https://github.com/berylstar/Team_OneHundredEight/graphs/contributors>
+<a href="https://github.com/berylstar/Team_OneHundredEight/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=berylstar/Team_OneHundredEight" />
 </a>
