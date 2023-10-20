@@ -1,6 +1,12 @@
 # 내일배움캠프 게임개발 심화 팀 프로젝트
 
+# 만든 사람들
+<a href="https://github.com/berylstar/Team_OneHundredEight/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=berylstar/Team_OneHundredEight" />
+</a>
+
 <!-- # [🎮다운로드]() -->
+# [🎞 시연 영상 보러가기](https://www.youtube.com/watch?v=kELoADzN44g)
 
 ### 목차
 
@@ -26,12 +32,17 @@
   width="45%"
   height="350"/>
       <img
-  src="https://user-images.githubusercontent.com/115692722/276831870-66fcd2b3-8945-47bf-8a9d-14be4f0591b4.gif"
+  src="https://user-images.githubusercontent.com/115692722/276835169-91073f5e-9f9a-40fc-a4a8-0c1f49d025b4.gif"
   width="45%"
   height="350"/>
-
+    </p>
+<img
+  src="https://user-images.githubusercontent.com/115692722/276838131-a6f8545d-234b-4748-bbab-5165797f3329.gif"
+    width="45%"
+  height="350"
+  />
     
-</p>
+
 
 
 ---
@@ -166,8 +177,3 @@
 - 포톤 PUN 2
 - https://assetstore.unity.com/packages/2d/environments/pixel-art-platformer-village-props-166114
 - https://wallpapercave.com/1920x1080-desktop-pixel-art-wallpapers
-
-# 5. 만든 사람들
-<a href="https://github.com/berylstar/Team_OneHundredEight/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=berylstar/Team_OneHundredEight" />
-</a>
