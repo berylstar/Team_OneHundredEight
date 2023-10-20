@@ -29,9 +29,14 @@
   src="https://user-images.githubusercontent.com/115692722/276835169-91073f5e-9f9a-40fc-a4a8-0c1f49d025b4.gif"
   width="45%"
   height="350"/>
-
+    </p>
+<img
+  src="https://user-images.githubusercontent.com/115692722/276838131-a6f8545d-234b-4748-bbab-5165797f3329.gif"
+    width="45%"
+  height="350"
+  />
     
-</p>
+
 
 
 ---
