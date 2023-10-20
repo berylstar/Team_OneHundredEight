@@ -79,6 +79,7 @@ public class PlayerStatHandler : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             OnDamage?.Invoke();
+            Camera.main.GetComponent<ShakeCamera>().Shake(ShakeType.Hit);
         }
 
         if (CurrentStat.HP <= 0.0f)

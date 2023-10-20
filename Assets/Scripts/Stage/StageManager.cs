@@ -50,6 +50,8 @@ public class StageManager : MonoBehaviourPun, IPunObservable
     [PunRPC]
     public void StageDisable(int index)  // 증강 캔버스 스크립트 안에 OnEnable 에서 호출
     {
+        if (index >= StageList.Count)
+            return;
         StageList[index].SetActive(false);   // 전판 맵 비활성화
         StageList.RemoveAt(index);  // 그 맵은 리스트에서 삭제
     }

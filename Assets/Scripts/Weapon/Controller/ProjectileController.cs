@@ -48,6 +48,7 @@ namespace Weapon.Controller
                 if(collision.transform.TryGetComponent<Rigidbody2D>(out var com))
                 {
                     com.AddForce(Direction * 20, ForceMode2D.Impulse);
+                    Camera.main.GetComponent<ShakeCamera>().Shake(ShakeType.Attack);
                 }
                 Disapear();
             }
