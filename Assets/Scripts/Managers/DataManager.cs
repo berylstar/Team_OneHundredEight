@@ -43,7 +43,19 @@ namespace Managers
 
         public readonly string[] CharacterImageUrlArray = new[]
         {
-            "PlayerImage/Mouse", "PlayerImage/Human", "PlayerImage/Skeleton", "PlayerImage/Slime", "PlayerImage/stone"
+            "PlayerImage/Mouse", "PlayerImage/Skeleton", "PlayerImage/stone", "PlayerImage/Human",
+            "PlayerImage/Slime",
         };
+
+        public readonly Dictionary<string, int> ImageUrlIndexMap = new Dictionary<string, int>();
+
+        private DataManager()
+        {
+            for (int i = 0; i < CharacterImageUrlArray.Length; i++)
+            {
+                string s = CharacterImageUrlArray[i];
+                ImageUrlIndexMap.TryAdd(s, i);
+            }
+        }
     }
 }

@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     private readonly string player = "Player";
     private readonly string keyLoadScene = "LOAD_SCENE";
     private readonly string keyLoadPlayer = "LOAD_PLAYER";
+    private static readonly int HashKeyLayerIndex = Animator.StringToHash("LayerIndex");
 
     private void Awake()
     {
@@ -105,13 +106,29 @@ public class GameManager : MonoBehaviour
     {
         int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
         myPlayer = PhotonNetwork.Instantiate(player, Vector3.zero, Quaternion.identity);
+
         _attackHandler = myPlayer.GetComponentInChildren<AttackHandler>();
-        WeaponData weaponData = ParticipantsManager.PlayerInfos[PhotonNetwork.LocalPlayer.ActorNumber].WeaponData;
-        _attackHandler.SetWeaponData(weaponData);
+        WeaponData weaponData = ParticipantsManager
+            .PlayerInfos[PhotonNetwork.LocalPlayer.ActorNumber]
+            .WeaponData;
         
-        PlayerInfo info = ParticipantsManager.PlayerInfos[playerIndex];
-        Debug.Log($"my player data is :{info}");
-        myPlayer.GetComponentsInChildren<SpriteRenderer>();
+        _attackHandler.SetWeaponData(weaponData);
+
+        
+        SpriteRenderer weaponRenderer = myPlayer.GetComponentsInChildren<SpriteRenderer>()
+            .FirstOrDefault(renderer => renderer.name == "WeaponSprite");
+
+        if (weaponRenderer != null)
+        {
+            Sprite weaponAsset = Resources.Load<Sprite>(weaponData.spriteName);
+            Sprite weaponSprite = Instantiate(weaponAsset);
+            weaponRenderer.sprite = weaponSprite;
+        }
+        else
+        {
+            Debug.Log("weapon renderer is null");
+        }
+
         myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, false);
     }
 
@@ -131,7 +148,7 @@ public class GameManager : MonoBehaviour
         int rankingCnt = KnockoutPlayers.Count;
         int[] ranking = new int[rankingCnt];
         int index = 0;
-        foreach(int a in KnockoutPlayers)
+        foreach (int a in KnockoutPlayers)
         {
             ranking[index++] = a;
         }
@@ -165,6 +182,13 @@ public class GameManager : MonoBehaviour
         ClearKnockoutPlayers();
         SetPlayerSpawn();
         myPlayer.GetComponent<PhotonView>().RPC("RPCSetActive", RpcTarget.All, true);
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
+        PlayerInfo info = ParticipantsManager.PlayerInfos[playerIndex];
+        int layerIndex = DataManager.Instance.ImageUrlIndexMap[info.CharacterImage];
+        myPlayer.GetComponentInChildren<Animator>().SetInteger(HashKeyLayerIndex, layerIndex);
+
+        Debug.Log($"selected character index is :{layerIndex}");
+        Debug.Log($"my player data is :{info}");
     }
 
     private void SetPlayerSpawn()
