@@ -15,6 +15,7 @@ namespace Lobby
 
         public event Action<int> OnProfileClicked;
         private int _actorNumber;
+        public bool IsInit => _actorNumber >= 1;
 
         private void Awake()
         {

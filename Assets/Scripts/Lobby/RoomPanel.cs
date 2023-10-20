@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -38,9 +39,10 @@ public class RoomPanel : MonoBehaviour
 
     private ParticipantsManager _participantsManager;
 
+    [SerializeField] private RectTransform chatContent;
     [SerializeField] private Text roomNameText;
 
-    [SerializeField] private InputField chatTextInput;
+    [SerializeField] private TMP_InputField chatTextInput;
 
     [SerializeField] private Button readyButton;
     [SerializeField] private Button startButton;
@@ -48,6 +50,9 @@ public class RoomPanel : MonoBehaviour
     [SerializeField] private Button sendButton;
 
     [SerializeField] private List<ParticipantUI> participants;
+
+    [SerializeField] private Text chatTextPrefab;
+
     private RoomUIState _uiState;
 
     private void Awake()
@@ -68,7 +73,10 @@ public class RoomPanel : MonoBehaviour
         _participantsManager.OnStartConditionChanged += ChangeStartButtonVisibility;
         _participantsManager.OnPlayerStatusChangedEvent += AddParticipantInfo;
         _participantsManager.OnPlayerLeftRoomEvent += RemoveParticipantInfo;
+        _participantsManager.OnReceivedMessage += AddMessage;
 
+        chatTextInput.onValueChanged.AddListener(ChangeMessage);
+        chatTextInput.onSubmit.AddListener(_ => { SendChat(); });
         startButton.onClick.AddListener(StartGame);
         readyButton.onClick.AddListener(Ready);
         exitButton.onClick.AddListener(LeaveRoom);
@@ -82,6 +90,12 @@ public class RoomPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void AddMessage(string newMessage)
+    {
+        Text chat = Instantiate(chatTextPrefab, chatContent, false);
+        chat.text = newMessage;
+    }
+
 
     private void OnDestroy()
     {
@@ -91,6 +105,7 @@ public class RoomPanel : MonoBehaviour
         _participantsManager.OnStartConditionChanged -= ChangeStartButtonVisibility;
         _participantsManager.OnPlayerStatusChangedEvent -= AddParticipantInfo;
         _participantsManager.OnPlayerLeftRoomEvent -= RemoveParticipantInfo;
+        _participantsManager.OnReceivedMessage -= AddMessage;
     }
 
     private void InitRoomUIState()
@@ -150,7 +165,11 @@ public class RoomPanel : MonoBehaviour
     private void UpdateParticipantUI(int index, int actorNumber, KeyValuePair<int, PlayerInfo> playerInfo)
     {
         ParticipantUI participantUI = participants[index];
-        participantUI.Init(actorNumber);
+        if (!participantUI.IsInit)
+        {
+            participantUI.Init(actorNumber);
+        }
+
         participantUI.UpdateVisibility(true);
         participantUI.UpdateBackgroundImage(Constants.PlayerColors[index]);
         participantUI.UpdateNicknameText(playerInfo.Value.Nickname);
@@ -165,7 +184,7 @@ public class RoomPanel : MonoBehaviour
         bool isSuccess = _uiState.PlayerInfos.TryAdd(actorNumber, info);
         if (!isSuccess) { Debug.LogWarning($"Failed to add {actorNumber}"); }
 
-        int index = _participantsManager.Headcount - 1;
+        int index = (actorNumber - 1) % 5;
         UpdateParticipantUI(index, actorNumber, new KeyValuePair<int, PlayerInfo>(actorNumber, info));
     }
 
@@ -196,6 +215,8 @@ public class RoomPanel : MonoBehaviour
 
     private void SendChat()
     {
+        _participantsManager.SendMessage();
+        chatTextInput.text = string.Empty;
     }
 
     private void Ready()
@@ -207,5 +228,10 @@ public class RoomPanel : MonoBehaviour
         ProfileDetailUI detailUIAsset = Resources.Load<ProfileDetailUI>($"{nameof(ProfileDetailUI)}");
         ProfileDetailUI detailUI = Instantiate(detailUIAsset);
         detailUI.Init(_participantsManager, _participantsManager.Weapons);
+    }
+
+    private void ChangeMessage(string msg)
+    {
+        _participantsManager.OnMessageInputChanged(msg);
     }
 }

@@ -3,9 +3,11 @@ using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using Weapon.Model;
 using Object = UnityEngine.Object;
+using Player = Photon.Realtime.Player;
 
 namespace Managers
 {
@@ -42,6 +44,7 @@ namespace Managers
         public int Headcount => PhotonNetwork.CurrentRoom.PlayerCount;
 
         private string _message = string.Empty;
+        private List<string> _messages = new List<string>(255);
 
         public IReadOnlyList<WeaponData> Weapons => DataManager.Instance.WeaponDataList;
 
@@ -53,7 +56,7 @@ namespace Managers
         public event Action<int> OnPlayerLeftRoomEvent;
         public event Action<bool> OnStartConditionChanged;
 
-
+        public event Action<string> OnReceivedMessage;
         // public event Action 
 
         #region Unity Event
@@ -224,6 +227,28 @@ namespace Managers
             PlayerInfo newInfo = new PlayerInfo(info.Nickname, newImage, info.WeaponData);
             ChangePlayerInfo(actorNumber, newInfo);
         }
-        //todo exit game 
+
+        //todo exit game
+        public void SendMessage()
+        {
+            if (_message == string.Empty) { return; }
+            
+            StringBuilder sb = new StringBuilder(_playerInfos[PhotonNetwork.LocalPlayer.ActorNumber].Nickname);
+            sb.Append($" : {_message}");
+            PhotonView.Get(this).RPC(nameof(SendMessageRPC), RpcTarget.AllBuffered, sb.ToString());
+        }
+
+        [PunRPC]
+        private void SendMessageRPC(string message)
+        {
+            _message = string.Empty;
+            _messages.Add(message);
+            OnReceivedMessage?.Invoke(message);
+        }
+
+        public void OnMessageInputChanged(string msg)
+        {
+            _message = msg;
+        }
     }
 }
