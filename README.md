@@ -86,7 +86,9 @@
 
 | 스크립트 | 내용 | 기여자 |
 | -- | -- | -- |
-|  | |  |
+| Break | 시간이 지나면 떨어지는 발판 (시간제한) | 이홍준 |
+| Fall | 플레이어가 밟으면 떨어지는 지형 | 이홍준 |
+| StageManager | 매 라운드 다른 스테이지, 호스트가 맵을 고르고 포톤으로 모든 접속자에게 동기화 | 이홍준 |
 
 ### - **로비 씬**
 
@@ -132,8 +134,15 @@
 | 김민상 | 포톤을 다루는 팀 프로젝트였던만큼 힘들기도 힘들고 재밌기도 재밌었습니다. 좋은 팀원덕분에 마무리까지 잘 되서 너무 다행입니다. |
 | 김대열 | 디버깅이 어려웠지만 통합 테스트하면서 다같이 즐길수 있어서 너무 재밌었습니다. 포톤을 잘 몰라서 힘들었지만 멀티 플레이어라서 다같이 재밌게 즐기면서 해서 좋았습니다. | 
 | 김대민 | 여러가지 만들어보고싶은 이펙트적인 기능같은걸 만들어봐서 재미있었습니다 즐겁네요 포톤은 힘들었지만 즐거웠습니다. |
-| 이홍준 | |
+| 이홍준 | 실전압축으로 포톤을 야무지게 공부한 느낌이어서 좋았습니다. 팀원분들과 재밌게 테스트하는 것도 아주 즐거웠습니다. |
 | 이세진 | 포톤 서버의 기본적인 구조를 배웠고 멀티플레이를 통해 재밌는 플레이가 좋았습니다 |
 
 # 4. 사용 에셋
 - 포톤 PUN 2
+- https://assetstore.unity.com/packages/2d/environments/pixel-art-platformer-village-props-166114
+- https://wallpapercave.com/1920x1080-desktop-pixel-art-wallpapers
+
+# 5. 만든 사람들
+<a href="https://github.com/berylstar/Team_OneHundredEight/graphs/contributors>
+  <img src="https://contrib.rocks/image?repo=berylstar/Team_OneHundredEight" />
+</a>
