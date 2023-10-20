@@ -302,17 +302,17 @@ public class GameManager : MonoBehaviour
         textWinner.text = msg;
         textWinner.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(5f);
 
         EndGame();
     }
 
     private void EndGame()
     {
-        // Application.Quit();
-        DestroyImmediate(ParticipantsManager);
-        PhotonNetwork.LeaveRoom();
-        PhotonNetwork.LoadLevel("LobbyScene");
+        Application.Quit();
+        //DestroyImmediate(ParticipantsManager);
+        //PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LoadLevel("LobbyScene");
     }
 
     private void EnhancePlayer(int actorNumber, EnhancementData data)
