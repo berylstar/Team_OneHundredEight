@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     // 기본 정보
     [SerializeField] private GameObject panelLoading;
+    [SerializeField] private GameObject panelEnd;
     [SerializeField] private TextMeshProUGUI textWinner;
 
     // 적용된 증강 정보
@@ -302,7 +303,9 @@ public class GameManager : MonoBehaviour
         textWinner.text = msg;
         textWinner.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
+
+        panelEnd.SetActive(true);
 
         EndGame();
     }
