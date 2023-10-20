@@ -39,6 +39,7 @@ public class RoomPanel : MonoBehaviour
 
     private ParticipantsManager _participantsManager;
 
+    [SerializeField] private ScrollRect chatScrollView;
     [SerializeField] private RectTransform chatContent;
     [SerializeField] private Text roomNameText;
 
@@ -92,8 +93,9 @@ public class RoomPanel : MonoBehaviour
 
     private void AddMessage(string newMessage)
     {
-        Text chat = Instantiate(chatTextPrefab, chatContent, false);
+        Text chat = Instantiate(chatTextPrefab, chatContent.transform, false);
         chat.text = newMessage;
+        chatScrollView.normalizedPosition = new Vector2(0, 0);
     }
 
 
