@@ -9,6 +9,31 @@
 3. 기능 명세서
 4. 사용 에셋
 
+## 플레이
+<p>
+    <img
+      src="https://user-images.githubusercontent.com/115692722/276831840-6c424eee-3c8a-48d9-a051-0d5200a685ba.gif"
+      width="45%"
+      height="350"/>
+      <img
+  src="https://user-images.githubusercontent.com/115692722/276831856-b0cdc686-87b0-49d5-ad66-480fd093c7e2.gif"
+  width="45%"
+  height="350"/>
+</p>
+<p>
+    <img
+  src="https://user-images.githubusercontent.com/115692722/276831870-66fcd2b3-8945-47bf-8a9d-14be4f0591b4.gif"
+  width="45%"
+  height="350"/>
+      <img
+  src="https://user-images.githubusercontent.com/115692722/276831870-66fcd2b3-8945-47bf-8a9d-14be4f0591b4.gif"
+  width="45%"
+  height="350"/>
+
+    
+</p>
+
+
 ---
 <br>
 <br>
